@@ -1,0 +1,13 @@
+.reset-link-sent, .reset-modal-content {
+    color: #868686;
+    text-align: center;
+
+}
+
+.reset-link-sent {
+    font-size: 1.25em;
+}
+
+.reset-modal-content {
+    margin-top: 1.5em!important;
+}

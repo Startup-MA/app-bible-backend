@@ -1,0 +1,107 @@
+.pop-up-background[open] {
+    position: fixed;
+    width: 40vw;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0px solid black;
+    border-radius: 10px;
+    margin:auto;
+    padding: 0!important;
+}
+
+.pop-up-background::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.pop-up {
+    padding: 2em;
+    background-color: white;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.pop-up h2 {
+    margin-top: 0em;
+    margin-bottom: 1em;
+    font-weight: 400;
+}
+
+.pop-up-content {
+    display: flex;
+    justify-content: center;
+}
+
+.pop-up p {
+    font-size: 1.1em;
+    color: #868686;
+    text-align: center;
+}
+
+.pop-up-controlls {
+    margin-top: 2em;
+    display: flex;
+    justify-content: end;
+}
+
+.pop-up-controlls button:last-child {
+    margin-left: 1em;
+}
+
+.pop-up-controlls button {
+    background-color: transparent;
+    padding: 0.8em;
+    color: #868686;
+    border: 1px solid #868686;
+    border-radius: 10px;
+    font-family: 'Inria Serif', serif;
+    font-size: 1em;
+    width: max-content;
+}
+
+.pop-up-controlls button:last-child {
+    background-color: black;
+    color: white;
+    border-color: transparent;
+}
+
+.pop-up-controlls button:active {
+    background-color: #f4f4f4;
+}
+
+.pop-up-controlls button:last-child:active {
+    background-color: white;
+    color: black;
+    border-color: black;
+}
+
+@media screen and (max-width: 1050px) {
+    .pop-up-background[open] {
+        width: 70%;
+    }
+
+    .pop-up {
+        max-width: 100%; 
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .pop-up-background[open] {
+        width: 100%;
+    }
+
+    dialog:not(#PopUp)::backdrop {
+        background-color: white;
+    }
+
+    .pop-up p {
+        text-align: center;
+    }
+
+    .pop-up-controlls {
+        justify-content: center;
+    }
+}

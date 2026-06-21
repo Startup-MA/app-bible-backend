@@ -1,0 +1,57 @@
+paths:
+  /api/sys/getAllBibleTextVersions:
+    get:
+      tags:
+        - System
+      summary: Retrieve a list of all available bible text versions.
+      responses:
+        200:
+          description: A list of all available bible text versions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          enum:
+                            - KJV
+                            - NIV
+                          example: KJV
+                        full_name: 
+                          type: string
+                          example: King James Version
+                        is_audio:
+                          type: boolean
+                          example: true
+                        link:
+                          type: string
+                          example: https://some.cdn.with.content.com
+                        lang_id:
+                          type: integer
+                          description: Id of the bible language available in the system
+                          example: 1
+        500:
+          description: If internal server error occurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: Internal Server Error

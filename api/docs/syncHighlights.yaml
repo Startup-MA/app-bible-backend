@@ -1,0 +1,145 @@
+paths:
+  /api/user/syncHighlights:
+    post:
+      tags:
+        - User (Requires "Mobile" authentication)
+      summary: Accepts user highlights object for sync ONLY ONE PER USER (Requires authentication - "Cookie" headers field to be filled with active mobile session).
+      requestBody:
+        description: Body object for sync. Available HSLA color codes 69,69,132,1 | 137,38,59,1 | 92,81,113,1 | 26,77,89,1 | 161,134,26,1 | 106,102,163,0.78 | 72,48,117,0.78 | 223,41,53,0.78 | 243,66,19,0.78 | 255,164,0,0.78 
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                created:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: object
+                    properties:
+                      book:
+                        type: string
+                        description: One of the available book names Genesis, Exodus, Mark ...
+                        example: Genesis
+                      chapter:
+                        type: number
+                        example: 1
+                      highlights:
+                        type: object
+                        properties:
+                          "69,69,132,1": 
+                            type: array
+                            items:
+                              type: string
+                              example: 2
+                      uuid:
+                        type: string
+                        format: uuid
+                        description: UUID of a highlights_json object
+                        example: 89392837-edf0-4683-ab2b-87861220a366
+                      bible_id: 
+                        type: integer
+                        minimum: 1
+                        example: 1
+                  required:
+                    - highlights
+                    - uuid
+                updated:
+                  type: array
+                  items:
+                    type: object
+                    properties: 
+                      new_highlights:
+                        type: object
+                        properties:
+                          "69,69,132,1": 
+                            type: array
+                            items:
+                              type: number
+                              example: 13
+                      uuid:
+                        type: string
+                        format: uuid
+                        description: UUID of a highlights_json object
+                        example: 89392837-edf0-4683-ab2b-87861220a366
+                      updated_at:
+                        type: string
+                        format: date-time
+                        example: "2026-04-24T00:30:00+00:00"
+                    required:
+                      - new_highlights
+                      - uuid
+                      - updated_at
+                deleted:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: string
+                    format: uuid
+                    example: 89392837-edf0-4683-ab2b-87861220a366
+      responses:
+        200:
+          description: User data was successfully validated and passed to the queue for sync.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Highlights are accepted for sync
+        400:
+          description: Validation for the given input did not passed (Unprocessible format of the entity).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Validation error
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                          description: Body field that did not passed the validation process.
+                          example: Some path
+                        message:
+                          type: string
+                          example: Some message
+        401:
+          description: Authentication error (Session has expired or there is no such session).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Access forbidden
+        500:
+          description: If internal server error occurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: Internal Server Error

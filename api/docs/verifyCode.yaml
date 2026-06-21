@@ -1,0 +1,92 @@
+paths:
+  /api/auth/verifyCode:
+    post:
+      tags:
+        - Auth
+      summary: Verifies a user by code and logs in giving a newly created session.
+      requestBody:
+        description: Code verification details and parametrs of the desired session to be oppened. 
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  example: "123654"
+                device:
+                  type: string
+                  description: Device for which a new session will be openned (Mobile session has more access to the different features than browser).
+                  enum:
+                    - mobile
+                    - browser
+                  example: mobile
+              required:
+                - code
+                - device
+      responses:
+        200:
+          description: Code verification was successful and a newly created session was set and sent in the headers field "Set-Cookie".
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Logged in successfully
+        400:
+          description: Validation for the given input did not passed (Unprocessible format of the entity).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Validation error
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                          description: Body field that did not passed the validation process.
+                          example: device
+                        message:
+                          type: string
+                          example: device must contain mobile or browser
+        409:
+          description: Client tries to login by the means of a broken or expired code.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Verification code has expired or it's broken
+        500:
+          description: If internal server error occurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: Internal Server Error

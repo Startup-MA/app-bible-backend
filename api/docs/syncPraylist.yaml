@@ -1,0 +1,136 @@
+paths:
+  /api/user/syncPraylist:
+    post:
+      tags:
+        - User (Requires "Mobile" authentication)
+      summary: Accepts praylist data objects for sync (Requires authentication - "Cookie" headers field to be filled with active mobile session).
+      requestBody:
+        description: Body object for sync. 
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                created:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                        maxLength: 20
+                        example: Title
+                      content:
+                        type: string
+                        maxLength: 250
+                        example: some content
+                      uuid: 
+                        type: string
+                        format: uuid
+                        example: 89392837-edf0-4683-ab2b-87861220a366
+                    required:
+                      - title
+                      - content
+                      - uuid
+                updated:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: object
+                    properties:
+                      new_title:
+                        type: string
+                        maxLength: 20
+                        example: New Title
+                      new_content:
+                        type: string
+                        maxLength: 250
+                        example: Some New Content
+                      uuid: 
+                        type: string
+                        format: uuid
+                        example: 89392837-edf0-4683-ab2b-87861220a366
+                      updated_at:
+                        type: string
+                        format: date-time
+                        example: "2026-04-24T00:30:00+00:00"
+                        description: Time when update has occurred
+                    required:
+                      - new_title
+                      - new_content
+                      - uuid
+                      - updated_at
+                deleted:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: string
+                    format: uuid
+                    example: 89392837-edf0-4683-ab2b-87861220a366
+      responses:
+        200:
+          description: User data was successfully validated and passed to the queue for sync.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Praylist accepted for sync
+        400:
+          description: Validation for the given input did not passed (Unprocessible format of the entity).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Validation error
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                          description: Body field that did not passed the validation process.
+                          example: new_title
+                        message:
+                          type: string
+                          example: title could not exceed 20 charcters
+        401:
+          description: Authentication error (Session has expired or there is no such session).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Access forbidden
+        500:
+          description: If internal server error occurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: Internal Server Error

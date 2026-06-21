@@ -1,0 +1,17 @@
+.footer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 15em;
+    margin-bottom: 7em;
+}
+
+.footer img {
+    width: 250px;
+}
+
+@media screen and (max-width: 600px) {
+    .footer img {
+        width: 200px;
+    }
+}

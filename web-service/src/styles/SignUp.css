@@ -1,0 +1,176 @@
+.auth-form {
+    width: 500px;
+    padding: 2em;
+    background-color: white;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 600px;
+}
+
+.auth-form input:focus, .auth-form select:focus {
+    outline: none;
+    border-color: #0056b3;
+    box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.2);
+}
+
+.auth-form-close {
+    display: flex;
+    justify-content: end;
+    width: 100%;
+}
+
+.auth-form-close img {
+    cursor: pointer;
+}
+
+.auth-form h1 {
+    text-align: center;
+    margin-bottom: 1em;
+    font-weight: 400;
+}
+
+.auth-form-inputs {
+    border-bottom: 1px solid #9E9E9E;
+    padding-bottom: 2em;
+}
+
+.auth-form-close img {
+    margin-top: 0.5em;
+    margin-right: 0.5em;
+    width: 15px;
+}
+
+.auth-form-inputs, .auth-form-controlls {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 65%;
+}
+
+.auth-form-inputs input {
+    all: unset;
+    width: 100%;
+    background-color: #F4F4F4;
+    border: 1px solid #b8b8b8;
+    border-radius: 10px;
+    height: 50px;
+    margin-top: 1rem;
+    padding-left: 1rem;
+    padding-right: 0.5rem;
+    font-size: 1.2em;
+    box-sizing: border-box;
+}
+
+.auth-form-controlls {
+    padding-top: 2em;
+}
+
+.auth-form-controlls button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%; 
+    height: 55px;
+    border: 1px solid #868686;
+    border-radius: 10px;
+    background-color: white;
+    color: black;
+    font-size: 1.1em;
+  	font-family: 'Inria Serif', serif;
+    box-sizing: border-box;
+    margin-bottom: 1em;
+    cursor: pointer;
+}
+
+.auth-form-controlls p {
+    margin-top: 0;
+}
+
+.auth-form-controlls button img {
+    margin-right: 1em;
+    width: 25px;
+}
+
+.auth-form-controlls button:first-child {
+    background-color: black;
+    border-color: transparent;
+    color: white;
+}
+
+.auth-form-controlls button:active {
+    background-color: #F4F4F4;
+    color: black;
+}
+
+.auth-form-controlls button:first-child:active {
+    background-color: transparent;
+    border-color: black;
+    color: black;
+}
+
+.validation-error-message {
+    text-align: center;
+    color: #E04343;
+    margin-top: 0;
+}
+
+.auth-form-controlls span {
+    cursor: pointer;
+}
+
+.auth-form-controlls span:active {
+    color: #868686;
+}
+
+.password-field-eye {
+    position: absolute;
+    width: 20px;
+    cursor: pointer;
+    top: 30px;
+    right: 20px;
+    /* background-color: #F4F4F4; */
+}
+
+.password-container {
+    position: relative;
+    width: 100%;
+}
+
+.password-container input {
+    padding-right: 3rem;
+}
+
+.auth-form-controlls span {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.auth-form-controlls span:active {
+    color: #868686;
+}
+
+
+
+@media screen and (max-width: 1050px) {
+    .auth-form {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .auth-form {
+        width: 100%;
+        height: 100%;
+        border-radius: 0px;        
+        padding: 0;
+    }
+
+    .auth-form-inputs, .auth-form-controlls {
+        width: 80%;
+    }
+    
+}

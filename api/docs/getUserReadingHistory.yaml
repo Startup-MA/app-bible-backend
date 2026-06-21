@@ -1,0 +1,87 @@
+paths:
+  /api/user/getUserReadingHistory:
+    get:
+      tags:
+        - User (Requires "Mobile" authentication)
+      summary: Returns user reading history object in JSON format (Requires authentication - "Cookie" headers field to be filled with active mobile session).
+      responses:
+        200:
+          description: User reading history object.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      reading_history: 
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              example: 1
+                            history_json:
+                              type: object
+                              properties:
+                                KJV: 
+                                  type: object
+                                  properties:
+                                    Genesis:
+                                      type: object
+                                      properties:
+                                        "1":
+                                          type: string
+                                          example: 1
+                                NIV:
+                                  type: object
+                                  properties:
+                                    Exodus:
+                                      type: object
+                                      properties:
+                                        "1":
+                                          type: string
+                                          example: 1
+                            uuid:
+                              type: string
+                              format: uuid
+                              example: 89392837-edf0-4683-ab2b-87861220a366
+                            created_at:
+                              type: string
+                              format: date-time
+                              example: "2026-03-24T10:30:00+01:00"
+                            updated_at:
+                              type: string
+                              format: date-time
+                              example: "2026-04-24T00:30:00+00:00"
+        401:
+          description: Authentication error (Session has expired or there is no such session).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Access forbidden
+        500:
+          description: If internal server error occurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: Internal Server Error

@@ -1,0 +1,40 @@
+.sex-age-select {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.auth-form-inputs select {
+    width: 100%;
+    background-color: #F4F4F4;
+    border: 1px solid #b8b8b8;
+    border-radius: 10px;
+    height: 50px;
+    margin-top: 1rem;
+    padding-left: 1rem;
+    font-family: 'Inria Serif', serif;
+    font-size: 1.2em;
+}
+
+.sex-age-select select {
+    width: 48%;
+}
+
+.personal-info-title h1 {
+    margin-bottom: 0;
+}
+
+.personal-info-title p {
+    color: #868686;
+}
+
+.personal-validation-error-message {
+    color: #E04343;
+    margin-top: 1em;
+}
+
+@media screen and (max-width: 700px) {
+    .personal-form {
+        width: 95%;
+    }
+}

@@ -1,0 +1,103 @@
+.verification-form-memo {
+    margin-top: -1em;
+    margin-bottom: 1.2em;
+    color: #868686;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.verification-form-container {
+    width: 80%; 
+}
+
+.verification-form-inputs {
+    display: flex;
+    justify-content: space-between;
+}
+
+.verification-form-inputs p {
+    margin-top: 10em;
+}
+
+.verification-form-inputs input {
+    width: 12%;
+    height: 60px;
+    border: 1px solid #b8b8b8;
+    border-radius: 10px;
+    background-color: #F4F4F4;
+    font-size: 2em;
+  	font-family: 'Inria Serif', serif;
+    text-align: center;
+    margin-left: 0.2em;
+}
+
+.verification-form-inputs input:first-child {
+    margin-left: 0;
+}
+
+.back-arrow {
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    position: relative;
+}
+
+.back-arrow img {
+    position: absolute;
+    width: 20px;
+    top: -55px;
+    left: 40px;
+    cursor: pointer;
+}
+
+.verification-form-resend {
+    width: 100%;
+    display: flex;
+}
+
+.verification-form-resend span {
+    cursor: pointer;
+}
+
+.verification-form-resend span:active {
+    color: #868686;
+}
+
+.verification-form-validation {
+    text-align: center;
+    margin-top: 3em;
+    color: #E04343;
+    margin-bottom: 1em;
+}
+
+.again-after {
+    color: #868686;
+    cursor: default!important;
+}
+
+.paste {
+    width: 20px;
+    cursor: pointer;
+    margin-left: 1em;
+}
+
+.paste:active {
+    content: url("../assets/Pasted.png");
+}
+
+@media screen and (max-width: 500px) {
+    .back-arrow img {
+        left: 0px;
+    }
+    
+    .verification-form-container {
+        width: 90%; 
+    }
+
+    .verification-form-resend {
+        width: 100%;
+        display: flex;
+        margin-left: 1em;
+    }
+}

@@ -1,0 +1,391 @@
+.pricing-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2em;
+    margin-left: 4em;
+    margin-right: 4em;
+}
+
+.title {
+    font-size: 2.5em;
+}
+
+.plan {
+    height: 500px;
+    width: 212px;
+    border: 1px solid #AEAEAE;
+    border-radius: 35px;
+    margin-right: 3rem;
+}
+
+.plan:last-child {
+    margin-right: 0rem;
+}
+
+.plan-name, .plan-price {
+    width: 100%;
+    text-align: left;
+}
+
+.plan-name {
+    margin-bottom: 7rem;
+}
+
+.plan-buy {
+    width: 100%;
+    border: 1px solid #AEAEAE;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 1.1em;
+    font-family: 'Inria Serif', serif;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    background-color: transparent;
+    margin-bottom: 2rem;
+}
+
+.plan-buy:hover {
+    background-color: #F4F4F4;
+}
+
+.free .features {
+    display: flex;
+    flex-flow: wrap;
+    margin-bottom: 1em;
+}
+
+.free .features div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+}
+
+.free .features div img {
+    width: 25px;
+    margin-right: 0.5em;
+}
+
+.thematical .features {
+    margin-bottom: 1em;
+}
+
+.thematical .features div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.thematical .features div:first-child h3 {
+    margin: 0;
+}
+
+.thematical .features div img {
+    width: 100px;
+}
+
+.advanced .features {
+    margin-bottom: 1em;
+}
+
+.advanced .features div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.advanced .features div:first-child h3 {
+    margin: 0;
+}
+
+.advanced .features div img {
+    width: 145px;
+}
+
+.premium .features {
+    margin-bottom: 1em;
+}
+
+.premium .features div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.premium .features div:first-child h3 {
+    margin: 0;
+}
+
+.premium .features div:last-child h1 {
+    margin-top: 0;
+}
+
+.premium {
+    background-image: url("../assets/PremiumBackground.png");
+    background-position-x: 50%;
+    background-position-y: 50%;
+	background-size: 130%;
+	background-repeat: no-repeat;
+}
+
+.premium {
+    border: 1px solid transparent;
+    border-radius: 35px;
+    margin-right: 3rem;
+    color: white;
+}
+
+.premium .plan-buy {
+    color: white;
+    border-color: white;
+}
+
+.premium .plan-buy:hover {
+    background-color: rgba(255, 255, 255, 0.11);
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    margin-top: 5em;
+}
+
+.pricing-grid > * {
+    padding: 1.5rem;
+}
+
+.pricing-grid .pricing-toggle {
+    display: none;
+}
+
+.pricing-toggle {
+    width: max-content;
+    background-color: #F4F4F4;
+    border-radius: 22px;
+    padding-top: 0.6em;
+    padding-bottom: 0.6em;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    font-size: 0.8em;
+}
+
+.pricing-toggle input {
+    display: none;
+}
+
+.pricing-toggle label:last-child {
+    margin-left: 0.5em;
+}
+
+.pricing-toggle label {
+    font-weight: 400!important;
+    color: #868686;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-left: 0.9em;
+    padding-right: 0.9em;
+    border-radius: 22px;    
+}
+
+.premium .pricing-toggle label {
+    color: white;    
+}
+
+.premium .pricing-toggle {
+    background-color: transparent;
+    border: 2px solid white;
+    border-radius: 22px;
+    padding-top: 0.6em;
+    padding-bottom: 0.6em;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    font-size: 0.8em;
+}
+
+input[value="month"]:checked + label[for="Monthly"],
+input[value="thematical-month"]:checked + label[for="ThematicalMonthly"],
+input[value="advanced-month"]:checked + label[for="AdvancedMonthly"] {
+    color: white;
+    background-color: black;
+}
+
+input[value="premium-month"]:checked + label[for="PremiumMonthly"] {
+    color: black;
+    background-color: white;
+}
+
+
+input[value="year"]:checked + label[for="Yearly"],
+input[value="thematical-year"]:checked + label[for="ThematicalYearly"],
+input[value="advanced-year"]:checked + label[for="AdvancedYearly"] {
+    color: white;
+    background-color: black;
+}
+
+input[value="premium-year"]:checked + label[for="PremiumYearly"] {
+    color: black;
+    background-color: white;
+}
+
+.FAQ-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 10em;
+}
+
+.questions {
+    width: 85%
+}
+
+.section {
+    border-top: 1px solid #d2d2d2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-left: 2em;
+    padding-right: 2em;
+}
+
+.section input {
+    display: none;
+}
+
+.section:last-child {
+    border-bottom: 1px solid #d2d2d2;
+}
+.question {
+    width: 100%;
+}
+
+.question label {
+    width: 100%;
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+}
+
+.question p {
+    font-size: 1.5em;
+}
+
+.question img {
+    width: 14px;
+    margin-top: 2em;
+}
+
+.answer {
+    width: 90%;
+    display: none;
+}
+
+#arrow-1:checked ~ div[class="answer"] {
+    display: flex;
+}
+
+#arrow-1:checked ~ div[class="question"] p {
+    margin-bottom: 0;
+}
+
+#arrow-2:checked ~ div[class="answer"] {
+    display: flex;
+}
+
+#arrow-2:checked ~ div[class="question"] p {
+    margin-bottom: 0;
+}
+
+#arrow-3:checked ~ div[class="answer"] {
+    display: flex;
+}
+
+#arrow-3:checked ~ div[class="question"] p {
+    margin-bottom: 0;
+}
+
+#arrow-4:checked ~ div[class="answer"] {
+    display: flex;
+}
+
+#arrow-4:checked ~ div[class="question"] p {
+    margin-bottom: 0;
+}
+
+#arrow-5:checked ~ div[class="answer"] {
+    display: flex;
+}
+
+#arrow-5:checked ~ div[class="question"] p {
+    margin-bottom: 0;
+}
+
+.answer p {
+    color: #868686;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    font-size: 1rem;
+}
+
+.answer a {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+@media screen and (max-width: 1300px) {
+    .pricing-grid {
+        grid-template-columns: auto auto;
+    }
+
+    .advanced, .premium {
+        margin-top: 3rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .pricing-grid {
+        display: block;
+    }
+
+    .pricing-grid .pricing-toggle {
+        display: block;
+        margin-bottom: 3rem;
+    }
+
+    .title {
+        font-size: 2.2em;
+        margin-bottom: 0.5em;
+    }
+
+    .plan {
+        margin-right: 0rem;
+        margin-bottom: 4rem;
+    }
+
+    .plan:not(.free) .plan-name {
+        margin-bottom: 3rem;
+    }
+
+    .FAQ-section {
+        margin-top: 7em;
+    }
+
+    .questions {
+        width: 100%
+    }
+
+    .question img {
+        width: 12px;
+        margin-left: 1rem;
+    }
+
+    .pricing-content {
+        margin-left: 2em;
+        margin-right: 2em;
+    }
+}

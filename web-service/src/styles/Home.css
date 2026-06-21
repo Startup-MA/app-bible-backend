@@ -1,0 +1,501 @@
+.content {
+	margin-left: 4em;
+    margin-right: 4em;
+}
+
+.section-1 {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 3em;
+}
+
+.section-1 .part, .part-img {
+	width: 40%;
+}
+
+#googlePlay, #apple {
+	width: 25px;
+	margin-right: 1em;
+}
+
+#apple {
+	width: 28px;
+}
+
+.download-links svg path {
+	fill: currentColor!important;
+}
+
+.download-links  {
+	display: flex;
+	align-items: center;
+}
+
+.download-links a {
+	text-decoration: none;
+	color: black;
+}
+
+.download-links div p {
+	margin: 0;
+}
+
+.download-links div {
+	display: flex;
+	align-items: center;
+	border: 1px solid black;
+	border-radius: 10px;
+	padding: 0.75em 1.25em 0.75em 1.25em;
+
+}
+
+.download-links div:active {
+	background-color: black;
+	color: white;
+}
+
+.download-links a:last-child {
+	margin-left: 2em;
+}
+
+.section-1 .title {
+	font-size: 3em;
+	margin-top: 0em;
+
+}
+
+.section-1 .plot {
+	font-size: 2em;
+	text-align: justify;
+}
+
+.section-2 {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 8em;
+}
+
+.section-2 .part {
+	width: 50%;
+}
+
+.section-2 .part-img {
+	width: 30%;
+}
+
+.section-2 .title {
+	font-size: 3em;
+	margin-top: 0em;
+	margin-bottom: 1em;
+}
+
+.section-2 #features img {
+	width: 35px;
+}
+
+.section-2 #features {
+	display: flex;
+	flex-flow: wrap;
+}
+
+.section-2 #features div {
+	display: flex;
+	align-items: center;
+	margin-right: 3em;
+}
+
+.section-2 #features div p {
+	font-size: 1.5em;
+	margin-left: 0.9em;
+}
+
+.section-3 {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 8em;
+}
+
+.section-3 .part {
+	width: 40%;
+}
+
+.section-3 .part-img {
+	width: 40%;
+	margin-right: 3em;
+}
+
+.section-3 .title {
+	font-size: 3em;
+	margin-top: 0em;
+
+}
+
+.section-3 .plot {
+	font-size: 2em;
+	text-align: justify;
+}
+
+.section-4 {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-evenly;
+	margin-top: 15em;
+	height: 140vh;
+	background-image: url("../assets/Marriage\ of\ the\ Virgin.png");
+	background-position: center;
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+
+.section-4 #Request {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: 3em;
+	width: 90%;
+}
+
+.section-4 #Text p {
+	font-size: 2em;
+	color: white;
+	text-align: center;
+	margin-bottom: 2em;
+}
+
+.section-4 #Freemium {
+	margin-top: 5em;
+}
+
+.section-4 #Freemium button {
+	font-family: 'Inria Serif', serif;
+	border: 2px solid white;
+	font-size: 1.8em;
+	color: white;
+	padding-top: 0.3em;
+	padding-bottom: 0.3em;
+	padding-left: 5em;
+	padding-right: 5em;
+	background-color: transparent;
+}
+
+.section-4 #Freemium button:hover {
+	background-color: rgba(0, 0, 0, 0.1);
+	transition: linear 0.1s;
+}
+
+.section-4 #Memo {
+	font-style: italic;
+	font-weight: 300;
+	font-size: 1.2em;
+	color: rgb(131, 131, 131);
+	width: 70%;
+	text-align: right;
+}
+
+.section-5 {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	height: 100vh;
+	position: relative;
+}
+
+.section-5::before {
+	content: "";
+	position: absolute;
+	top: -5%;
+	left: -25%;
+	z-index: -1;
+	width: 60%;
+	height: 60%;
+	background-image: url("../assets/Question.svg");
+	background-position: center;
+	background-size: contain;
+	background-repeat: no-repeat;
+	transform: rotate(45deg);
+}
+
+.section-5 img {
+	min-width: 500px;
+}
+
+.section-5 #ContactUs p {
+	font-size: 4em;
+}
+
+.section-5 #ContactUs button {
+	font-family: 'Inria Serif', serif;
+	border: 2px solid black;
+	font-size: 1.8em;
+	color: black;
+	padding-top: 0.3em;
+	padding-bottom: 0.3em;
+	padding-left: 2.5em;
+	padding-right: 2.5em;
+	background-color: transparent;
+}
+
+.section-5 #ContactUs button:hover {
+	background-color: black;
+	color: white;
+	transition: linear 0.1s;
+}
+
+.section-4 u {
+	text-decoration: 2px white underline; 
+}
+
+.title u {
+	text-decoration: 3px black underline; 
+}
+
+.plot u {
+	text-decoration: 2px black underline; 
+}
+
+#GenesisHome {
+	width: 60%;
+	margin-left: 2em;
+}
+
+#BibleInterface {
+	width: 90%;
+	margin-left: 6em;
+}
+
+#ArtGallery {
+	width: 95%;
+}
+
+@media screen and (max-width: 1250px) {
+	.section-1 .title, .section-2 .title, .section-3 .title {
+		font-size: 2.2em;
+	}
+
+	.section-1 .plot, .section-3 .plot {
+		font-size: 1.5em;
+	}
+
+	.section-2 #features img {
+		width: 30px;
+	}
+}
+
+@media screen and (max-width: 1050px) {
+	.download-links {
+		margin-top: 1em;
+	}
+
+	.section-1, .section-2, .section-3 {
+		flex-direction: column;
+	}
+
+	.section-2 {
+		flex-flow: column-reverse;
+	}
+
+	.part {
+		margin-top: 2em;
+	}
+
+	.section-1 .part, .part-img, .section-2 .part, .part-img, .section-3 .part, .part-img {
+		width: 80%!important;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		margin-right: 0em!important;
+		text-align: center;
+	}
+
+	.section-2 #features {
+		display: grid;
+		grid-template-columns: auto auto;
+		/* justify-content: center; */
+	}
+
+	.section-2 #features div {
+		justify-content: center;
+		margin-right: 0em;
+		margin-left: 2em;
+	}
+
+	.section-2 #features div p {
+		margin-top: 0.5em;
+		margin-bottom: 0.5em;
+	}
+
+	.section-4 #Text p {
+		font-size: 1.8em;
+	}
+
+	.section-4 #Freemium button {
+		padding-left: 2.5em;
+		padding-right: 2.5em;
+	}
+
+	.section-5 {
+		flex-direction: column;
+		justify-content: space-between;
+		text-align: center;
+		margin-bottom: 5em;
+	}
+
+	.section-5 #ContactUs {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		margin-top: 3em;
+	}
+	
+	.section-5 img {
+		width: 280px;
+		min-width: 280px;
+	}
+
+	#GenesisHome {
+		width: 50%;
+		min-width: 300px;
+		margin-top: 5em;
+		margin-left: 0em;
+		margin-right: 0em;
+
+	}
+
+	#BibleInterface {
+		width: 50%;
+		min-width: 300px;
+		margin-top: 5em;
+		margin-left: 0em;
+		margin-right: 0em;
+
+	}
+
+	#ArtGallery {
+		width: 70%;
+		min-width: 350px;
+		margin-top: 5em;
+		margin-left: 0em;
+	}
+
+	.title u {
+		text-decoration: 2px black underline; 
+	}
+
+	.plot u {
+		text-decoration: 1.5px black underline; 
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.content {
+		margin-right: 2em;
+		margin-left: 2em;
+	}
+
+	.section-2 .title {
+		text-align: center;
+	}
+
+	.section-2 #features div p {
+		font-size: 1.25em;
+	}
+
+	.section-2 #features img {
+		width: 25px;
+	}
+
+	.section-4 {
+		margin-top: 10em;
+	}
+
+	.section-4 #Text p {
+		font-size: 1.5em;
+	}
+
+	.section-4 #Freemium button {
+		border: 2px solid white;
+		font-size: 1.5em;
+		/* padding-left: 2.5em;
+		padding-right: 2.5em; */
+	}
+
+	.section-5 {
+		justify-content: space-between;
+		margin-bottom: 7em;
+	}
+
+	.section-5 #ContactUs button {
+		font-size: 1.5em;
+	}
+
+	.section-4 #Memo {
+		text-align: center;
+	}
+
+	.section-5 #ContactUs {
+		margin-top: 5em;
+	}
+
+	.section-5 img {
+		width: 200px;
+		min-width: 200px;
+	}
+
+	.section-5 #ContactUs p {
+		font-size: 3em;
+	}
+
+	#GenesisHome {
+		min-width: 230px;
+		margin-top: 5em;
+	}
+
+	#BibleInterface {
+		min-width: 230px;
+		margin-top: 5em;
+
+	}
+
+	#ArtGallery {
+		min-width: 300px;
+		margin-top: 5em;
+	}
+
+	.part {
+		margin-top: 0em;
+	}
+
+	.section-2, .section-3 {
+		margin-top: 8em;
+	}
+}
+
+@media screen and (max-width: 500px) {
+	.section-1 .part, .part-img, .section-2 .part, .part-img, .section-3 .part, .part-img {
+		width: 100%!important;
+	}
+
+	#googlePlay {
+		width: 20px!important;
+	}
+	#apple {
+		width: 22px!important;
+	}
+
+	.download-links div {
+		padding: 0.5em 1em 0.5em 1em;
+	}
+
+	.download-links a:last-child {
+		margin-left: 1em;
+	}
+
+	.section-1 .plot, .section-3 .plot {
+		text-align: center;
+	}
+}

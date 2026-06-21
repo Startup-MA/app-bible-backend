@@ -1,0 +1,312 @@
+.billing-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3em;
+    margin-left: 10em;
+    margin-right: 10em;
+}
+
+.billing-section {
+    width: 100%;
+    margin-top: 3em;
+}
+
+.billing-plan {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6em;
+}
+
+.billing-section h1 {
+    font-weight: 400;
+    margin-top: 0;
+}
+
+.plan-info {
+    width: 100%;
+}
+
+.plan-info div div {
+    display: flex;
+    font-size: 1.25em;
+    margin-top: 1.5em;
+    align-items: center;
+    justify-content: start;
+}
+
+.plan-info div p:first-child {
+    margin-right: 1em;
+}
+
+.plan-info p {
+    margin-top: 0em;
+    margin-bottom: 0;
+}
+
+.plan-info svg {
+    margin-left: 0.5em;
+}
+
+.scheduled-change {
+    width: 100%;
+    color: #868686;
+    text-align: center;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    margin-top: 3em;
+    margin-bottom: -3em;
+    padding: 0.2em;
+    padding-right: 1em;
+    padding-left: 1em;
+}
+
+.scheduled-change p {
+    margin: 0;
+}
+
+.scheduled-change a {
+    text-decoration: none;
+    color: #E04343;
+}
+
+.billing-warning {
+    width: 80%;
+    text-align: left;
+    margin-top: 1.5em;
+}
+
+.billing-warning p {
+    font-size: 1.25em;
+    color: #868686;
+}
+
+.control-button button {
+    background-color: transparent;
+    padding: 1em;
+    color: #868686;
+    border: 1px solid #868686;
+    border-radius: 10px;
+    font-family: 'Inria Serif', serif;
+    font-size: 1em;
+    width: max-content;
+}
+
+.control-button button:active {
+    background-color: #f4f4f4;
+}
+
+.totals .totals-container {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+
+.totals img {
+    width: 15px;
+    margin-left: 0.5em;
+}
+
+#Info:hover + .totals-memo {
+    display: flex!important;
+    flex-direction: column;
+}
+
+.totals-memo {
+    position: absolute;
+    overflow: visible;
+    margin-bottom: 6em;
+    display: none!important;
+    color: white;
+    background-color: black;
+    border-radius: 10px;
+    padding: 0.5em;
+}
+
+.totals-memo[i="0"], .totals-memo[i="1"] {
+    margin-bottom: 0;
+    margin-left: 6em;
+}
+
+.totals-memo p {
+    width: 100%;
+    font-size: 0.8em;
+    margin: 0.1em;
+}
+
+.payment {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.payment div:has(div[class="no-data"]) {
+    width: 100%;
+}
+
+.no-data {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.no-data img {
+    width: 20px;
+    margin-right: 0.5em;
+}
+
+.payment .card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.payment .card p {
+    font-size: 1.25em;
+}
+
+#Other-method {
+    font-size: 1.25em;
+    margin-top: 1.5em;
+}
+
+#Card {
+    width: 30px;
+    margin-right: 1em;
+}
+
+#Dots {
+    width: 35px;
+    margin-right: 0.3em;
+    margin-left: 0.3em;
+}
+
+.transactions table {
+    width: 100%;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.transactions-list {
+    padding-top: 1.5em;
+    padding-bottom: 1.5em;
+    position: relative;
+    margin-top: 2em;
+    max-height: 300px;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+.transactions table thead th {
+    font-size: 1.25em;
+}
+
+.transactions table tbody td {
+    font-size: 1.25em;
+    font-weight: normal;
+}
+
+.transactions table th, table td {
+    padding-right: 5em;
+    padding-bottom: 1em;
+}
+
+.cancellation {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.cancellation p {
+    font-size: 1.25em;
+    margin-top: 2em;
+}
+
+.cancellation .control-button button {
+    background-color: #E04343;
+    border: transparent;
+    color: white;
+}
+
+.cancellation .control-button button:active {
+    background-color: #868686;
+}
+
+@media screen and (max-width: 1050px) {
+    .billing-content {
+        margin-right: 5em;
+        margin-left: 5em;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .plan-info p {
+        font-size: 1em;
+    }
+
+    .billing-plan {
+        flex-direction: column;
+    }
+    
+    .billing-plan .control-button button {
+        width: 100%;
+    }
+    
+    .billing-plan .control-button {
+        margin-top: 1.5em;
+    }
+
+    .billing-warning {
+        width: 100%;
+    }
+
+    .billing-warning p{
+        font-size: 16px;
+    }
+
+    .control-button button {
+        padding: 0.8em;
+    }
+
+    .payment {
+        flex-direction: column;
+    }
+
+    .payment .card {
+        justify-content: start;
+    }
+
+    .payment .card p {
+        font-size: 1.25em;
+    }
+
+    #Other-method {
+        font-size: 1.25em;
+        margin-top: 1.5em;
+    }
+
+    .cancellation {
+        flex-direction: column;
+    }
+
+    .payment .control-button button {
+        width: 100%;
+    }
+
+    .cancellation .control-button button {
+        width: 100%;
+    }
+
+    .control-button {
+        margin-top: 1.5em;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .billing-content {
+        margin-right: 2em;
+        margin-left: 2em;
+    }
+}

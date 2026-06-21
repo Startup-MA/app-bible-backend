@@ -1,0 +1,46 @@
+paths:
+  /api/auth/logout:
+    get:
+      tags:
+        - Auth
+      summary: Logouts the user and destroyes his session (Requires authentication - "Cookie" headers field to be filled with active session).
+      responses:
+        200:
+          description: User was successfully verified -> logged out -> his session was destroyed (mobile or browser).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: User successfully logged out
+        401:
+          description: Authentication error (Session has expired or there is no such session).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Access forbidden
+        500:
+          description: If internal server error occurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: Internal Server Error

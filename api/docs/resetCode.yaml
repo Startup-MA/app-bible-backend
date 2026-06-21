@@ -1,0 +1,91 @@
+paths:
+  /api/auth/resetCode:
+    post:
+      tags:
+        - Auth
+      summary: Resets and resends verification code for a given user.
+      requestBody:
+        description: Provide user's email and password for which you want to reset the verification code for verification process. 
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: some.test.email@example.com
+                password:
+                  type: string
+                  example: SoMe1ntense@ssword
+              required:
+                - email
+                - password
+      responses:
+        200:
+          description: User verification was successful and a new verification code was sent to him.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Verification code sent
+        400:
+          description: Validation for the given input did not passed (Unprocessible format of the entity).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Validation error
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                          description: Body field that did not passed the validation process.
+                          example: email
+                        message:
+                          type: string
+                          example: Please provide a valid email address
+        409:
+          description: Client tries to reset verification code using invalid email or password.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    enum:
+                      - No user with such email
+                      - Invalid password
+                    example: No user with such email
+        500:
+          description: If internal server error occurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: Internal Server Error

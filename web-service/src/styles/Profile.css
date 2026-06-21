@@ -1,0 +1,296 @@
+.profile-content, .request-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3em;
+}
+
+.profile-content input:focus, .profile-content select:focus  {
+    outline: none;
+    border-color: #0056b3;
+    box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.2);
+}
+
+.profile-content {
+    margin-left: 10em;
+    margin-right: 10em;
+}
+
+.request-content {
+    margin-left: 4em;
+    margin-right: 4em;
+    height: 60vh;
+}
+
+.request h1 {
+    font-weight: 400;
+}
+
+.request {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.request button {
+    all: unset;
+    font-size: 1em;
+    font-family: 'Inria Serif', serif;
+    min-width: 150px;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    text-align: center;
+    background-color: white;
+    border: 1px solid #b8b8b8;
+    border-radius: 10px;
+}
+
+.request button:active {
+    background-color: black;
+    border-color: transparent;
+    color: white;
+    transition: 0.15s;
+}
+
+.panel {
+    display: flex;
+}
+
+.panel div:first-child {
+    margin-right: 2rem;
+}
+
+.panel a {
+    all: unset;
+    cursor: pointer;
+    color: #868686;
+    font-size: 1.25em;
+}
+
+.panel a:active {
+    color: black;
+}
+
+.info {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6em;
+}
+
+.personal-info {
+    display: flex;
+    align-items: start;
+}
+
+.personal-info p {
+    margin-top: 0;
+    font-size: 1em!important;
+    margin-left: 1em!important;
+}
+
+.personal {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: space-between;
+}
+
+.personal h1 {
+    font-weight: 400;
+    margin-bottom: 1em;
+    margin-top: 0;
+}
+
+.personal p {
+    color: #868686;
+    font-size: 1.5em;
+    max-width: 350px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.profile-validation-error-message {
+    color: #E04343!important;
+    font-size: 1em!important;
+    margin-top: 0!important;
+}
+
+.logout button {
+    all: unset;
+    font-size: 1.25em;
+    color: #868686;
+    background-color: transparent;
+    border: 1px solid #868686;
+    border-radius: 10px;
+    padding: 1em 3.5em 1em 3.5em;
+    box-sizing: border-box;
+}
+
+.logout button:active {
+    background-color: #F4F4F4;
+    transition: 0s;
+}
+
+.form-container {
+    max-width: 500px;
+    margin-top: 3.5em;
+}
+
+.form-container h1 {
+    font-weight: 400;
+}
+
+.form-container input {
+    all: unset;
+    width: 48%;
+    background-color: #F4F4F4;
+    border: 1px solid #b8b8b8;
+    border-radius: 10px;
+    height: 45px;
+    margin-top: 1rem;
+    padding-left: 1rem;
+    box-sizing: border-box;
+}
+
+.form-container select {
+    width: 31%;
+    background-color: #F4F4F4;
+    border: 1px solid #b8b8b8;
+    border-radius: 10px;
+    height: 45px;
+    margin-top: 1rem;
+    padding-left: 1rem;
+    font-family: 'Inria Serif', serif;
+    font-size: 1rem;
+}
+
+.form div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.edit-buttons {
+    margin-top: 1rem;
+}
+
+.edit-buttons button {
+    all: unset;
+    font-size: 1em;
+    font-family: 'Inria Serif', serif;
+    padding: 0.8rem;
+    text-align: center;
+    min-width: 50px;
+    margin-right: 1rem;
+}
+
+.edit-buttons button:first-child {
+    background-color: white;
+    border: 1px solid #b8b8b8;
+    border-radius: 10px;
+}
+
+.edit-buttons button:last-child {
+    color: white;
+    background-color: black;
+    border-radius: 10px;
+}
+
+.edit-buttons button:last-child:active {
+    background-color: #ffffff;
+    color: black;
+}
+
+.edit-buttons button:first-child:active {
+    background-color: black;
+    border-color: transparent;
+    color: white;
+}
+
+@media screen and (max-width: 1050px) {
+    .logout button {
+        font-size: 1em;
+        padding: 1em 1em 1em 1em;
+        /* margin-left: -5em; */
+    }
+
+    .profile-content {
+        margin-left: 5em;
+        margin-right: 5em;
+    }
+
+    .personal {
+        width: 100%;
+    }
+
+    .form-container {
+        width: 100%;
+    }
+
+    .form {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .info {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .personal h1 {
+        font-size: 1.5em;
+    }
+
+    .personal p {
+        color: #868686;
+        font-size: 1.25em;
+        max-width: 300px;
+    }
+
+    .panel a {
+        font-size: 1em;
+    }
+    
+    .form-container select {
+        width: 48%;
+    }
+
+    .form-container select:last-child {
+        width: 100%;
+    }
+
+    .logout {
+        width: 100%;
+        margin-top: 5em;
+    }
+
+    .logout button {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+
+@media screen and (max-width: 500px) {
+    .request-content {
+        margin-top: 2em;
+        margin-left: 2em;
+        margin-right: 2em;
+    }
+
+    .request-content h1 {
+        font-size: 1.8em;
+    }
+
+    .profile-content {
+        margin-left: 2em;
+        margin-right: 2em;
+    }
+}

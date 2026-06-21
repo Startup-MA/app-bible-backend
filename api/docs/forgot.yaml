@@ -1,0 +1,84 @@
+paths:
+  /api/pass/forgot:
+    post:
+      tags:
+        - Password
+      summary: Verifies a user and if successful sends a verification password link.
+      requestBody:
+        description: Existing user email. 
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: some.test.email@example.com
+              required:
+                - email
+      responses:
+        200:
+          description: Verification was successful and reset password email was sent.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Reset link will be sent to some.email@example.com. And will be active for 30 minutes!
+        400:
+          description: Validation for the given input did not passed (Unprocessible format of the entity).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Validation error
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                          description: Body field that did not passed the validation process.
+                          example: email
+                        message:
+                          type: string
+                          example: Please provide a valid email address
+        409:
+          description: Client tries to reset password using invalid email.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: There is no user with such email some.email@example.com
+        500:
+          description: If internal server error occurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: Internal Server Error

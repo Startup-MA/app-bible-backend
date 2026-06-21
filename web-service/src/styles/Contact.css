@@ -1,0 +1,236 @@
+.contact-content {
+    margin-top: 2em;
+    margin-left: 6em;
+    margin-right: 6em;
+}
+
+.contact-content input:focus, .contact-content select:focus, .contact-content textarea:focus {
+    outline: none;
+    border-color: #0056b3;
+    box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.2);
+}
+
+.support p:first-child, .contact p:first-child {
+    font-size: 2em;
+}
+
+.support p:last-child {
+    font-size: 1.5em;
+    color: #868686;
+}
+
+.support div {
+    width: 30%;
+    min-width: 350px;
+}
+
+.support a:active {
+    color: #868686;
+}
+
+.support a {
+    color: black;
+    text-decoration: none;
+    text-decoration-line: underline;
+}
+
+.support, .contact {
+    display: flex;
+    justify-content: space-between;
+}
+
+.contact-section p:not(:first-child) {
+    color: #868686;
+}
+
+.contact-section {
+    width: 30%;
+    min-width: 350px;
+
+}
+
+.contact img {
+    width: 55%;
+    margin-right: 1.5rem;
+}
+
+.socials {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+.contact-form div input {
+    all: unset;
+    width: 100%;
+    background-color: #F4F4F4;
+    border: 1px solid #b8b8b8;
+    border-radius: 10px;
+    height: 45px;
+    margin-top: 1.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    box-sizing: border-box;
+}
+
+.contact-form div select {
+    width: 100%;
+    background-color: #F4F4F4;
+    border: 1px solid #b8b8b8;
+    border-radius: 10px;
+    height: 45px;
+    margin-top: 1.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-family: 'Inria Serif', serif;
+    font-size: 1rem;
+}
+
+select:invalid {
+    color: #868686;
+}
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    background-image: url("../assets/SelectArrow.svg");
+    background-repeat: no-repeat;
+    background-size: 12px auto;
+    background-position: right 15px center; 
+    padding-right: 40px;
+}
+
+textarea {
+    width: 100%;
+    max-width: 100%;
+    min-height: 150px; 
+    box-sizing: border-box;
+    font-family: inherit; 
+    font-size: 16px;
+    background-color: #F4F4F4;
+    border: 1px solid #b8b8b8;
+    border-radius: 10px;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    resize: none;
+}
+
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+
+.buttons button {
+    font-size: 1em;
+    font-family: 'Inria Serif', serif;
+    width: 45%;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    text-align: center;
+    border: 1px solid transparent;
+}
+
+.buttons button:first-child {
+    background-color: white;
+    border: 1px solid #b8b8b8;
+    border-radius: 10px;
+}
+
+.buttons button:last-child {
+    color: white;
+    background-color: black;
+    border-radius: 10px;
+}
+
+.buttons button:last-child:active {
+    background-color: #ffffff;
+    color: black;
+    border-color: black;
+}
+
+.buttons button:first-child:active {
+    background-color: #F4F4F4;
+    color: black;
+}
+
+.ticket-validation-error {
+    text-align: center!important;
+    color: #E04343!important;
+    margin-top: 2em;
+}
+
+.create-ticket-success {
+    text-align: center!important;
+    color: #3ada0e!important;
+    margin-top: 2em;
+}
+
+@media screen and (max-width: 1050px) {
+    .support, .contact {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .contact-content {
+        margin-left: 6em;
+        margin-right: 6em;
+    }
+
+    .support div {
+        min-width: 500px;
+        margin-top: 1em;
+    }
+
+    .contact-section {
+        margin-top: 1em;
+        min-width: 500px;
+    }
+
+    .contact .contact-section:last-child {
+        margin-top: 2em;
+    }
+
+}
+
+@media screen and (max-width: 600px) {
+    .support, .contact {
+        align-items: start;
+    }
+
+    .contact-content {
+        margin-left: 2em;
+        margin-right: 2em;
+    }
+
+    .support div {
+        min-width: fit-content;
+    }
+
+    .contact-section {
+        min-width: fit-content;
+    }
+
+    .support p:first-child, .contact p:first-child {
+        font-size: 1.75em;
+    }
+
+    .support p:last-child {
+        font-size: 1.5em;
+    }
+
+    .contact img {
+        width: 50%;
+        margin-right: 1.5rem;
+    }
+}

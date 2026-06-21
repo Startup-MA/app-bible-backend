@@ -1,0 +1,93 @@
+paths:
+  /api/pass/reset/{uuid}:
+    post:
+      tags:
+        - Password
+      summary: Checks if the UUID is valid and resets password to a new one.
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            example: 765aa62c-6ab2-4817-9317-eb882323cb91
+          required: true
+          description: UUID code for authority verification
+      requestBody:
+        description: Existing user email. 
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                new_password:
+                  type: string
+                  example: SoMe1ntense@ssword
+              required:
+                - email
+      responses:
+        200:
+          description: Verification was successful and password was reset.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: New password setted successfully
+        400:
+          description: Validation for the given input did not passed (Unprocessible format of the entity).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Validation error
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                          description: Body field that did not passed the validation process.
+                          example: new_password
+                        message:
+                          type: string
+                          example: Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character
+        409:
+          description: Reset password UUID has expired or is broken.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Reset link has expired or is broken
+        500:
+          description: If internal server error occurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: Internal Server Error

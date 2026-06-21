@@ -1,0 +1,42 @@
+#ErrorPopUp {
+    display: flex;
+    justify-content: end;
+}
+
+#Content {
+    position: fixed;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 1em;
+    margin-left: 1em;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    padding-right: 2em;
+    padding-left: 2em;
+    background-color: palevioletred;
+    border: 1px solid rgb(131, 11, 51);
+    color: #830b33;
+    border-radius: 10px;
+    z-index: 1000;
+}
+
+#Message {
+    margin-right: 2em;
+}
+
+#Message h3 {
+    margin: 0em;
+    
+}
+
+#ErrorClose {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#ErrorClose img {
+    width: 15px;
+}

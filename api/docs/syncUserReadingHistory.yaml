@@ -1,0 +1,173 @@
+paths:
+  /api/user/syncUserReadingHistory:
+    post:
+      tags:
+        - User (Requires "Mobile" authentication)
+      summary: Accepts user_reading_history_json data objects for sync ONLY ONE PER USER (Requires authentication - "Cookie" headers field to be filled with active mobile session).
+      requestBody:
+        description: Body object for sync. Available bible book names   ->      Genesis | Exodus | Leviticus | Numbers | Deuteronomy | Joshua | Judges | Ruth | 1 Samuel | 2 Samuel | 1 Kings | 2 Kings | 1 Chronicles | 2 Chronicles | Ezra | Nehemiah | Esther | Job | Psalms | Proverbs | Ecclesiastes | Song of Solomon | Isaiah | Jeremiah | Lamentations | Ezekiel | Daniel | Hosea | Joel | Amos | Obadiah | Jonah | Micah | Nahum | Habakkuk | Zephaniah | Haggai | Zechariah | Malachi | Matthew | Mark | Luke | John | Acts | Romans | 1 Corinthians | 2 Corinthians | Galatians | Ephesians | Philippians | Colossians | 1 Thessalonians | 2 Thessalonians | 1 Timothy | 2 Timothy | Titus | Philemon | Hebrews | James | 1 Peter | 2 Peter | 1 John | 2 John | 3 John | Jude | Revelation
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                created:
+                  type: object
+                  properties: 
+                    user_reading_history_json:
+                      type: object
+                      description: All books reading history (KJV, NIV, .... )
+                      properties:
+                        KJV: 
+                          type: object
+                          description: Book name (Genesis, Exodus, ....)
+                          properties:
+                            Genesis:
+                              type: object
+                              description: Chpater
+                              properties:
+                                "1":
+                                  type: string
+                                  description: Verse
+                                  example: 1
+                        NIV:
+                          type: object
+                          description: Book name (Genesis, Exodus, ....)
+                          properties:
+                            Exodus:
+                              type: object
+                              description: Chapter
+                              properties:
+                                "1":
+                                  type: string
+                                  description: Verse
+                                  example: 1
+                    uuid:
+                      type: string
+                      format: uuid
+                      description: UUID of a user_reading_history_json object
+                      example: 89392837-edf0-4683-ab2b-87861220a366
+                  required:
+                    - user_reading_history_json
+                    - uuid
+                updated:
+                  type: object
+                  properties: 
+                    new_user_reading_history_json:
+                      type: object
+                      description: Update in reading history (KJV, NIV, .... )
+                      properties:
+                        KJV: 
+                          type: object
+                          description: Book name (Genesis, Exodus, ....)
+                          properties:
+                            Genesis:
+                              type: object
+                              description: Chapter
+                              properties:
+                                "12":
+                                  type: string
+                                  description: Verse
+                                  example: 30
+                        NIV:
+                          type: object
+                          description: Book name (Genesis, Exodus, ....)
+                          properties:
+                            Exodus:
+                              type: object
+                              description: Chapter
+                              properties:
+                                "14":
+                                  type: string
+                                  description: Verse
+                                  example: 12
+                    uuid:
+                      type: string
+                      format: uuid
+                      description: UUID of a user_reading_history_json object
+                      example: 89392837-edf0-4683-ab2b-87861220a366
+                    updated_at:
+                      type: string
+                      format: date-time
+                      example: "2026-04-24T00:30:00+00:00"
+                  required:
+                    - new_user_reading_history_json
+                    - uuid
+                    - updated_at
+      responses:
+        200:
+          description: User data was successfully validated and passed to the queue for sync.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: User reading history accepted for sync
+        400:
+          description: Validation for the given input did not passed (Unprocessible format of the entity).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Validation error
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                          description: Body field that did not passed the validation process.
+                        message:
+                          type: string
+        401:
+          description: Authentication error (Session has expired or there is no such session).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Access forbidden
+        406:
+          description: When trying to create more than one user reading history objects
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Only one reading history object for the user is allowed!
+        500:
+          description: If internal server error occurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: Internal Server Error

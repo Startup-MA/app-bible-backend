@@ -1,0 +1,84 @@
+.ticket-subject-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1em;
+}
+
+.ticket-subject-container div {
+    display: flex;
+    align-items: center;
+}
+
+.ticket-subject-container h1 {
+    margin-left: 1.5em;
+    font-weight: 400;
+}
+
+.ticket-subject-container img {
+    width: 20px;
+}
+
+.ticket-content-container {
+    width: 100%;
+    margin-top: 2em;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+.ticket-content-container table {
+    text-align: left;
+    color: #868686;
+    width: 1000px;
+}
+
+.ticket-content-container table thead th {
+    padding-bottom: 1em;
+    font-size: 1.5em;
+    font-weight: 400;
+}
+
+.ticket-content-container table tbody td {
+    font-size: 1.2em;
+}
+
+.ticket-table-id, .ticket-table-email, .ticket-table-timestamp {
+    color: black;
+}
+
+.ticket-message-container {
+    width: 100%;
+}
+
+.ticket-message-container div {
+    width: 50%;
+}
+
+.ticket-message-container div h1 {
+    font-weight: 400;
+}
+
+.ticket-message-container div p {
+    font-size: 1.2em;
+    text-align: justify;
+}
+
+@media screen and (max-width: 1050px) {
+    .ticket-message-container div {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .ticket-subject-container {
+        flex-direction: column;
+        align-items: start;
+    }
+
+    .ticket-subject-container button {
+        width: 100%;
+        margin-top: 1em;
+        margin-bottom: 1em;
+    }
+}
