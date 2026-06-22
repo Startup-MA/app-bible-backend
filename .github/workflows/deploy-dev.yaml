@@ -207,6 +207,6 @@ jobs:
             IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}
             EOF
 
-            docker-compose pull
+            echo ${secrets.DOCKERHUB_TOKEN} | docker login -u ${DOCKERHUB_USER} --password-stdin && docker-compose pull
             docker-compose up -d
             docker image prune -a -f
