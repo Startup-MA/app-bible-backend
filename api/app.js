@@ -11,7 +11,7 @@ import sysRouter from "./routes/sysRouter.js"
 import webhooksRouter from "./routes/webhooksRouter.js"
 import customerRouter from "./routes/customerRouter.js"
 
- import { errorHandler } from "./middleware/errorHandler.js"
+import { errorHandler } from "./middleware/errorHandler.js"
 import { morganMiddleware } from "./middleware/morgan.js"
 
 import { swaggerSpec } from "./utils/swaggerSpec.js"
