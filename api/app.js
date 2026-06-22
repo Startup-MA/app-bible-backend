@@ -35,9 +35,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 app.use(session)
-// app.use("/api/user", authenticate.session, authenticate.userMobile)
-// app.use("/api/customer", authenticate.session)
-// app.use(/api)
+
 app.use("/api/auth", authRouter)
 app.use("/api/pass", passRouter)
 app.use("/api/user", userRouter)

@@ -208,6 +208,6 @@ jobs:
             IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}
             EOF
 
-            docker-compose pull -q
+            docker-compose pull
             docker-compose up -d
             docker image prune -a -f
