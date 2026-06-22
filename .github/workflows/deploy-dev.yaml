@@ -93,6 +93,8 @@ jobs:
           key: ${{ secrets.DO_SSH_KEY_DEV }}
           source: "docker-compose.yaml"
           target: "/root/app-bible-backend"
+          timeout: 120s
+          command_timeout: 120s
 
       - name: Deploy to DigitalOcean via SSH
         uses: appleboy/ssh-action@v1.0.3
