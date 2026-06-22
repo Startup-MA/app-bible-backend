@@ -113,7 +113,6 @@ jobs:
             API_PORT=${{ secrets.API_PORT }}
             FRONTEND_PORT=${{ secrets.FRONTEND_PORT }}
             DATABASE=${{ secrets.DATABASE }}
-            HOST=${{ secrets.HOST }}
             PASSWORD=${{ secrets.PASSWORD }}
             USER=${{ secrets.USER }}
             EOF
@@ -210,4 +209,4 @@ jobs:
 
             docker-compose pull
             docker-compose up -d
-            docker image prune -f
+            docker image prune -a -f
