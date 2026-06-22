@@ -74,12 +74,12 @@ services:
              redis-cli -h email-queue XADD queue:deadEmails * first value;'
   pg-db:
     image: postgres
-    container_name: pg-db
+    container_name: ${HOST}
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: QLWUpK7HnJBtv2X4LLkelARWMun6G85jP4rGkwJMnKIcUk2zOPadSdhTS2wHzCX3
-      POSTGRES_DB: postgres
+      POSTGRES_USER: ${USER}
+      POSTGRES_PASSWORD: ${PASSWORD}
+      POSTGRES_DB: ${DATABASE}
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
 

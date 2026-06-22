@@ -107,93 +107,107 @@ jobs:
             
             # DOCKER-COMPOSE envs
 
-            echo "IMAGE_TAG=${{ steps.vars.outputs.sha_short }}" > .env
-            echo "DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}" > .env
-            echo "API_PORT=${{ secrets.API_PORT }}" > .env
-            echo "FRONTEND_PORT=${{ secrets.FRONTEND_PORT }}" > .env
-            
-            # API envs
+            cat << 'EOF' > .env
+            IMAGE_TAG=${{ steps.vars.outputs.sha_short }}
+            DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
+            API_PORT=${{ secrets.API_PORT }}
+            FRONTEND_PORT=${{ secrets.FRONTEND_PORT }}
+            DATABASE=${{ secrets.DATABASE }}
+            HOST=${{ secrets.HOST }}
+            PASSWORD=${{ secrets.PASSWORD }}
+            USER=${{ secrets.USER }}
+            EOF
 
-            echo "NODE_ENV=${{ secrets.NODE_ENV_DEV }}" > .env.api
-            echo "DATABASE=${{ secrets.DATABASE }}" > .env.api
-            echo "HOST=${{ secrets.HOST }}" > .env.api
-            echo "PASSWORD=${{ secrets.PASSWORD }}" > .env.api
-            echo "PORT=${{ secrets.PORT }}" > .env.api
-            echo "USER=${{ secrets.USER }}" > .env.api
-            echo "MAX=${{ secrets.MAX }}" > .env.api
-            echo "CONNECTION_TIMEOUT_MILLIS=${{ secrets.CONNECTION_TIMEOUT_MILLIS }}" > .env.api
-            echo "IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}" > .env.api
-            echo "APP_PORT=${{ secrets.API_PORT }}" > .env.api
-            echo "REDIS_ROME_URL=${{ secrets.REDIS_ROME_URL }}" > .env.api
-            echo "REDIS_CACHE_URL=${{ secrets.REDIS_CACHE_URL }}" > .env.api
-            echo "ROME_STREAM_PRIV_NAME=${{ secrets.PRIV_STREAM_NAME }}" > .env.api
-            echo "ROME_STREAM_REGULAR_NAME=${{ secrets.REGULAR_STREAM_NAME }}" > .env.api
-            echo "REDIS_SESSION_SECRET=${{ secrets.REDIS_SESSION_SECRET }}" > .env.api
-            echo "SALT_ROUNDS=${{ secrets.SALT_ROUNDS_DEV }}" > .env.api
-            echo "PADDLE_ALLOW_LIST=${{ secrets.PADDLE_SANDBOX_ALLOW_LIST }}" > .env.api
-            echo "PADDLE_API_KEY=${{ secrets.PADDLE_API_KEY_SANDBOX }}" > .env.api
-            echo "PADDLE_WEBHOOK_SECRET_KEY=${{ secrets.PADDLE_WEBHOOK_SECRET_KEY_SANDBOX }}" > .env.api
-            echo "PADDLE_API_URL=${{ secrets.PADDLE_API_URL_SANDBOX }}" > .env.api
+            # API envs
+            cat << 'EOF' > .env.api
+            NODE_ENV=${{ secrets.NODE_ENV_DEV }}
+            DATABASE=${{ secrets.DATABASE }}
+            HOST=${{ secrets.HOST }}
+            PASSWORD=${{ secrets.PASSWORD }}
+            PORT=${{ secrets.PORT }}
+            USER=${{ secrets.USER }}
+            MAX=${{ secrets.MAX }}
+            CONNECTION_TIMEOUT_MILLIS=${{ secrets.CONNECTION_TIMEOUT_MILLIS }}
+            IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}
+            APP_PORT=${{ secrets.API_PORT }}
+            REDIS_ROME_URL=${{ secrets.REDIS_ROME_URL }}
+            REDIS_CACHE_URL=${{ secrets.REDIS_CACHE_URL }}
+            ROME_STREAM_PRIV_NAME=${{ secrets.PRIV_STREAM_NAME }}
+            ROME_STREAM_REGULAR_NAME=${{ secrets.REGULAR_STREAM_NAME }}
+            REDIS_SESSION_SECRET=${{ secrets.REDIS_SESSION_SECRET }}
+            SALT_ROUNDS=${{ secrets.SALT_ROUNDS_DEV }}
+            PADDLE_ALLOW_LIST=${{ secrets.PADDLE_SANDBOX_ALLOW_LIST }}
+            PADDLE_API_KEY=${{ secrets.PADDLE_API_KEY_SANDBOX }}
+            PADDLE_WEBHOOK_SECRET_KEY=${{ secrets.PADDLE_WEBHOOK_SECRET_KEY_SANDBOX }}
+            PADDLE_API_URL=${{ secrets.PADDLE_API_URL_SANDBOX }}
+            EOF
             
             # EMPEROR-CONSUMER envs
 
-            echo "NODE_ENV=${{ secrets.NODE_ENV_DEV }}" > .env.emperor-consumer
-            echo "REDIS_ROME_URL=${{ secrets.REDIS_ROME_URL }}" > .env.emperor-consumer
-            echo "REDIS_MAILER_URL=${{ secrets.REDIS_MAILER_URL }}" > .env.emperor-consumer
-            echo "STREAM_NAME=${{ secrets.PRIV_STREAM_NAME }}" > .env.emperor-consumer
-            echo "MAILER_STREAM_NAME=${{ secrets.MAILER_STREAM_NAME }}" > .env.emperor-consumer
-            echo "DEAD_MESSAGES_QUEUE_NAME=${{ secrets.DEAD_MESS_PRIV_QUEUE_NAME }}" > .env.emperor-consumer
-            echo "GROUP_NAME=${{ secrets.PRIV_GROUP_NAME }}" > .env.emperor-consumer
-            echo "DELIVERIES_COUNTER_LIMIT=${{ secrets.DELIVERIES_COUNTER_LIMIT }}" > .env.emperor-consumer
-            echo "COUNT=${{ secrets.COUNT }}" > .env.emperor-consumer
-            echo "BLOCK=${{ secrets.BLOCK }}" > .env.emperor-consumer
-            echo "CLAIM=${{ secrets.CLAIM }}" > .env.emperor-consumer
-            echo "SLEEP=${{ secrets.SLEEP }}" > .env.emperor-consumer
-            echo "DATABASE=${{ secrets.DATABASE }}" > .env.emperor-consumer
-            echo "HOST=${{ secrets.HOST }}" > .env.emperor-consumer
-            echo "PASSWORD=${{ secrets.PASSWORD }}" > .env.emperor-consumer
-            echo "PORT=${{ secrets.PORT }}" > .env.emperor-consumer
-            echo "USER=${{ secrets.USER }}" > .env.emperor-consumer
-            echo "MAX=${{ secrets.MAX }}" > .env.emperor-consumer
-            echo "CONNECTION_TIMEOUT_MILLIS=${{ secrets.CONNECTION_TIMEOUT_MILLIS }}" > .env.emperor-consumer
-            echo "IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}" > .env.emperor-consumer
-
+            cat << 'EOF' > .env.emperor-consumer
+            NODE_ENV=${{ secrets.NODE_ENV_DEV }}
+            REDIS_ROME_URL=${{ secrets.REDIS_ROME_URL }}
+            REDIS_MAILER_URL=${{ secrets.REDIS_MAILER_URL }}
+            STREAM_NAME=${{ secrets.PRIV_STREAM_NAME }}
+            MAILER_STREAM_NAME=${{ secrets.MAILER_STREAM_NAME }}
+            DEAD_MESSAGES_QUEUE_NAME=${{ secrets.DEAD_MESS_PRIV_QUEUE_NAME }}
+            GROUP_NAME=${{ secrets.PRIV_GROUP_NAME }}
+            DELIVERIES_COUNTER_LIMIT=${{ secrets.DELIVERIES_COUNTER_LIMIT }}
+            COUNT=${{ secrets.COUNT }}
+            BLOCK=${{ secrets.BLOCK }}
+            CLAIM=${{ secrets.CLAIM }}
+            SLEEP=${{ secrets.SLEEP }}
+            DATABASE=${{ secrets.DATABASE }}
+            HOST=${{ secrets.HOST }}
+            PASSWORD=${{ secrets.PASSWORD }}
+            PORT=${{ secrets.PORT }}
+            USER=${{ secrets.USER }}
+            MAX=${{ secrets.MAX }}
+            CONNECTION_TIMEOUT_MILLIS=${{ secrets.CONNECTION_TIMEOUT_MILLIS }}
+            IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}
+            EOF
+            
             # MAILER envs
 
-            echo "NODE_ENV=${{ secrets.NODE_ENV_DEV }}" > .env.mailer
-            echo "NODE_ENV=${{ secrets.NODE_ENV_DEV }}" > .env.mailer
-            echo "REDIS_MAILER_URL=${{ secrets.REDIS_MAILER_URL }}" > .env.mailer
-            echo "STREAM_NAME=${{ secrets.MAILER_STREAM_NAME }}" > .env.mailer
-            echo "DEAD_MESSAGES_QUEUE_NAME=${{ secrets.DEAD_MESS_EMAIL_QUEUE_NAME }}" > .env.mailer
-            echo "GROUP_NAME=${{ secrets.MAILERS_GROUP_NAME }}" > .env.mailer
-            echo "DELIVERIES_COUNTER_LIMIT=${{ secrets.DELIVERIES_COUNTER_LIMIT }}" > .env.mailer
-            echo "COUNT=${{ secrets.COUNT }}" > .env.mailer
-            echo "BLOCK=${{ secrets.BLOCK }}" > .env.mailer
-            echo "CLAIM=${{ secrets.CLAIM }}" > .env.mailer
-            echo "SLEEP=${{ secrets.SLEEP }}" > .env.mailer
-            echo "RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}" > .env.mailer
-            echo "RESEND_FROM_ADDRESS=${{ secrets.RESEND_FROM_ADDRESS_DEV }}" > .env.mailer
-
-            # SOLDIER-CONSUMER envs
-            echo "NODE_ENV=${{ secrets.NODE_ENV_DEV }}" > .env.soldier-consumer
-            echo "REDIS_ROME_URL=${{ secrets.REDIS_ROME_URL }}" > .env.soldier-consumer
-            echo "STREAM_NAME=${{ secrets.REGULAR_STREAM_NAME }}" > .env.soldier-consumer
-            echo "DEAD_MESSAGES_QUEUE_NAME=${{ secrets.DEAD_MESS_REG_QUEUE_NAME }}" > .env.soldier-consumer
-            echo "GROUP_NAME=${{ secrets.REG_GROUP_NAME }}" > .env.soldier-consumer
-            echo "DELIVERIES_COUNTER_LIMIT=${{ secrets.DELIVERIES_COUNTER_LIMIT }}" > .env.soldier-consumer
-            echo "COUNT=${{ secrets.COUNT }}" > .env.soldier-consumer
-            echo "BLOCK=${{ secrets.BLOCK }}" > .env.soldier-consumer
-            echo "CLAIM=${{ secrets.CLAIM }}" > .env.soldier-consumer
-            echo "SLEEP=${{ secrets.SLEEP }}" > .env.soldier-consumer
-            echo "DATABASE=${{ secrets.DATABASE }}" > .env.soldier-consumer
-            echo "HOST=${{ secrets.HOST }}" > .env.soldier-consumer
-            echo "PASSWORD=${{ secrets.PASSWORD }}" > .env.soldier-consumer
-            echo "PORT=${{ secrets.PORT }}" > .env.soldier-consumer
-            echo "USER=${{ secrets.USER }}" > .env.soldier-consumer
-            echo "MAX=${{ secrets.MAX }}" > .env.soldier-consumer
-            echo "CONNECTION_TIMEOUT_MILLIS=${{ secrets.CONNECTION_TIMEOUT_MILLIS }}" > .env.soldier-consumer
-            echo "IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}" > .env.soldier-consumer
+            cat << 'EOF' > .env.mailer
+            NODE_ENV=${{ secrets.NODE_ENV_DEV }}
+            NODE_ENV=${{ secrets.NODE_ENV_DEV }}
+            REDIS_MAILER_URL=${{ secrets.REDIS_MAILER_URL }}
+            STREAM_NAME=${{ secrets.MAILER_STREAM_NAME }}
+            DEAD_MESSAGES_QUEUE_NAME=${{ secrets.DEAD_MESS_EMAIL_QUEUE_NAME }}
+            GROUP_NAME=${{ secrets.MAILERS_GROUP_NAME }}
+            DELIVERIES_COUNTER_LIMIT=${{ secrets.DELIVERIES_COUNTER_LIMIT }}
+            COUNT=${{ secrets.COUNT }}
+            BLOCK=${{ secrets.BLOCK }}
+            CLAIM=${{ secrets.CLAIM }}
+            SLEEP=${{ secrets.SLEEP }}
+            RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
+            RESEND_FROM_ADDRESS=${{ secrets.RESEND_FROM_ADDRESS_DEV }}
+            EOF
             
+            # SOLDIER-CONSUMER envs
+
+            cat << 'EOF' > .env.soldier-consumer
+            NODE_ENV=${{ secrets.NODE_ENV_DEV }}
+            REDIS_ROME_URL=${{ secrets.REDIS_ROME_URL }}
+            STREAM_NAME=${{ secrets.REGULAR_STREAM_NAME }}
+            DEAD_MESSAGES_QUEUE_NAME=${{ secrets.DEAD_MESS_REG_QUEUE_NAME }}
+            GROUP_NAME=${{ secrets.REG_GROUP_NAME }}
+            DELIVERIES_COUNTER_LIMIT=${{ secrets.DELIVERIES_COUNTER_LIMIT }}
+            COUNT=${{ secrets.COUNT }}
+            BLOCK=${{ secrets.BLOCK }}
+            CLAIM=${{ secrets.CLAIM }}
+            SLEEP=${{ secrets.SLEEP }}
+            DATABASE=${{ secrets.DATABASE }}
+            HOST=${{ secrets.HOST }}
+            PASSWORD=${{ secrets.PASSWORD }}
+            PORT=${{ secrets.PORT }}
+            USER=${{ secrets.USER }}
+            MAX=${{ secrets.MAX }}
+            CONNECTION_TIMEOUT_MILLIS=${{ secrets.CONNECTION_TIMEOUT_MILLIS }}
+            IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}
+            EOF
+
             docker-compose pull
             docker-compose up -d
             docker image prune -a -f
