@@ -91,7 +91,7 @@ jobs:
           host: ${{ secrets.DROPLET_IP_DEV }}
           username: root
           key: ${{ secrets.DO_SSH_KEY_DEV }}
-          source: "docker-compose.yaml"
+          source: "docker-compose.yaml, db"
           target: "/root/app-bible-backend"
           timeout: 120s
           command_timeout: 120s
