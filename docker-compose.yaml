@@ -74,7 +74,7 @@ services:
              redis-cli -h email-queue XADD queue:deadEmails * first value;'
   pg-db:
     image: postgres
-    container_name: pd-db
+    container_name: pg-db
     restart: always
     environment:
       POSTGRES_USER: ${USER}
