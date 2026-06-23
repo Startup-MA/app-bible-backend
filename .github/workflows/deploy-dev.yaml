@@ -112,20 +112,20 @@ jobs:
             DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
             API_PORT=${{ secrets.API_PORT }}
             FRONTEND_PORT=${{ secrets.FRONTEND_PORT }}
-            DATABASE=${{ secrets.DATABASE }}
-            PASSWORD=${{ secrets.PASSWORD }}
-            USER=${{ secrets.USER }}
+            PG_DATABASE=${{ secrets.PG_DATABASE }}
+            PG_PASSWORD=${{ secrets.PG_PASSWORD }}
+            PG_USER=${{ secrets.PG_USER }}
             EOF
 
             # API envs
             cat << 'EOF' > .env.api
             NODE_ENV=${{ secrets.NODE_ENV_DEV }}
             FRONT_URL=${{ secrets.FRONTEND_URL_DEV}}
-            DATABASE=${{ secrets.DATABASE }}
-            HOST=${{ secrets.HOST }}
-            PASSWORD=${{ secrets.PASSWORD }}
-            PORT=${{ secrets.PORT }}
-            USER=${{ secrets.USER }}
+            PG_DATABASE=${{ secrets.PG_DATABASE }}
+            PG_HOST=${{ secrets.PG_HOST }}
+            PG_PASSWORD=${{ secrets.PG_PASSWORD }}
+            PG_PORT=${{ secrets.PG_PORT }}
+            PG_USER=${{ secrets.PG_USER }}
             MAX=${{ secrets.MAX }}
             CONNECTION_TIMEOUT_MILLIS=${{ secrets.CONNECTION_TIMEOUT_MILLIS }}
             IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}
@@ -157,11 +157,11 @@ jobs:
             BLOCK=${{ secrets.BLOCK }}
             CLAIM=${{ secrets.CLAIM }}
             SLEEP=${{ secrets.SLEEP }}
-            DATABASE=${{ secrets.DATABASE }}
-            HOST=${{ secrets.HOST }}
-            PASSWORD=${{ secrets.PASSWORD }}
-            PORT=${{ secrets.PORT }}
-            USER=${{ secrets.USER }}
+            PG_DATABASE=${{ secrets.PG_DATABASE }}
+            PG_HOST=${{ secrets.PG_HOST }}
+            PG_PASSWORD=${{ secrets.PG_PASSWORD }}
+            PG_PORT=${{ secrets.PG_PORT }}
+            PG_USER=${{ secrets.PG_USER }}
             MAX=${{ secrets.MAX }}
             CONNECTION_TIMEOUT_MILLIS=${{ secrets.CONNECTION_TIMEOUT_MILLIS }}
             IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}
@@ -170,7 +170,6 @@ jobs:
             # MAILER envs
 
             cat << 'EOF' > .env.mailer
-            NODE_ENV=${{ secrets.NODE_ENV_DEV }}
             NODE_ENV=${{ secrets.NODE_ENV_DEV }}
             REDIS_MAILER_URL=${{ secrets.REDIS_MAILER_URL }}
             STREAM_NAME=${{ secrets.MAILER_STREAM_NAME }}
@@ -198,11 +197,11 @@ jobs:
             BLOCK=${{ secrets.BLOCK }}
             CLAIM=${{ secrets.CLAIM }}
             SLEEP=${{ secrets.SLEEP }}
-            DATABASE=${{ secrets.DATABASE }}
-            HOST=${{ secrets.HOST }}
-            PASSWORD=${{ secrets.PASSWORD }}
-            PORT=${{ secrets.PORT }}
-            USER=${{ secrets.USER }}
+            PG_DATABASE=${{ secrets.PG_DATABASE }}
+            PG_HOST=${{ secrets.PG_HOST }}
+            PG_PASSWORD=${{ secrets.PG_PASSWORD }}
+            PG_PORT=${{ secrets.PG_PORT }}
+            PG_USER=${{ secrets.PG_USER }}
             MAX=${{ secrets.MAX }}
             CONNECTION_TIMEOUT_MILLIS=${{ secrets.CONNECTION_TIMEOUT_MILLIS }}
             IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}
