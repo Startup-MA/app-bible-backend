@@ -1,3 +1,4 @@
+import os from "os"
 import redisClient from "../connections/redis.js"
 import dotenv from "dotenv"
 import handleMessge from "../messageHandler/handleMessage.js"
