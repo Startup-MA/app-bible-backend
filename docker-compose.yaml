@@ -12,14 +12,14 @@ services:
       - email-queue
       - cache
       - pg-db
-  emperor-consumer:
-    image: ${DOCKERHUB_USERNAME}/emperor-consumer:${IMAGE_TAG:-latest}
-    container_name: emperor-consumer
-    restart: unless-stopped
-    env_file:
-      - .env.emperor-consumer
-    depends_on:
-      - api
+  # emperor-consumer:
+  #   image: ${DOCKERHUB_USERNAME}/emperor-consumer:${IMAGE_TAG:-latest}
+  #   container_name: emperor-consumer
+  #   restart: unless-stopped
+  #   env_file:
+  #     - .env.emperor-consumer
+  #   depends_on:
+  #     - api
   soldier-consumer:
     image: ${DOCKERHUB_USERNAME}/soldier-consumer:${IMAGE_TAG:-latest}
     container_name: soldier-consumer
