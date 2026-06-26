@@ -8,7 +8,7 @@ import highlightsDAO from "../dao/highlight.js"
 import praylistDAO from "../dao/praylist.js"
 import { logger } from "../utils/logger.js"
 
-const { Rome } = redisClient
+const { TasksQueue } = redisClient
 
 async function getProfile(id_user) {
     const userProfile = await userDAO.findUserById(id_user)
@@ -20,8 +20,8 @@ async function getProfile(id_user) {
 
 async function skipPersonalInfo(id_user) {
     taskQueue.publish(
-        Rome,
-        process.env.ROME_STREAM_PRIV_NAME,
+        TasksQueue,
+        process.env.TASKS_STREAM_NAME,
         {
             processingFlowType: "skipPersonalInfo",
             id_user: String(id_user)
@@ -34,8 +34,8 @@ async function skipPersonalInfo(id_user) {
 
 async function updateProfile(id_user, updatedProfileData) {
     taskQueue.publish(
-        Rome,
-        process.env.ROME_STREAM_PRIV_NAME,
+        TasksQueue,
+        process.env.TASKS_STREAM_NAME,
         {
             processingFlowType: "updateProfile",
             id_user: String(id_user),
@@ -49,8 +49,8 @@ async function updateProfile(id_user, updatedProfileData) {
 
 async function sync(data) {
     taskQueue.publish(
-        Rome,
-        process.env.ROME_STREAM_REGULAR_NAME,
+        TasksQueue,
+        process.env.TASKS_STREAM_NAME,
         data
     ).catch(err => {
         logger.error("[Redis taskQueue] Error synchronizing data")

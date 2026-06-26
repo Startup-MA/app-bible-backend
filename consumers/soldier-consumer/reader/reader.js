@@ -7,11 +7,11 @@ import { logger } from "../utils/logger.js"
 
 dotenv.config()
 
-const { Rome } = redisClient
+const { TasksQueue } = redisClient
 
 const consumerName = process.env.POD_NAME || os.hostname()
 
-const streamName = process.env.STREAM_NAME
+const streamName = process.env.TASKS_STREAM_NAME
 const deadMessageQueueName = process.env.DEAD_MESSAGES_QUEUE_NAME
 const groupName = process.env.GROUP_NAME
 const deliveriesCounterLimit = process.env.DELIVERIES_COUNTER_LIMIT
@@ -23,7 +23,7 @@ const SLEEP = process.env.SLEEP
 async function reader() {
     while (true) {
         try {
-            const pendOrRegMess = await Rome.XREADGROUP(
+            const pendOrRegMess = await TasksQueue.XREADGROUP(
                 groupName,
                 consumerName,
                 {
@@ -42,7 +42,7 @@ async function reader() {
                 for (let i = 0; i < pendOrRegMess[0]["messages"].length; i++) {
 
                     if (pendOrRegMess[0]["messages"][i]["deliveriesCounter"] > deliveriesCounterLimit) {
-                        await Rome.XADD(
+                        await TasksQueue.XADD(
                             deadMessageQueueName,
                             "*",
                             {
@@ -50,7 +50,7 @@ async function reader() {
                             }
                         )
 
-                        await Rome.XACKDEL(
+                        await TasksQueue.XACKDEL(
                             streamName,
                             groupName,
                             pendOrRegMess[0]["messages"][i]["id"],

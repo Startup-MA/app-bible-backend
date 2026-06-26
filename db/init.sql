@@ -1,16 +1,23 @@
 CREATE TABLE users (
     id_user INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name VARCHAR(100),
-    surname VARCHAR(100),
     email VARCHAR(255) UNIQUE NOT NULL,
     password TEXT NOT NULL,
+    is_admin BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE personal_infos (
+    id_personal_info INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(100),
+    surname VARCHAR(100),
     sex VARCHAR(1),
     country VARCHAR(20),
     age INT,
     personal_info BOOLEAN NOT NULL DEFAULT FALSE,
-    is_admin BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    id_user INT UNIQUE REFERENCES users(id_user)
 );
 
 CREATE TABLE customers (
@@ -24,7 +31,7 @@ CREATE TABLE customers (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     occurred_at TIMESTAMPTZ,
-    id_user INT REFERENCES users(id_user)
+    id_user INT UNIQUE REFERENCES users(id_user)
 );
 
 CREATE TABLE users_verification (
@@ -32,7 +39,7 @@ CREATE TABLE users_verification (
     uuid UUID NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     expires_at TIMESTAMPTZ NOT NULL DEFAULT NOW() + INTERVAL '30 minutes',
-    id_user INT REFERENCES users(id_user)
+    id_user INT UNIQUE REFERENCES users(id_user)
 );
 
 CREATE TABLE verification_codes (
@@ -40,7 +47,7 @@ CREATE TABLE verification_codes (
     code VARCHAR(6) UNIQUE NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     expires_at TIMESTAMPTZ NOT NULL DEFAULT NOW() + INTERVAL '30 minutes',
-    id_user INT REFERENCES users(id_user)
+    id_user INT UNIQUE REFERENCES users(id_user)
 );
 
 CREATE TABLE reset_passwords (
@@ -48,7 +55,7 @@ CREATE TABLE reset_passwords (
     uuid UUID NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     expires_at TIMESTAMPTZ NOT NULL DEFAULT NOW() + INTERVAL '30 minutes',
-    id_user INT REFERENCES users(id_user)
+    id_user INT UNIQUE REFERENCES users(id_user)
 );
 
 CREATE TABLE languages (
@@ -83,7 +90,7 @@ CREATE TABLE bookmarks (
     entity_uuid UUID UNIQUE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
-    id_user INT REFERENCES users(id_user),
+    id_user INT UNIQUE REFERENCES users(id_user),
     id_bible_text_version INT REFERENCES bible_text_versions(id_bible_text_version)
 );
 
@@ -97,7 +104,7 @@ CREATE TABLE notes (
     entity_uuid UUID UNIQUE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
-    id_user INT REFERENCES users(id_user),
+    id_user INT UNIQUE REFERENCES users(id_user),
     id_bible_text_version INT REFERENCES bible_text_versions(id_bible_text_version)
 );
 
@@ -109,7 +116,7 @@ CREATE TABLE highlights (
     entity_uuid UUID UNIQUE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
-    id_user INT REFERENCES users(id_user),
+    id_user INT UNIQUE REFERENCES users(id_user),
     id_bible_text_version INT REFERENCES bible_text_versions(id_bible_text_version)
 );
 
@@ -119,7 +126,7 @@ CREATE TABLE users_reading_history (
     entity_uuid UUID UNIQUE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
-    id_user INT REFERENCES users(id_user)
+    id_user INT UNIQUE REFERENCES users(id_user)
 );
 
 CREATE TABLE pray_list (
@@ -129,7 +136,7 @@ CREATE TABLE pray_list (
     entity_uuid UUID UNIQUE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
-    id_user INT REFERENCES users(id_user)
+    id_user INT UNIQUE REFERENCES users(id_user)
 );
 
 CREATE TABLE users_tickets (

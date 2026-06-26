@@ -139,7 +139,7 @@ async function getAllCustomerInfoById(id_user) {
             LEFT JOIN
             customers 
             ON users.id_user = customers.id_user
-            WHERE users.id_user = $1;            
+            WHERE users.id_user = $1        
         `,
         [
             id_user

@@ -32,14 +32,14 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/api:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/api:${{ steps.vars.outputs.sha_short }}
 
-      - name: Build and push Emperor-Consumer
-        uses: docker/build-push-action@v5
-        with:
-          context: ./consumers/emperor-consumer
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/emperor-consumer:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/emperor-consumer:${{ steps.vars.outputs.sha_short }}
+      # - name: Build and push Emperor-Consumer
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./consumers/emperor-consumer
+      #     push: true
+      #     tags: |
+      #       ${{ secrets.DOCKERHUB_USERNAME }}/emperor-consumer:latest
+      #       ${{ secrets.DOCKERHUB_USERNAME }}/emperor-consumer:${{ steps.vars.outputs.sha_short }}
       
       - name: Build and push Soldier-Consumer
         uses: docker/build-push-action@v5
@@ -115,6 +115,12 @@ jobs:
             PG_DATABASE=${{ secrets.PG_DATABASE }}
             PG_PASSWORD=${{ secrets.PG_PASSWORD }}
             PG_USER=${{ secrets.PG_USER }}
+            TASKS_STREAM_NAME=${{TASKS_STREAM_NAME}}
+            DEAD_MESSAGES_QUEUE_NAME=${{DEAD_MESSAGES_QUEUE_NAME}}
+            TASKS_GROUP_NAME=${{TASKS_GROUP_NAME}}
+            EMAILS_STREAM_NAME=${{EMAILS_STREAM_NAME}}
+            MAILERS_GROUP_NAME=${{MAILERS_GROUP_NAME}}
+            DEAD_MESS_EMAIL_QUEUE_NAME=${{DEAD_MESS_EMAIL_QUEUE_NAME}}
             EOF
 
             # API envs
@@ -130,10 +136,9 @@ jobs:
             CONNECTION_TIMEOUT_MILLIS=${{ secrets.CONNECTION_TIMEOUT_MILLIS }}
             IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}
             APP_PORT=${{ secrets.API_PORT }}
-            REDIS_ROME_URL=${{ secrets.REDIS_ROME_URL }}
+            REDIS_TASKSQUEUE_URL=${{ secrets.REDIS_TASKSQUEUE_URL }}
             REDIS_CACHE_URL=${{ secrets.REDIS_CACHE_URL }}
-            ROME_STREAM_PRIV_NAME=${{ secrets.PRIV_STREAM_NAME }}
-            ROME_STREAM_REGULAR_NAME=${{ secrets.REGULAR_STREAM_NAME }}
+            TASKS_STREAM_NAME=${{ secrets.TASKS_STREAM_NAME }}
             REDIS_SESSION_SECRET=${{ secrets.REDIS_SESSION_SECRET }}
             SALT_ROUNDS=${{ secrets.SALT_ROUNDS_DEV }}
             PADDLE_ALLOW_LIST=${{ secrets.PADDLE_SANDBOX_ALLOW_LIST }}
@@ -142,30 +147,30 @@ jobs:
             PADDLE_API_URL=${{ secrets.PADDLE_API_URL_SANDBOX }}
             EOF
             
-            # EMPEROR-CONSUMER envs
+            # # EMPEROR-CONSUMER envs
 
-            cat << 'EOF' > .env.emperor-consumer
-            NODE_ENV=${{ secrets.NODE_ENV_DEV }}
-            REDIS_ROME_URL=${{ secrets.REDIS_ROME_URL }}
-            REDIS_MAILER_URL=${{ secrets.REDIS_MAILER_URL }}
-            STREAM_NAME=${{ secrets.PRIV_STREAM_NAME }}
-            MAILER_STREAM_NAME=${{ secrets.MAILER_STREAM_NAME }}
-            DEAD_MESSAGES_QUEUE_NAME=${{ secrets.DEAD_MESS_PRIV_QUEUE_NAME }}
-            GROUP_NAME=${{ secrets.PRIV_GROUP_NAME }}
-            DELIVERIES_COUNTER_LIMIT=${{ secrets.DELIVERIES_COUNTER_LIMIT }}
-            COUNT=${{ secrets.COUNT }}
-            BLOCK=${{ secrets.BLOCK }}
-            CLAIM=${{ secrets.CLAIM }}
-            SLEEP=${{ secrets.SLEEP }}
-            PG_DATABASE=${{ secrets.PG_DATABASE }}
-            PG_HOST=${{ secrets.PG_HOST }}
-            PG_PASSWORD=${{ secrets.PG_PASSWORD }}
-            PG_PORT=${{ secrets.PG_PORT }}
-            PG_USER=${{ secrets.PG_USER }}
-            MAX=${{ secrets.MAX }}
-            CONNECTION_TIMEOUT_MILLIS=${{ secrets.CONNECTION_TIMEOUT_MILLIS }}
-            IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}
-            EOF
+            # cat << 'EOF' > .env.emperor-consumer
+            # NODE_ENV=${{ secrets.NODE_ENV_DEV }}
+            # REDIS_ROME_URL=${{ secrets.REDIS_ROME_URL }}
+            # REDIS_MAILER_URL=${{ secrets.REDIS_MAILER_URL }}
+            # STREAM_NAME=${{ secrets.PRIV_STREAM_NAME }}
+            # MAILER_STREAM_NAME=${{ secrets.MAILER_STREAM_NAME }}
+            # DEAD_MESSAGES_QUEUE_NAME=${{ secrets.DEAD_MESS_PRIV_QUEUE_NAME }}
+            # GROUP_NAME=${{ secrets.PRIV_GROUP_NAME }}
+            # DELIVERIES_COUNTER_LIMIT=${{ secrets.DELIVERIES_COUNTER_LIMIT }}
+            # COUNT=${{ secrets.COUNT }}
+            # BLOCK=${{ secrets.BLOCK }}
+            # CLAIM=${{ secrets.CLAIM }}
+            # SLEEP=${{ secrets.SLEEP }}
+            # PG_DATABASE=${{ secrets.PG_DATABASE }}
+            # PG_HOST=${{ secrets.PG_HOST }}
+            # PG_PASSWORD=${{ secrets.PG_PASSWORD }}
+            # PG_PORT=${{ secrets.PG_PORT }}
+            # PG_USER=${{ secrets.PG_USER }}
+            # MAX=${{ secrets.MAX }}
+            # CONNECTION_TIMEOUT_MILLIS=${{ secrets.CONNECTION_TIMEOUT_MILLIS }}
+            # IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}
+            # EOF
             
             # MAILER envs
 
@@ -188,10 +193,12 @@ jobs:
 
             cat << 'EOF' > .env.soldier-consumer
             NODE_ENV=${{ secrets.NODE_ENV_DEV }}
-            REDIS_ROME_URL=${{ secrets.REDIS_ROME_URL }}
-            STREAM_NAME=${{ secrets.REGULAR_STREAM_NAME }}
+            REDIS_TASKSQUEUE_URL=${{ secrets.REDIS_TASKSQUEUE_URL }}
+            REDIS_MAILER_URL=${{ secrets.REDIS_MAILER_URL }}
+            MAILER_STREAM_NAME=${{ secrets.MAILER_STREAM_NAME }}
+            TASKS_STREAM_NAME=${{ secrets.TASKS_STREAM_NAME }}
             DEAD_MESSAGES_QUEUE_NAME=${{ secrets.DEAD_MESS_REG_QUEUE_NAME }}
-            GROUP_NAME=${{ secrets.REG_GROUP_NAME }}
+            GROUP_NAME=${{ secrets.TASKS_GROUP_NAME }}
             DELIVERIES_COUNTER_LIMIT=${{ secrets.DELIVERIES_COUNTER_LIMIT }}
             COUNT=${{ secrets.COUNT }}
             BLOCK=${{ secrets.BLOCK }}

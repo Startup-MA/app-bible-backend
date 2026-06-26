@@ -63,15 +63,12 @@ services:
       - task-queue
       - email-queue
     command: >
-      sh -c 'redis-cli -h task-queue XADD queue:privileged * first value;
-             redis-cli -h task-queue XGROUP CREATE queue:privileged emperors $$;
-             redis-cli -h task-queue XADD queue:privileged-dead-messages * first value;
-             redis-cli -h task-queue XADD queue:regular * first value;
-             redis-cli -h task-queue XGROUP CREATE queue:regular soldiers $$;
-             redis-cli -h task-queue XADD queue:dead-messages * first value;
-             redis-cli -h email-queue XADD queue:emails * first value;
-             redis-cli -h email-queue XGROUP CREATE queue:emails mailers $$;
-             redis-cli -h email-queue XADD queue:deadEmails * first value;'
+      sh -c 'redis-cli -h task-queue XADD ${TASKS_STREAM_NAME} * first value;
+             redis-cli -h task-queue XADD ${DEAD_MESSAGES_QUEUE_NAME} * first value;
+             redis-cli -h task-queue XGROUP CREATE ${TASKS_STREAM_NAME} ${TASKS_GROUP_NAME} $$;
+             redis-cli -h email-queue XADD ${EMAILS_STREAM_NAME} * first value;
+             redis-cli -h email-queue XGROUP CREATE ${EMAILS_STREAM_NAME} ${MAILERS_GROUP_NAME} $$;
+             redis-cli -h email-queue XADD ${DEAD_MESS_EMAIL_QUEUE_NAME} * first value;'
   pg-db:
     image: postgres
     container_name: pg-db

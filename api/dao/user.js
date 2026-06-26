@@ -23,7 +23,7 @@ async function findUserById(id_user) {
     const result = await pg.query(
         `
             SELECT
-            id_user,
+            users.id_user,
             name,
             surname,
             age,
@@ -32,7 +32,10 @@ async function findUserById(id_user) {
             personal_info,
             is_admin
             FROM users
-            WHERE id_user = $1
+            LEFT JOIN
+            personal_infos
+            ON users.id_user = personal_infos.id_user
+            WHERE users.id_user = $1
         `,
         [
             id_user
