@@ -5,7 +5,7 @@ import { logger } from "../utils/logger.js"
 dotenv.config()
 
 const redisClientTasksQueue = await createClient({
-        url: process.env.REDIS_TASKQUEUE_URL
+        url: process.env.REDIS_TASKSQUEUE_URL
     })
     .on("error", err => {
         logger.error("Tasks Queue Redis Client Error")
