@@ -212,6 +212,7 @@ jobs:
             MAX=${{ secrets.MAX }}
             CONNECTION_TIMEOUT_MILLIS=${{ secrets.CONNECTION_TIMEOUT_MILLIS }}
             IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}
+            FRONT_URL=${{ secrets.FRONTEND_URL_DEV }}
             EOF
 
             docker compose pull
