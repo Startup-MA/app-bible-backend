@@ -115,12 +115,12 @@ jobs:
             PG_DATABASE=${{ secrets.PG_DATABASE }}
             PG_PASSWORD=${{ secrets.PG_PASSWORD }}
             PG_USER=${{ secrets.PG_USER }}
-            TASKS_STREAM_NAME=${{TASKS_STREAM_NAME}}
-            DEAD_MESSAGES_QUEUE_NAME=${{DEAD_MESSAGES_QUEUE_NAME}}
-            TASKS_GROUP_NAME=${{TASKS_GROUP_NAME}}
-            EMAILS_STREAM_NAME=${{EMAILS_STREAM_NAME}}
-            MAILERS_GROUP_NAME=${{MAILERS_GROUP_NAME}}
-            DEAD_MESS_EMAIL_QUEUE_NAME=${{DEAD_MESS_EMAIL_QUEUE_NAME}}
+            TASKS_STREAM_NAME=${{secrets.TASKS_STREAM_NAME}}
+            DEAD_MESSAGES_QUEUE_NAME=${{secrets.DEAD_MESSAGES_QUEUE_NAME}}
+            TASKS_GROUP_NAME=${{secrets.TASKS_GROUP_NAME}}
+            EMAILS_STREAM_NAME=${{secrets.EMAILS_STREAM_NAME}}
+            MAILERS_GROUP_NAME=${{secrets.MAILERS_GROUP_NAME}}
+            DEAD_MESS_EMAIL_QUEUE_NAME=${{secrets.DEAD_MESS_EMAIL_QUEUE_NAME}}
             EOF
 
             # API envs
