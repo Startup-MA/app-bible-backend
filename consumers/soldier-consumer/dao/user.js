@@ -8,9 +8,9 @@ dotenv.config()
 async function skipPersonalInfo(id_user) {
     await pg.query(
         `
-            UPDATE personal_infos
-            SET personal_info = TRUE
-            WHERE id_user = $1
+            INSERT INTO 
+            personal_infos (personal_info, id_user)
+            VALUES (TRUE, $1)
         `,
         [
             id_user
