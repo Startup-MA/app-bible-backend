@@ -19,7 +19,9 @@ async function setupRedisStreams() {
     for (const stream of STREAMS) {
         try {
             if (stream.group) {
-                await stream.client.XGROUP_CREATE(stream.key, stream.group, "$", "MKSTREAM")
+                await stream.client.xGroupCreate(stream.key, stream.group, "$", {
+                    MKSTREAM: true
+                })
                 
                 logger.info(`Created Stream & Group: ${stream.key} -> ${stream.group}`)
             } else {
