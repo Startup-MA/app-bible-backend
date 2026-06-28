@@ -91,7 +91,7 @@ jobs:
           host: ${{ secrets.DROPLET_IP_DEV }}
           username: root
           key: ${{ secrets.DO_SSH_KEY_DEV }}
-          source: "docker-compose.yaml, db"
+          source: "docker-compose.yml, db"
           target: "/root/app-bible-backend"
           timeout: 120s
           command_timeout: 120s
@@ -112,9 +112,9 @@ jobs:
             DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
             API_PORT=${{ secrets.API_PORT }}
             FRONTEND_PORT=${{ secrets.FRONTEND_PORT }}
-            PG_DATABASE=${{ secrets.PG_DATABASE }}
-            PG_PASSWORD=${{ secrets.PG_PASSWORD }}
-            PG_USER=${{ secrets.PG_USER }}
+            PGDATABASE=${{ secrets.PGDATABASE }}
+            PGPASSWORD=${{ secrets.PGPASSWORD }}
+            PGUSER=${{ secrets.PGUSER }}
             TASKS_STREAM_NAME=${{secrets.TASKS_STREAM_NAME}}
             DEAD_MESSAGES_QUEUE_NAME=${{secrets.DEAD_MESSAGES_QUEUE_NAME}}
             TASKS_GROUP_NAME=${{secrets.TASKS_GROUP_NAME}}
@@ -127,11 +127,11 @@ jobs:
             cat << 'EOF' > .env.api
             NODE_ENV=${{ secrets.NODE_ENV_DEV }}
             FRONT_URL=${{ secrets.FRONTEND_URL_DEV}}
-            PG_DATABASE=${{ secrets.PG_DATABASE }}
-            PG_HOST=${{ secrets.PG_HOST }}
-            PG_PASSWORD=${{ secrets.PG_PASSWORD }}
-            PG_PORT=${{ secrets.PG_PORT }}
-            PG_USER=${{ secrets.PG_USER }}
+            PGDATABASE=${{ secrets.PGDATABASE }}
+            PGHOST=${{ secrets.PGHOST }}
+            PGPASSWORD=${{ secrets.PGPASSWORD }}
+            PGPORT=${{ secrets.PGPORT }}
+            PGUSER=${{ secrets.PGUSER }}
             MAX=${{ secrets.MAX }}
             CONNECTION_TIMEOUT_MILLIS=${{ secrets.CONNECTION_TIMEOUT_MILLIS }}
             IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}
@@ -162,11 +162,11 @@ jobs:
             # BLOCK=${{ secrets.BLOCK }}
             # CLAIM=${{ secrets.CLAIM }}
             # SLEEP=${{ secrets.SLEEP }}
-            # PG_DATABASE=${{ secrets.PG_DATABASE }}
-            # PG_HOST=${{ secrets.PG_HOST }}
-            # PG_PASSWORD=${{ secrets.PG_PASSWORD }}
-            # PG_PORT=${{ secrets.PG_PORT }}
-            # PG_USER=${{ secrets.PG_USER }}
+            # PGDATABASE=${{ secrets.PGDATABASE }}
+            # PGHOST=${{ secrets.PGHOST }}
+            # PGPASSWORD=${{ secrets.PGPASSWORD }}
+            # PGPORT=${{ secrets.PGPORT }}
+            # PGUSER=${{ secrets.PGUSER }}
             # MAX=${{ secrets.MAX }}
             # CONNECTION_TIMEOUT_MILLIS=${{ secrets.CONNECTION_TIMEOUT_MILLIS }}
             # IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}
@@ -204,18 +204,21 @@ jobs:
             BLOCK=${{ secrets.BLOCK }}
             CLAIM=${{ secrets.CLAIM }}
             SLEEP=${{ secrets.SLEEP }}
-            PG_DATABASE=${{ secrets.PG_DATABASE }}
-            PG_HOST=${{ secrets.PG_HOST }}
-            PG_PASSWORD=${{ secrets.PG_PASSWORD }}
-            PG_PORT=${{ secrets.PG_PORT }}
-            PG_USER=${{ secrets.PG_USER }}
+            PGDATABASE=${{ secrets.PGDATABASE }}
+            PGHOST=${{ secrets.PGHOST }}
+            PGPASSWORD=${{ secrets.PGPASSWORD }}
+            PGPORT=${{ secrets.PGPORT }}
+            PGUSER=${{ secrets.PGUSER }}
             MAX=${{ secrets.MAX }}
             CONNECTION_TIMEOUT_MILLIS=${{ secrets.CONNECTION_TIMEOUT_MILLIS }}
             IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}
             FRONT_URL=${{ secrets.FRONTEND_URL_DEV }}
             EOF
 
-            docker compose pull
             docker compose down
+            
+            docker compose run --rm api npm run migrate:up
+            docker compose run --rm api npm run seed
+
             docker compose up -d
             docker image prune -a -f

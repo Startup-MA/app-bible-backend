@@ -34,14 +34,6 @@ CREATE TABLE customers (
     id_user INT UNIQUE REFERENCES users(id_user)
 );
 
-CREATE TABLE users_verification (
-    id_users_verification INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    uuid UUID NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    expires_at TIMESTAMPTZ NOT NULL DEFAULT NOW() + INTERVAL '30 minutes',
-    id_user INT UNIQUE REFERENCES users(id_user)
-);
-
 CREATE TABLE verification_codes (
     id_verification_code INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     code VARCHAR(6) UNIQUE NOT NULL,
@@ -62,14 +54,6 @@ CREATE TABLE languages (
     id_lang INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     lang_name VARCHAR(50),
     country_code VARCHAR(2)
-);
-
-CREATE TABLE frescoes (
-    id_fresco INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    book VARCHAR(20) NOT NULL,
-    fresco_cdn_link VARCHAR(100) NOT NULL,
-    description_cdn_link VARCHAR(100) NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE bible_text_versions (
@@ -186,21 +170,14 @@ $$ LANGUAGE plpgsql;
 
 -- Update time
 
-CREATE TRIGGER update_customers_updated_at
+CREATE OR REPLACE TRIGGER update_customers_updated_at
 BEFORE UPDATE ON customers
 FOR EACH ROW
 EXECUTE FUNCTION update_timestamp_column();
 
--- User Verification always set time
-
-CREATE OR REPLACE TRIGGER trg_manage_users_verification_times
-BEFORE UPDATE ON users_verification
-FOR EACH ROW
-EXECUTE FUNCTION refresh_timestamps();
-
 -- Verification codes always set time
 
-CREATE TRIGGER trg_manage_verification_codes_times
+CREATE OR REPLACE TRIGGER trg_manage_verification_codes_times
 BEFORE INSERT OR UPDATE ON verification_codes
 FOR EACH ROW
 EXECUTE FUNCTION refresh_timestamps();

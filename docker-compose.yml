@@ -74,10 +74,8 @@ services:
     container_name: pg-db
     restart: always
     environment:
-      POSTGRES_USER: ${PG_USER}
-      POSTGRES_PASSWORD: ${PG_PASSWORD}
-      POSTGRES_DB: ${PG_DATABASE}
-    volumes:
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      POSTGRES_USER: ${PGUSER}
+      POSTGRES_PASSWORD: ${PGPASSWORD}
+      POSTGRES_DB: ${PGDATABASE}
 
 

@@ -2,11 +2,11 @@ import { Pool } from "pg"
 
 const pool = new Pool(
     {
-        "database": process.env.PG_DATABASE,
-        "host": process.env.PG_HOST,
-        "password": process.env.PG_PASSWORD,
-        "port": process.env.PG_PORT,
-        "user": process.env.PG_USER,
+        "database": process.env.PGDATABASE,
+        "host": process.env.PGHOST,
+        "password": process.env.PGPASSWORD,
+        "port": process.env.PGPORT,
+        "user": process.env.PGUSER,
         "max": process.env.MAX,
         "connectionTimeoutMillis": process.env.CONNECTION_TIMEOUT_MILLIS,
         "idleTimeoutMillis": process.env.IDLE_TIMEOUT_MILLIS
