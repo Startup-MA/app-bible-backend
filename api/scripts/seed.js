@@ -64,7 +64,9 @@ async function seedLanguages() {
 
 async function seedAdmins() {
     const adminEmails = process.env.ADMIN_EMAILS.split(",")
+    logger.info(adminEmails)
     const adminPasswordHashes = process.env.ADMIN_PASSWORDS_HASHES.split(",")
+    logger.info(adminPasswordHashes)
 
     if (adminEmails && adminPasswordHashes) {
         for (let i = 0; i < adminEmails.length; i++) {
