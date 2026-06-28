@@ -135,6 +135,8 @@ jobs:
             MAX=${{ secrets.MAX }}
             CONNECTION_TIMEOUT_MILLIS=${{ secrets.CONNECTION_TIMEOUT_MILLIS }}
             IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}
+            ADMIN_EMAILS=${{ secrets.ADMIN_EMAILS }}
+            ADMIN_PASSWORDS_HASHES=${{ secrets.ADMIN_PASSWORDS_HASHES }}
             APP_PORT=${{ secrets.API_PORT }}
             REDIS_TASKSQUEUE_URL=${{ secrets.REDIS_TASKSQUEUE_URL }}
             REDIS_CACHE_URL=${{ secrets.REDIS_CACHE_URL }}
