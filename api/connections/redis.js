@@ -23,8 +23,18 @@ const redisClientCache = await createClient({
     })
     .connect()
 
+const redisClientMailer = await createClient({
+        url: process.env.REDIS_MAILER_URL
+    })
+    .on("error", err => {
+        logger.error("MAILER Redis Client Error")
+        logger.error({stack: err.stack})
+    })
+    .connect()
+
 
 export default {
     TasksQueue: redisClientTasksQueue,
-    Cache: redisClientCache
+    Cache: redisClientCache,
+    Mailer: redisClientMailer
 }

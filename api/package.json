@@ -12,7 +12,8 @@
     "migrate:down": "node-pg-migrate down",
     
     "seed": "node scripts/seed.js",
-    
+    "redis:setup": "node scripts/redisSetup.js",
+
     "dev": "npm run migrate:up && nodemon server.js",
     "start": "npm run migrate:up && node server.js"
   },

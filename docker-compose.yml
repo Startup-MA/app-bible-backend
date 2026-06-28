@@ -62,13 +62,6 @@ services:
     depends_on:
       - task-queue
       - email-queue
-    command: >
-      sh -c 'redis-cli -h task-queue XADD ${TASKS_STREAM_NAME} * first value;
-             redis-cli -h task-queue XADD ${DEAD_MESSAGES_QUEUE_NAME} * first value;
-             redis-cli -h task-queue XGROUP CREATE ${TASKS_STREAM_NAME} ${TASKS_GROUP_NAME} $$;
-             redis-cli -h email-queue XADD ${EMAILS_STREAM_NAME} * first value;
-             redis-cli -h email-queue XGROUP CREATE ${EMAILS_STREAM_NAME} ${MAILERS_GROUP_NAME} $$;
-             redis-cli -h email-queue XADD ${DEAD_MESS_EMAIL_QUEUE_NAME} * first value;'
   pg-db:
     image: postgres
     container_name: pg-db
