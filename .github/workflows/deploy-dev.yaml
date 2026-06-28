@@ -139,8 +139,14 @@ jobs:
             ADMIN_PASSWORDS_HASHES=${{ secrets.ADMIN_PASSWORDS_HASHES }}
             APP_PORT=${{ secrets.API_PORT }}
             REDIS_TASKSQUEUE_URL=${{ secrets.REDIS_TASKSQUEUE_URL }}
+            REDIS_MAILER_URL=${{ secrets.REDIS_MAILER_URL }}
             REDIS_CACHE_URL=${{ secrets.REDIS_CACHE_URL }}
             TASKS_STREAM_NAME=${{ secrets.TASKS_STREAM_NAME }}
+            MAILER_STREAM_NAME=${{ secrets.MAILER_STREAM_NAME }}
+            DEAD_MESSAGES_QUEUE_NAME_TASKQUEUE=${{ secrets.DEAD_MESS_REG_QUEUE_NAME }}
+            DEAD_MESSAGES_QUEUE_NAME_EMAILS=${{ secrets.DEAD_MESS_EMAIL_QUEUE_NAME }}
+            GROUP_NAME_TAKSQUEUE=${{ secrets.TASKS_GROUP_NAME }}
+            GROUP_NAME_EMAILS=${{ secrets.MAILERS_GROUP_NAME }}
             REDIS_SESSION_SECRET=${{ secrets.REDIS_SESSION_SECRET }}
             SALT_ROUNDS=${{ secrets.SALT_ROUNDS_DEV }}
             PADDLE_ALLOW_LIST=${{ secrets.PADDLE_SANDBOX_ALLOW_LIST }}
@@ -222,7 +228,7 @@ jobs:
             docker compose run --rm api npm run migrate:up
             docker compose run --rm api npm run seed
             docker compose run --rm api npm run redis:setup
-            
+
             docker compose up -d
 
             docker image prune -a -f
