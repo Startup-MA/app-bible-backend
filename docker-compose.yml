@@ -4,7 +4,7 @@ services:
     container_name: api
     restart: unless-stopped
     ports:
-      - ${API_PORT}:3000
+      - 3000:3000
     env_file:
       - .env.api
     depends_on:
@@ -24,6 +24,8 @@ services:
     image: ${DOCKERHUB_USERNAME}/soldier-consumer:${IMAGE_TAG:-latest}
     container_name: soldier-consumer
     restart: unless-stopped
+    ports:
+      - 3003:3000
     env_file:
       - .env.soldier-consumer
     depends_on:
@@ -32,6 +34,8 @@ services:
     image: ${DOCKERHUB_USERNAME}/mailer:${IMAGE_TAG:-latest}
     container_name: mailer
     restart: unless-stopped
+    ports:
+      - 3002:3000
     env_file:
       - .env.mailer
     depends_on:

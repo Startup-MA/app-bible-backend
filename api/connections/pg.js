@@ -1,4 +1,5 @@
 import { Pool } from "pg"
+import { logger } from "../utils/logger.js"
 
 const pool = new Pool(
     {

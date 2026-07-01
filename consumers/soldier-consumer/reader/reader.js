@@ -4,6 +4,7 @@ import dotenv from "dotenv"
 import handleMessge from "../messageHandler/handleMessage.js"
 import sleep from "../utils/sleep.js"
 import { logger } from "../utils/logger.js"
+import { setupRedisStreams } from "../scripts/redisSetup.js"
 
 dotenv.config()
 
@@ -68,11 +69,17 @@ async function reader() {
                 logger.warn("Queue is empty")
             }
         } catch (err) {
-            logger.error("Error during XPENDING_RANGE:")
-            logger.error("", {stack: err.stack})
+            if (err.message.includes("NOGROUP")) {
+                logger.warn("Redis amnesia detected! Rebuilding streams...")
 
-            logger.warn(`Sleep for ${SLEEP} ms.....`)
-            await sleep(SLEEP)
+                await setupRedisStreams(TasksQueue) 
+            } else {
+                logger.error("Error during XPENDING_RANGE:")
+                logger.error("", {stack: err.stack})
+
+                logger.warn(`Sleep for ${SLEEP} ms.....`)
+                await sleep(SLEEP)
+            }
         }
     }
 }

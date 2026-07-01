@@ -193,6 +193,7 @@ jobs:
             BLOCK=${{ secrets.BLOCK }}
             CLAIM=${{ secrets.CLAIM }}
             SLEEP=${{ secrets.SLEEP }}
+            APP_PORT=${{ secrets.API_PORT }}
             RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
             RESEND_FROM_ADDRESS=${{ secrets.RESEND_FROM_ADDRESS_DEV }}
             EOF
@@ -212,6 +213,7 @@ jobs:
             BLOCK=${{ secrets.BLOCK }}
             CLAIM=${{ secrets.CLAIM }}
             SLEEP=${{ secrets.SLEEP }}
+            APP_PORT=${{ secrets.API_PORT }}
             PGDATABASE=${{ secrets.PGDATABASE }}
             PGHOST=${{ secrets.PGHOST }}
             PGPASSWORD=${{ secrets.PGPASSWORD }}

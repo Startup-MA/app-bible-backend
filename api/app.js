@@ -10,6 +10,7 @@ import userRouter from "./routes/userRouter.js"
 import sysRouter from "./routes/sysRouter.js"
 import webhooksRouter from "./routes/webhooksRouter.js"
 import customerRouter from "./routes/customerRouter.js"
+import livenessRouter from "./routes/livenessRouter.js"
 
 import { errorHandler } from "./middleware/errorHandler.js"
 import { morganMiddleware } from "./middleware/morgan.js"
@@ -18,7 +19,7 @@ import { swaggerSpec } from "./utils/swaggerSpec.js"
 import swaggerUi from "swagger-ui-express"
 
 const app = express()
-app.set("trust proxy", 1) // (Cloudflare) Inside Kubernetes Cluster when running behind nginx!!!
+// app.set("trust proxy", 1) // (Cloudflare) Inside Kubernetes Cluster when running behind nginx!!!
 
 app.use(cors({
     origin: process.env.FRONT_URL, // Specify the allowed origin
@@ -43,6 +44,8 @@ app.use("/api/customer", customerRouter)
 app.use("/api/sys", sysRouter)
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 app.use("/api", dashboardRouter)
+
+app.use("/liveness", livenessRouter)
 
 app.use(notFound)
 

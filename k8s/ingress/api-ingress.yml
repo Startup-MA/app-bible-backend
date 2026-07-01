@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bible-api-ingress
+  namespace: app-bible-backend
+spec:
+  rules:
+  - host: app-bible.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: bible-api-service
+            port:
+              number: 80

@@ -34,7 +34,7 @@ async function sendNewVerificationCode(message) {
             `,
         }
     ).catch(err => {
-        logger.error("[Redis taskQueue] Error sending verification code")
+        logger.error("[Redis Mailer] Error sending verification code")
         throw err
     })
 }

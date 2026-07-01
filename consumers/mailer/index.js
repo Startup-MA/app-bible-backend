@@ -4,6 +4,8 @@ import dotenv from "dotenv"
 import nodemailer from "nodemailer"
 import { Resend } from "resend"
 import { logger } from "./logger.js"
+import { setupRedisStreams } from "./scripts/redisSetup.js"
+import http from "http"
 
 dotenv.config()
 
@@ -22,6 +24,13 @@ const redisClientMAILER = await createClient({
 })
 .connect()
 
+const healthRedisClient = await redisClientMAILER
+    .duplicate()
+    .on("error", err => {
+        logger.error("healthRedisClient Error")
+        logger.error({stack: err.stack})
+    }).connect()
+
 const streamName = process.env.STREAM_NAME
 const deadMessageQueueName = process.env.DEAD_MESSAGES_QUEUE_NAME
 const groupName = process.env.GROUP_NAME
@@ -31,9 +40,7 @@ const BLOCK = process.env.BLOCK
 const CLAIM = process.env.CLAIM
 const SLEEP = process.env.SLEEP
 
-logger.info(`Consumer ${consumerName} is ready!`)
-
-await readPendings()
+let isConsumerReady = false
 
 async function readPendings() {
     while (true) {
@@ -83,11 +90,17 @@ async function readPendings() {
                 logger.warn("Queue is empty")
             }
         } catch (err) {
-            logger.error("Error during XPENDING_RANGE:")
-            logger.error("", {stack: err.stack})
+            if (err.message.includes("NOGROUP")) {
+                logger.warn("Redis amnesia detected! Rebuilding streams...")
 
-            logger.warn(`Sleep for ${SLEEP} ms.....`)
-            await sleep(SLEEP)
+                await setupRedisStreams(redisClientMAILER) 
+            } else {
+                logger.error("Error during XPENDING_RANGE:")
+                logger.error("", {stack: err.stack})
+
+                logger.warn(`Sleep for ${SLEEP} ms.....`)
+                await sleep(SLEEP)
+            }
         }
     }
 }
@@ -106,7 +119,6 @@ async function messageProcessing(message) {
     }
 
     try {
-        // const mailerRes = await transporter.sendMail(mailOptions)
         const data = await resend.emails.send(mailOptions)
 
         logger.info(`Mail sent ID: ${data.data ? data.data.id : null}`, )
@@ -129,3 +141,60 @@ async function messageProcessing(message) {
 
     logger.info("------------------------------")
 }
+
+const healthServer = http.createServer(async (req, res) => {
+    logger.info(req.url)
+
+    if (req.url === "/ready") {
+        if (isConsumerReady) {
+            res.writeHead(200)
+            
+            logger.info("response: /ready -> OK")
+            
+            return res.end("OK")
+        } else {
+            res.writeHead(503)
+
+            logger.info("response: /ready -> BAD")
+
+            return res.end("Booting")
+        }
+    }
+
+    if (req.url === "/health") {
+        try {
+
+            const pingPromise = healthRedisClient.ping()
+
+            const timeoutPromise = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error("Redis Ping Timeout Exceeded")), 2000)
+            )
+
+            await Promise.race([pingPromise, timeoutPromise])
+            
+            res.writeHead(200)
+
+            logger.info("response: /health -> OK")
+
+            return res.end("OK")
+        } catch (error) {
+            res.writeHead(503)
+
+            logger.info("response: /ready -> health")
+
+            return res.end("Dead")
+        }
+    }
+
+    res.writeHead(404)
+    return res.end()
+})
+
+healthServer.listen(process.env.APP_PORT, () => {
+    isConsumerReady = true
+
+    logger.info(`K8s Health server listening on port ${process.env.APP_PORT}`);
+    logger.info(`Consumer ${consumerName} is ready!`)
+
+    readPendings()
+})

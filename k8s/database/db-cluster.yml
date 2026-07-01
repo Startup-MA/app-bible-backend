@@ -1,7 +1,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: db-cluster
+  name: bible-pg-cluster
   namespace: app-bible-backend
 spec:
   instances: 3
@@ -11,10 +11,37 @@ spec:
 
   bootstrap:
     initdb:
-      postInitApplicationSQLRefs:
-        configMapRefs:
-          - name: db-init-sql
-            key: init.sql
+      database: bible_db
+      owner: bible_db_user
+  # ---------------------------------------------------------
+  # DIGITALOCEAN SPACES (S3) BACKUP & ARCHIVING CONFIGURATION
+  # ---------------------------------------------------------
+  backup:
+    # Tell CNPG to automatically delete backups older than 30 days
+    retentionPolicy: "30d"
+    
+    # Configure Barman (the backup engine) to use S3/Spaces
+    barmanObjectStore:
+      # TODO: Replace 'your-space-name' with your actual bucket name
+      destinationPath: "s3://your-space-name/database-backups/"
+      
+      # TODO: Replace 'fra1' with your DO Spaces region (e.g., nyc3, ams3)
+      endpointURL: "https://fra1.digitaloceanspaces.com"
+      
+      # The credentials we discussed at the very beginning of our conversation!
+      s3Credentials:
+        accessKeyId:
+          name: do-spaces-creds
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: do-spaces-creds
+          key: ACCESS_SECRET_KEY
+      
+      # Enable continuous Write-Ahead Log (WAL) archiving.
+      # This allows Point-In-Time-Recovery (PITR). You can literally restore
+      # your database to a specific minute in time (e.g., Tuesday at 2:14 PM).
+      wal:
+        compression: gzip
 
   resources:
     requests:
@@ -23,3 +50,19 @@ spec:
     limits:
       memory: "4Gi"
       cpu: "2"
+---
+# ---------------------------------------------------------
+# DAILY FULL BACKUP CRON JOB
+# ---------------------------------------------------------
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: bible-pg-backup-daily
+  namespace: app-bible
+spec:
+  # Schedule: Run every day at exactly midnight (Standard Cron Syntax)
+  schedule: "0 0 0 * * *"
+  
+  # Tell it to backup the cluster we just defined above
+  cluster:
+    name: bible-pg-cluster

@@ -14,16 +14,25 @@ const redisClientTasksQueue = await createClient({
     .connect()
 
 const redisClientMailer = await createClient({
-        url: process.env.REDIS_MAILER_URL
+        url: process.env.REDIS_MAILER_URL,
+        disableOfflineQueue: true
     })
     .on("error", err => {
         logger.error("MAILER Redis Client Error")
         logger.error({stack: err.stack})
     })
     .connect()
+
+const healthRedisClient = await redisClientTasksQueue
+    .duplicate()
+    .on("error", err => {
+        logger.error("redisClientTasksQueue Error")
+        logger.error({stack: err.stack})
+    }).connect()
     
 
 export default {
     TasksQueue: redisClientTasksQueue,
-    Mailer: redisClientMailer
+    Mailer: redisClientMailer,
+    healthRedisClient: healthRedisClient
 }
