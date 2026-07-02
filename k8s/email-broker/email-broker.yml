@@ -31,7 +31,7 @@ spec:
               topologyKey: "kubernetes.io/hostname"
       containers:
       - name: redis
-        image: redis:7-alpine
+        image: redis
         
         # Configure Redis for queues/streams:
         # We set maxmemory to protect the Kubernetes Pod from OOMKilled errors.

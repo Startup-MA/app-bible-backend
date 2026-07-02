@@ -68,7 +68,7 @@ spec:
               topologyKey: "kubernetes.io/hostname"
       containers:
       - name: redis
-        image: redis:7-alpine
+        image: redis
         command: ["redis-server", "/etc/redis/redis.conf"]
         ports:
         - containerPort: 6379

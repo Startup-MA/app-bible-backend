@@ -54,9 +54,9 @@ spec:
           
           envFrom:
             - configMapRef:
-              name: api-config
+                name: api-config
             - secretRef:
-              name: api-credentials
+                name: api-credentials
           env:
             - name: PGHOST
               value: bible-pg-pooler-ro

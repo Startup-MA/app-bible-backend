@@ -1,11 +1,12 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: api-db-migration/seeding
+  name: api-db-migration-seeding
   namespace: app-bible-backend
 spec:
   backoffLimit: 2 
   template:
+    ttlSecondsAfterFinished: 600
     spec:
       restartPolicy: Never 
       containers:
@@ -24,9 +25,9 @@ spec:
 
         envFrom:
           - configMapRef:
-            name: api-config
+              name: api-config
           - secretRef:
-            name: api-credentials
+              name: api-credentials
         env:
           - name: PGHOST
             value: "bible-pg-pooler-rw" 

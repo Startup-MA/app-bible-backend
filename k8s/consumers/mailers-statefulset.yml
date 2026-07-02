@@ -41,9 +41,9 @@ spec:
               
           envFrom:
             - configMapRef:
-              name: mailers-config
+                name: mailers-config
             - secretRef:
-              name: mailer-credentials
+                name: mailer-credentials
           env:
             - name: POD_NAME
               valueFrom:

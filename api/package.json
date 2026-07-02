@@ -15,9 +15,7 @@
     "redis:setup": "node scripts/redisSetup.js",
 
     "dev": "nodemon server.js",
-    "start": "npm run migrate:up && node server.js",
-
-    "start:local": "npm run migrate:up && "
+    "start": "node server.js"
   },
   "dependencies": {
     "@paddle/paddle-node-sdk": "^3.6.0",

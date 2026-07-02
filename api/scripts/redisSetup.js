@@ -7,7 +7,7 @@ dotenv.config()
 const { TasksQueue, Mailer } = redisClient
 
 const STREAMS = [
-    { key: process.env.TASKS_STREAM_NAME, group: process.env.GROUP_NAME_TAKSQUEUE, client: TasksQueue },
+    { key: process.env.TASKS_STREAM_NAME, group: process.env.GROUP_NAME_TASKQUEUE, client: TasksQueue },
     { key: process.env.DEAD_MESSAGES_QUEUE_NAME_TASKQUEUE, client: TasksQueue },
     { key: process.env.MAILER_STREAM_NAME, group: process.env.GROUP_NAME_EMAILS, client: Mailer },
     { key: process.env.DEAD_MESSAGES_QUEUE_NAME_EMAILS, client: Mailer }

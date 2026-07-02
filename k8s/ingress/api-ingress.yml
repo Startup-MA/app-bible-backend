@@ -4,8 +4,9 @@ metadata:
   name: bible-api-ingress
   namespace: app-bible-backend
 spec:
+  ingressClassName: nginx
   rules:
-  - host: app-bible.com
+  - host: app-bible.local
     http:
       paths:
       - path: /
