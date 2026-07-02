@@ -7,7 +7,7 @@ import { server } from "../server.js"
 
 dotenv.config()
  
-const { Rome, Mailer, Cache } = redisClient
+const { TasksQueue, Mailer, Cache } = redisClient
 
 export const gracefulShutdown = async (signal) => {
     logger.warn(`Received ${signal}. Starting graceful shutdown...`)
@@ -31,7 +31,7 @@ export const gracefulShutdown = async (signal) => {
             process.exit(1)
         })
 
-        await Rome.quit().catch(err => {
+        await TasksQueue.quit().catch(err => {
             logger.error("Error during Redis taskQueue cleanup")
             logger.error("", {stack: err.stack})
 
