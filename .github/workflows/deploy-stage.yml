@@ -1,0 +1,172 @@
+name: Deploy Stage Environment
+
+on:
+  push:
+    branches:
+      - stage
+  workflow_dispatch:
+    inputs:
+      deploy_frontend:
+        description: "Rebuild and deploy Frontend?"
+        required: true
+        type: boolean
+        default: false    # Unchecked by default when manually clicking
+jobs:
+  # ==========================================
+  # PHASE 1: Provision Infrastructure
+  # ==========================================
+  terraform:
+    name: Run Terraform (DigitalOcean)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+          
+      - name: Terraform Init
+        working-directory: ./terraform
+        run: terraform init
+        
+      - name: Terraform Apply
+        working-directory: ./terraform
+        run: terraform apply -auto-approve
+        env:
+          # Passes your DO token to Terraform
+          TF_WORKSPACE: "stage-cluster"
+          TF_VAR_do_token: ${{ secrets.DO_PAT }}
+          TF_VAR_cluster_name: "bible-stage"
+          TF_VAR_node_size: "s-2vcpu-4gb"    # Small, cheap servers for testing
+          TF_VAR_node_count: 3
+
+  # ==========================================
+  # PHASE 2: Deploy Frontend to Backblaze B2
+  # ==========================================
+  deploy-frontend:
+    name: Sync Frontend to Backblaze B2
+    runs-on: ubuntu-latest
+    needs: terraform # Waits for Phase 1 to finish
+    if: ${{ github.event_name == 'push' || inputs.deploy_frontend == true }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Build Frontend
+        working-directory: ./frontend
+        run: |
+          npm ci
+          npm run build
+          
+      - name: Setup Backblaze B2 CLI
+        uses: svenstaro/b2@v2.0.0
+        with:
+          b2_application_key_id: ${{ secrets.B2_KEY_ID_STAGE }}
+          b2_application_key: ${{ secrets.B2_APP_KEY_STAGE }}
+          
+      - name: Sync Assets to B2 Bucket
+        # Syncs the built files and deletes old ones not in the build
+        run: b2 sync --delete ./frontend/dist b2://${{ secrets.B2_BUCKET_NAME_STAGE }}
+
+  # ==========================================
+  # PHASE 3: Deploy Backend to Kubernetes
+  # ==========================================
+  deploy-kubernetes:
+    name: Apply K8s Manifests & Cloudflare Tunnel
+    runs-on: ubuntu-latest
+    needs: terraform # Waits for Phase 1 to finish
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: Install doctl (DigitalOcean CLI)
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DO_PAT }}
+          
+      - name: Connect to DigitalOcean Cluster
+        run: doctl kubernetes cluster kubeconfig save bible-stage
+        
+      - name: Inject Cloudflare Tunnel Secret
+        # Creates the token secret securely so the cloudflared pod can boot
+        run: |
+
+          kubectl apply -f ./k8s/namespace.yml
+
+          kubectl create secret generic tunnel-token \
+            --from-literal=token=${{ secrets.CF_TUNNEL_TOKEN }} \
+            --namespace=app-bible-backend --dry-run=client -o yaml | kubectl apply -f -
+          
+          kubectl apply -f ./k8s/cloudflare-tunnel/cloudflare-tunnel.yml
+
+      - name: 1. Create Dynamic Secrets
+        # The --dry-run... part ensures it updates existing secrets safely without throwing an error.
+        run: |
+          kubectl create secret generic api-secrets \
+            --from-literal=ADMIN_EMAILS=${{ secrets.ADMIN_EMAILS }} \
+            --from-literal=ADMIN_PASSWORDS_HASHES=${{ secrets.ADMIN_PASSWORDS_HASHES }} \
+            --from-literal=REDIS_SESSION_SECRET=${{ secrets.REDIS_SESSION_SECRET }} \
+            --from-literal=PADDLE_ALLOW_LIST=${{ secrets.PADDLE_SANDBOX_ALLOW_LIST }} \
+            --from-literal=PADDLE_API_KEY=${{ secrets.PADDLE_API_KEY_SANDBOX }} \
+            --from-literal=PADDLE_WEBHOOK_SECRET_KEY=${{ secrets.PADDLE_WEBHOOK_SECRET_KEY_SANDBOX_STAGE }} \
+            --from-literal=PADDLE_API_URL=${{ secrets.PADDLE_API_URL_SANDBOX }} \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+          kubectl create secret generic mailers-secrets \
+            --from-literal=RESEND_API_KEY=${{ secrets.RESEND_API_KEY }} \
+            --from-literal=RESEND_FROM_ADDRESS=${{ secrets.RESEND_FROM_ADDRESS_STAGE }} \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: 2. Deploy Infrastructure & ConfigMaps
+        run: |
+          # Apply your configs and databases first
+          kubectl apply -f ./k8s/configmaps/
+          kubectl apply -f ./k8s/database/
+          kubectl apply -f ./k8s/task-broker/
+          kubectl apply -f ./k8s/email-broker/
+          kubectl apply -f ./k8s/cache/
+          
+          # CRITICAL: Pause the pipeline until the databases are fully running
+          kubectl rollout status deployment/ bible-pg-cluster --timeout=120s
+          kubectl rollout status deployment/task-broker--timeout=120s
+          kubectl rollout status deployment/redis-emails --timeout=120s
+          kubectl rollout status deployment/redis-cache --timeout=120s
+
+      - name: 3. Run Database Migrations & Seeding Job & Redis-Broker Setup
+        run: |
+          # Jobs in Kubernetes cannot be re-applied if they already finished in a previous run.
+          # We must delete the old job first, ignoring errors if it doesn't exist.
+          kubectl delete job api-setup-job --ignore-not-found
+          
+          # Apply the fresh job
+          kubectl apply -f ./k8s/api/migration-job.yml
+          
+          # CRITICAL: Pause the pipeline until the Job completes successfully
+          kubectl wait --for=condition=complete job/api-migration-setup-job --timeout=300s
+
+      - name: 4. Deploy API Layer and Consumers
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get the correct image hash
+          DEV_SHA=$(gh pr list --base stage --state merged --limit 1 --json headRefOid --jq '.[0].headRefOid')
+          if [ -z "$DEV_SHA" ]; then
+            DEV_SHA=${{ github.sha }}
+          fi
+          
+          # Inject the hash into the application manifests
+          sed -i "s/COMMIT_HASH_PLACEHOLDER/$DEV_SHA/g" ./k8s/api/api-deployment.yml ./k8s/consumers/mailers-statefulset.yml ./k8s/consumers/soldiers-statefulset.yml
+          
+          # Finally, apply the actual applications!
+          kubectl apply -f ./k8s/api/api-deployment.yml
+          kubectl apply -f ./k8s/consumers/
+          
+          # Optional: Wait for the API to be ready before marking the pipeline as "Success"
+          kubectl rollout status deployment/api --timeout=120s

@@ -28,7 +28,7 @@ spec:
                   - soldier
       containers:
         - name: soldier
-          image: bibleapp/soldier-consumer:latest
+          image: bibleapp/soldier-consumer:COMMIT_HASH_PLACEHOLDER
 
           resources:
             requests:

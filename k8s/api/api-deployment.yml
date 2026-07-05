@@ -46,7 +46,7 @@ spec:
                   - api
       containers:
         - name: api
-          image: bibleapp/api:latest 
+          image: bibleapp/api:COMMIT_HASH_PLACEHOLDER
           imagePullPolicy: Always
 
           ports:

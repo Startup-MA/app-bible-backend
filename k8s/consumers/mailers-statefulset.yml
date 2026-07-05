@@ -29,7 +29,7 @@ spec:
                   
       containers:
         - name: mailer
-          image: bibleapp/mailer:latest
+          image: bibleapp/mailer:COMMIT_HASH_PLACEHOLDER
           
           resources:
             requests:

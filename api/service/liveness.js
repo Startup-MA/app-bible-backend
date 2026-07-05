@@ -13,7 +13,7 @@ async function health() {
     ])
 
     const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Postgres/Redis Ping Timeout Exceeded")), 2000)
+        setTimeout(() => reject(new Error("Postgres/Redis Ping Timeout Exceeded")), 5000)
     )
 
     await Promise.race([allPingsPromise, timeoutPromise])

@@ -167,7 +167,7 @@ const healthServer = http.createServer(async (req, res) => {
             const pingPromise = healthRedisClient.ping()
 
             const timeoutPromise = new Promise((_, reject) =>
-                setTimeout(() => reject(new Error("Redis Ping Timeout Exceeded")), 2000)
+                setTimeout(() => reject(new Error("Redis Ping Timeout Exceeded")), 5000)
             )
 
             await Promise.race([pingPromise, timeoutPromise])

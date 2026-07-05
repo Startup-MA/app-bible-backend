@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: api-db-migration-seeding
+  name: api-migration-setup-job
   namespace: app-bible-backend
 spec:
   backoffLimit: 2 
@@ -11,7 +11,7 @@ spec:
       restartPolicy: Never 
       containers:
       - name: migrator
-        image: bibleapp/api:latest 
+        image: bibleapp/api::COMMIT_HASH_PLACEHOLDER
         
         command: ["/bin/sh", "-c", "npm run migrate:up && npm run seed && npm run redis:setup"]
         
