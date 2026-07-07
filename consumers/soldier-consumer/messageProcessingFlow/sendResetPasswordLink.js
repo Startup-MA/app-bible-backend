@@ -28,7 +28,7 @@ async function sendResetPasswordLink(message) {
                 subject: "Reset your Password",
                 html: `
                     <h3>Here is your password reset link. It expires within 30 minutes</h3>
-                    <a href=${process.env.FRONT_URL + "/reset/" + uuid}>Reset Your Password</a>
+                    <a href="${process.env.FRONT_URL + "/reset/" + uuid}">Reset Your Password</a>
                     <p>If it wasn't you who tried to reset password, just ignore this email or contact us here: support@the.bible.com</p>
                     `,
             },
