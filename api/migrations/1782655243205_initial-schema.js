@@ -86,7 +86,7 @@ export const up = (pgm) => {
             entity_uuid UUID UNIQUE,
             created_at TIMESTAMPTZ DEFAULT NOW(),
             updated_at TIMESTAMPTZ DEFAULT NOW(),
-            id_user INT UNIQUE REFERENCES users(id_user),
+            id_user INT REFERENCES users(id_user),
             id_bible_text_version INT REFERENCES bible_text_versions(id_bible_text_version)
         );
 
@@ -100,7 +100,7 @@ export const up = (pgm) => {
             entity_uuid UUID UNIQUE,
             created_at TIMESTAMPTZ DEFAULT NOW(),
             updated_at TIMESTAMPTZ DEFAULT NOW(),
-            id_user INT UNIQUE REFERENCES users(id_user),
+            id_user INT REFERENCES users(id_user),
             id_bible_text_version INT REFERENCES bible_text_versions(id_bible_text_version)
         );
 
@@ -112,7 +112,7 @@ export const up = (pgm) => {
             entity_uuid UUID UNIQUE,
             created_at TIMESTAMPTZ DEFAULT NOW(),
             updated_at TIMESTAMPTZ DEFAULT NOW(),
-            id_user INT UNIQUE REFERENCES users(id_user),
+            id_user INT REFERENCES users(id_user),
             id_bible_text_version INT REFERENCES bible_text_versions(id_bible_text_version)
         );
 
@@ -132,7 +132,7 @@ export const up = (pgm) => {
             entity_uuid UUID UNIQUE,
             created_at TIMESTAMPTZ DEFAULT NOW(),
             updated_at TIMESTAMPTZ DEFAULT NOW(),
-            id_user INT UNIQUE REFERENCES users(id_user)
+            id_user INT REFERENCES users(id_user)
         );
 
         CREATE TABLE users_tickets (
@@ -210,6 +210,14 @@ export const up = (pgm) => {
  */
 export const down = (pgm) => {
     pgm.sql(`
+
+        DROP TRIGGER IF EXISTS update_customers_updated_at ON customers;
+        DROP TRIGGER IF EXISTS trg_manage_verification_codes_times ON verification_codes;
+        DROP TRIGGER IF EXISTS trg_manage_reset_password_times ON reset_passwords;
+
+        DROP FUNCTION IF EXISTS update_timestamp_column();
+        DROP FUNCTION IF EXISTS refresh_timestamps();
+
         DROP TABLE personal_infos;
         DROP TABLE customers;
         DROP TABLE verification_codes;
@@ -224,12 +232,5 @@ export const down = (pgm) => {
         DROP TABLE bible_text_versions;
         DROP TABLE languages;
         DROP TABLE users;
-
-        DROP TRIGGER IF EXISTS update_customers_updated_at ON customers;
-        DROP TRIGGER IF EXISTS trg_manage_verification_codes_times ON verification_codes;
-        DROP TRIGGER IF EXISTS trg_manage_reset_password_times ON reset_passwords;
-
-        DROP FUNCTION IF EXISTS update_timestamp_column();
-        DROP FUNCTION IF EXISTS refresh_timestamps();
     `)
 };

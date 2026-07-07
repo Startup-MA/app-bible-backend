@@ -19,7 +19,7 @@ async function getProfile(id_user) {
 }
 
 async function skipPersonalInfo(id_user) {
-    taskQueue.publish(
+    await taskQueue.publish(
         TasksQueue,
         process.env.TASKS_STREAM_NAME,
         {
@@ -33,7 +33,7 @@ async function skipPersonalInfo(id_user) {
 }
 
 async function updateProfile(id_user, updatedProfileData) {
-    taskQueue.publish(
+    await taskQueue.publish(
         TasksQueue,
         process.env.TASKS_STREAM_NAME,
         {
@@ -48,7 +48,7 @@ async function updateProfile(id_user, updatedProfileData) {
 }
 
 async function sync(data) {
-    taskQueue.publish(
+    await taskQueue.publish(
         TasksQueue,
         process.env.TASKS_STREAM_NAME,
         data

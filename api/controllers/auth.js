@@ -119,7 +119,7 @@ async function verifyCode(req, res, next) {
         }
     }
 
-    req.session.regenerate(async err => {
+    await req.session.regenerate(async err => {
         if (err) throw err
 
         req.session.user = {
@@ -150,7 +150,7 @@ async function verifyCode(req, res, next) {
             })
         }
 
-        req.session.save(err => {
+        await req.session.save(err => {
             if (err) throw err
 
             return res
@@ -162,7 +162,6 @@ async function verifyCode(req, res, next) {
                 })
         })
     })
-
 }
 
 export default {

@@ -23,7 +23,7 @@ async function getAllLangs() {
 }
 
 async function createTicket(ticket) {
-    taskQueue.publish(
+    await taskQueue.publish(
         TasksQueue,
         process.env.TASKS_STREAM_NAME,
         {
@@ -37,7 +37,7 @@ async function createTicket(ticket) {
 }
 
 async function deleteTickets(from, to) {
-    taskQueue.publish(
+    await taskQueue.publish(
         TasksQueue,
         process.env.TASKS_STREAM_NAME,
         {
