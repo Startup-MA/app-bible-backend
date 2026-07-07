@@ -14,4 +14,9 @@ const pool = new Pool(
     }
 )
 
+pool.on("error", (err, client) => {
+    logger.error("Unexpected error on idle database client")
+    logger.error("", {stack: err.stack})
+})
+
 export default pool
