@@ -14,7 +14,7 @@ export default session({
     resave: false,
     name: "sessionId",
     cookie: {
-        sameSite: process.env.NODE_ENV ? "none" : false,
+        sameSite: process.env.NODE_ENV === "production" ? "none" : false,
         // sameSite: "none",
         secure: process.env.NODE_ENV === "production" ? true : false,
         // secure: true,
