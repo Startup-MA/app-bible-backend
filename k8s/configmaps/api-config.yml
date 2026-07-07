@@ -25,10 +25,10 @@ data:
   CONNECTION_TIMEOUT_MILLIS: "5000"
   IDLE_TIMEOUT_MILLIS: "5000"
 
-  FRONT_URL: http://localhost:3001
+  FRONT_URL: https://stage.app-bible.com
 
   # HASHING
-  SALT_ROUNDS: "10"
+  SALT_ROUNDS: "12"
 
   # PADDLE API URL
   PADDLE_API_URL: sandbox-api.paddle.com

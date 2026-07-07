@@ -28,6 +28,6 @@ data:
   CONNECTION_TIMEOUT_MILLIS: "5000"
   IDLE_TIMEOUT_MILLIS: "5000"
 
-  FRONT_URL: http://localhost:3001
+  FRONT_URL: https://stage.app-bible.com
 
 

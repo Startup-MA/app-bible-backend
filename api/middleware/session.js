@@ -18,7 +18,7 @@ export default session({
         // sameSite: "none",
         secure: process.env.NODE_ENV === "production" ? true : false,
         // secure: true,
-        httpOnly: true,
+        httpOnly: process.env.NODE_ENV === "production" ? true : false,
         maxAge: 1000 * 60 * 120 // ms
     }
 })
