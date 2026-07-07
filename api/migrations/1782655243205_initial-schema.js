@@ -122,7 +122,7 @@ export const up = (pgm) => {
             entity_uuid UUID UNIQUE,
             created_at TIMESTAMPTZ DEFAULT NOW(),
             updated_at TIMESTAMPTZ DEFAULT NOW(),
-            id_user INT UNIQUE REFERENCES users(id_user)
+            id_user INT REFERENCES users(id_user)
         );
 
         CREATE TABLE pray_list (
