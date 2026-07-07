@@ -36,7 +36,7 @@ spec:
         # Configure Redis specifically for caching:
         # 1. --maxmemory: Keep this slightly BELOW the Kubernetes limit (e.g. 400mb vs 512Mi)
         # 2. --maxmemory-policy: 'allkeys-lru' automatically deletes the least-used keys when full
-        args: ["--maxmemory", "400mb", "--maxmemory-policy", "allkeys-lru"]
+        args: ["--maxmemory", "100mb", "--maxmemory-policy", "allkeys-lru"]
         
         ports:
         - containerPort: 6379

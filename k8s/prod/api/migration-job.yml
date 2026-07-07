@@ -11,7 +11,7 @@ spec:
       restartPolicy: Never 
       containers:
       - name: migrator
-        image: bibleapp/api::COMMIT_HASH_PLACEHOLDER
+        image: bibleapp/api:COMMIT_HASH_PLACEHOLDER
         
         command: ["/bin/sh", "-c", "npm run migrate:up && npm run seed && npm run redis:setup"]
         

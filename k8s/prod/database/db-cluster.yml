@@ -58,7 +58,7 @@ apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
 metadata:
   name: bible-pg-backup-daily
-  namespace: app-bible
+  namespace: app-bible-backend
 spec:
   # Schedule: Run every day at exactly midnight (Standard Cron Syntax)
   schedule: "0 0 0 * * *"

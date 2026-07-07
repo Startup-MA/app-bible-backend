@@ -33,10 +33,6 @@ spec:
       - name: redis
         image: redis
         
-        # Configure Redis for queues/streams:
-        # We set maxmemory to protect the Kubernetes Pod from OOMKilled errors.
-        # We DO NOT use an eviction policy (defaults to 'noeviction').
-        # This ensures Redis never silently deletes pending emails if the queue gets too large.
         args: ["--maxmemory", "400mb", "--maxmemory-policy", "allkeys-lru"]
         
         ports:

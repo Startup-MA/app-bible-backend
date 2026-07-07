@@ -61,7 +61,7 @@ jobs:
           node-version: '20'
           
       - name: Build Frontend
-        working-directory: ./frontend
+        working-directory: ./web-service
         run: |
           npm ci
           npm run build
@@ -74,7 +74,7 @@ jobs:
           
       - name: Sync Assets to B2 Bucket
         # Syncs the built files and deletes old ones not in the build
-        run: b2 sync --delete ./frontend/dist b2://${{ secrets.B2_BUCKET_NAME_STAGE }}
+        run: b2 sync --delete ./web-service/dist b2://${{ secrets.B2_BUCKET_NAME_STAGE }}
 
   # ==========================================
   # PHASE 3: Deploy Backend to Kubernetes
@@ -142,8 +142,8 @@ jobs:
           kubectl apply -f ./k8s/stage/cache/
           
           # CRITICAL: Pause the pipeline until the databases are fully running
-          kubectl rollout status deployment/bible-pg-cluster --timeout=120s
-          kubectl rollout status deployment/task-broker--timeout=120s
+          kubectl rollout status cluster/bible-pg-cluster --timeout=120s
+          kubectl rollout status deployment/task-broker --timeout=120s
           kubectl rollout status deployment/redis-emails --timeout=120s
           kubectl rollout status deployment/redis-cache --timeout=120s
 
@@ -151,7 +151,7 @@ jobs:
         run: |
           # Jobs in Kubernetes cannot be re-applied if they already finished in a previous run.
           # We must delete the old job first, ignoring errors if it doesn't exist.
-          kubectl delete job api-setup-job --ignore-not-found
+          kubectl delete job api-migration-setup-job --ignore-not-found
           
           # Apply the fresh job
           kubectl apply -f ./k8s/stage/api/migration-job.yml
@@ -170,7 +170,7 @@ jobs:
           fi
           
           # Inject the hash into the application manifests
-          sed -i "s/COMMIT_HASH_PLACEHOLDER/$DEV_SHA/g" ./k8s/stage/api/api-deployment.yml ./k8s/stage/consumers/mailers-statefulset.yml ./k8s/stage/consumers/soldiers-statefulset.yml
+          sed -i "s/COMMIT_HASH_PLACEHOLDER/$DEV_SHA/g" ./k8s/stage/api/api-deployment.yml ./k8s/stage/api/migration-job.yml ./k8s/stage/consumers/mailers-statefulset.yml ./k8s/stage/consumers/soldiers-statefulset.yml
           
           # Finally, apply the actual applications!
           kubectl apply -f ./k8s/stage/api/api-deployment.yml
