@@ -178,6 +178,9 @@ const healthServer = http.createServer(async (req, res) => {
 
             return res.end("OK")
         } catch (error) {
+            logger.error("Error during /health check")
+            logger.error({stack: error.stack})
+            
             res.writeHead(503)
 
             logger.info("response: /ready -> health")
