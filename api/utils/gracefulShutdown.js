@@ -31,21 +31,21 @@ export const gracefulShutdown = async (signal) => {
             process.exit(1)
         })
 
-        await TasksQueue.quit().catch(err => {
+        await TasksQueue.close().catch(err => {
             logger.error("Error during Redis taskQueue cleanup")
             logger.error("", {stack: err.stack})
 
             process.exit(1)
         })
 
-        await Mailer.quit(err => {
+        await Mailer.close().catch(err => {
             logger.error("Error during Redis Mailer cleanup")
             logger.error("", {stack: err.stack})
 
             process.exit(1)
         })
 
-        await Cache.quit(err => {
+        await Cache.close().catch(err => {
             logger.error("Error during Redis Cache cleanup")
             logger.error("", {stack: err.stack})
 

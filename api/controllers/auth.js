@@ -89,7 +89,7 @@ async function verifyCode(req, res, next) {
     
     const trackerKey = `active_session:user_${result.data[0]["id_user"]}`
     
-    const existingSession = JSON.parse(await Cache.GET(trackerKey).catch(err => {
+    const existingSession = JSON.parse(await Cache.get(trackerKey).catch(err => {
         logger.error(`[Redis Cache] Error extracting existing session from cache by trackerKey ${trackerKey}`)
         throw err
     })) || {mobile: "", browser: ""}
@@ -100,7 +100,7 @@ async function verifyCode(req, res, next) {
     }
         
     if (device === "mobile") {
-        const del = await Cache.DEL(existingSession[device]).catch(err => {
+        const del = await Cache.del(existingSession[device]).catch(err => {
             logger.error(`[Redis Cache] Error deleting existing session: ${existingSession[device]} device: ${device}`)
             throw err
         })
@@ -109,7 +109,7 @@ async function verifyCode(req, res, next) {
             returnedObject["message"] = `Session ${existingSession[device]} was closed. Only one session available on mobile!`
         }
     } else if (device === "browser") {
-        const del = await Cache.DEL(existingSession[device]).catch(err => {
+        const del = await Cache.del(existingSession[device]).catch(err => {
             logger.error(`[Redis Cache] Error deleting existing session: ${existingSession[device]} device: ${device}`)
             throw err
         })
