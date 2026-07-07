@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-cache
+  namespace: app-bible-backend
+  labels:
+    app: redis-cache
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-cache
+  template:
+    metadata:
+      labels:
+        app: redis-cache
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - task-broker
+                  - redis-emails
+                  - redis-cache
+              topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: redis
+        image: redis:7-alpine
+        
+        # Configure Redis specifically for caching:
+        # 1. --maxmemory: Keep this slightly BELOW the Kubernetes limit (e.g. 400mb vs 512Mi)
+        # 2. --maxmemory-policy: 'allkeys-lru' automatically deletes the least-used keys when full
+        args: ["--maxmemory", "400mb", "--maxmemory-policy", "allkeys-lru"]
+        
+        ports:
+        - containerPort: 6379
+          name: redis
+          
+        # Kubernetes Resources based on your previous selection
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"  # Hard ceiling for the Pod
+            cpu: "150m"      # Half a CPU core max
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-cache
+  namespace: app-bible-backend
+spec:
+  type: ClusterIP
+  selector:
+    app: redis-cache
+  ports:
+    - protocol: TCP
+      port: 6379
+      targetPort: 6379

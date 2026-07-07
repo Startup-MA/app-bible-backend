@@ -56,7 +56,7 @@ spec:
             - configMapRef:
                 name: api-config
             - secretRef:
-                name: api-credentials
+                name: api-secrets
           env:
             - name: PGHOST
               value: bible-pg-pooler-ro
@@ -82,10 +82,10 @@ spec:
           resources:
             requests:
               cpu: "100m"
-              memory: "256Mi"
+              memory: "128Mi"
             limits:
-              cpu: "500m" # Half a core max per pod
-              memory: "512Mi"
+              cpu: "200m" # Half a core max per pod
+              memory: "256Mi"
 
           # Liveness Probe (Restarts the pod if it freezes or deadlocks)
           livenessProbe:
@@ -115,8 +115,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: api
-  minReplicas: 10 # Minimum pods on low load
-  maxReplicas: 20 # Maximum pods on high load
+  minReplicas: 2 # Minimum pods on low load
+  maxReplicas: 5 # Maximum pods on high load
   metrics:
     - type: Resource
       resource:

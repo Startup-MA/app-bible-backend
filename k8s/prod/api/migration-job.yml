@@ -27,7 +27,7 @@ spec:
           - configMapRef:
               name: api-config
           - secretRef:
-              name: api-credentials
+              name: api-secrets
         env:
           - name: PGHOST
             value: "bible-pg-pooler-rw" 

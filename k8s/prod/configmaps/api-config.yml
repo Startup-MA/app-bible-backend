@@ -4,8 +4,6 @@ metadata:
   name: api-config
   namespace: app-bible-backend
 data:
-  # NODE_ENV: production
-  NODE_ENV: development
   
   # Redis
   REDIS_TASKSQUEUE_URL: redis://task-broker.app-bible-backend.svc.cluster.local:6379

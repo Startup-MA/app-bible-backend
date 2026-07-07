@@ -38,6 +38,7 @@ jobs:
           # Passes your DO token to Terraform
           TF_WORKSPACE: "stage-cluster"
           TF_VAR_do_token: ${{ secrets.DO_PAT }}
+          TF_VAR_region: "fra1"
           TF_VAR_cluster_name: "bible-stage"
           TF_VAR_node_size: "s-2vcpu-4gb"    # Small, cheap servers for testing
           TF_VAR_node_count: 3
@@ -98,18 +99,25 @@ jobs:
         # Creates the token secret securely so the cloudflared pod can boot
         run: |
 
-          kubectl apply -f ./k8s/namespace.yml
+          kubectl apply -f ./k8s/stage/namespace.yml
 
           kubectl create secret generic tunnel-token \
             --from-literal=token=${{ secrets.CF_TUNNEL_TOKEN }} \
             --namespace=app-bible-backend --dry-run=client -o yaml | kubectl apply -f -
           
-          kubectl apply -f ./k8s/cloudflare-tunnel/cloudflare-tunnel.yml
+          kubectl apply -f ./k8s/stage/cloudflare-tunnel/cloudflare-tunnel.yml
 
       - name: 1. Create Dynamic Secrets
         # The --dry-run... part ensures it updates existing secrets safely without throwing an error.
         run: |
+          # Spaces Secrets for Database Backups
+          kubectl create secret generic do-spaces-creds \
+            --from-literal=ACCESS_KEY_ID=${{ secrets.SPACES_ACCESS_KEY_ID_STAGE }} \
+            --from-literal=ACCESS_SECRET_KEY=${{ secrets.SPACES_SECRET_KEY_STAGE }} \
+            --dry-run=client -o yaml | kubectl apply -f -
+
           kubectl create secret generic api-secrets \
+            --from-literal=NODE_ENV_STAGE=${{ secrets.NODE_ENV_STAGE }} \
             --from-literal=ADMIN_EMAILS=${{ secrets.ADMIN_EMAILS }} \
             --from-literal=ADMIN_PASSWORDS_HASHES=${{ secrets.ADMIN_PASSWORDS_HASHES }} \
             --from-literal=REDIS_SESSION_SECRET=${{ secrets.REDIS_SESSION_SECRET }} \
@@ -127,14 +135,14 @@ jobs:
       - name: 2. Deploy Infrastructure & ConfigMaps
         run: |
           # Apply your configs and databases first
-          kubectl apply -f ./k8s/configmaps/
-          kubectl apply -f ./k8s/database/
-          kubectl apply -f ./k8s/task-broker/
-          kubectl apply -f ./k8s/email-broker/
-          kubectl apply -f ./k8s/cache/
+          kubectl apply -f ./k8s/stage/configmaps/
+          kubectl apply -f ./k8s/stage/database/
+          kubectl apply -f ./k8s/stage/task-broker/
+          kubectl apply -f ./k8s/stage/email-broker/
+          kubectl apply -f ./k8s/stage/cache/
           
           # CRITICAL: Pause the pipeline until the databases are fully running
-          kubectl rollout status deployment/ bible-pg-cluster --timeout=120s
+          kubectl rollout status deployment/bible-pg-cluster --timeout=120s
           kubectl rollout status deployment/task-broker--timeout=120s
           kubectl rollout status deployment/redis-emails --timeout=120s
           kubectl rollout status deployment/redis-cache --timeout=120s
@@ -146,7 +154,7 @@ jobs:
           kubectl delete job api-setup-job --ignore-not-found
           
           # Apply the fresh job
-          kubectl apply -f ./k8s/api/migration-job.yml
+          kubectl apply -f ./k8s/stage/api/migration-job.yml
           
           # CRITICAL: Pause the pipeline until the Job completes successfully
           kubectl wait --for=condition=complete job/api-migration-setup-job --timeout=300s
@@ -162,11 +170,11 @@ jobs:
           fi
           
           # Inject the hash into the application manifests
-          sed -i "s/COMMIT_HASH_PLACEHOLDER/$DEV_SHA/g" ./k8s/api/api-deployment.yml ./k8s/consumers/mailers-statefulset.yml ./k8s/consumers/soldiers-statefulset.yml
+          sed -i "s/COMMIT_HASH_PLACEHOLDER/$DEV_SHA/g" ./k8s/stage/api/api-deployment.yml ./k8s/stage/consumers/mailers-statefulset.yml ./k8s/stage/consumers/soldiers-statefulset.yml
           
           # Finally, apply the actual applications!
-          kubectl apply -f ./k8s/api/api-deployment.yml
-          kubectl apply -f ./k8s/consumers/
+          kubectl apply -f ./k8s/stage/api/api-deployment.yml
+          kubectl apply -f ./k8s/stage/consumers/
           
           # Optional: Wait for the API to be ready before marking the pipeline as "Success"
           kubectl rollout status deployment/api --timeout=120s
