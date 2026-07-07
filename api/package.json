@@ -10,10 +10,8 @@
     "migrate:create": "node-pg-migrate create",
     "migrate:up": "node-pg-migrate up",
     "migrate:down": "node-pg-migrate down",
-    
     "seed": "node scripts/seed.js",
     "redis:setup": "node scripts/redisSetup.js",
-
     "dev": "nodemon server.js",
     "start": "node server.js"
   },
@@ -25,7 +23,6 @@
     "connect-redis": "^9.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
-    "ejs": "^4.0.1",
     "express": "^5.2.1",
     "express-rate-limit": "^8.2.1",
     "express-session": "^1.19.0",

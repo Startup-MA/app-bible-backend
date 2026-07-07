@@ -28,7 +28,6 @@ app.use(cors({
     credentials: true
 }))
 
-app.set("view engine", "ejs")
 app.use(morganMiddleware)
 app.use("/api/webhooks", webhooksRouter)
 

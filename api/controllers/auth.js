@@ -10,7 +10,7 @@ const { Cache } = redisClient
 async function registration(req, res, next) {
     const { email, password } = req.body 
     const code = randomInt(100000, 999999) // vremenno
-    logger.info(`Registring new user`)
+    logger.info(`Registering new user`)
 
     const result = await authService.register(
         email,
