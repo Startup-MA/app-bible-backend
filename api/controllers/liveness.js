@@ -17,6 +17,8 @@ async function health(req, res, next) {
 async function ready(req, res, next) {
     logger.info(`Verifying /ready`)
 
+    await livenessService.health()
+
     return res.status(StatusCodes.OK).json({
         status: "success",
         message: "OK",

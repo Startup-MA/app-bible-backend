@@ -39,8 +39,6 @@ const BLOCK = process.env.BLOCK
 const CLAIM = process.env.CLAIM
 const SLEEP = process.env.SLEEP
 
-let isConsumerReady = false
-
 async function readPendings() {
     while (true) {
         try {
@@ -145,19 +143,11 @@ const healthServer = http.createServer(async (req, res) => {
     logger.info(req.url)
 
     if (req.url === "/ready") {
-        if (isConsumerReady) {
-            res.writeHead(200)
-            
-            logger.info("response: /ready -> OK")
-            
-            return res.end("OK")
-        } else {
-            res.writeHead(503)
-
-            logger.info("response: /ready -> BAD")
-
-            return res.end("Booting")
-        }
+        res.writeHead(200)
+        
+        logger.info("response: /ready -> OK")
+        
+        return res.end("OK")
     }
 
     if (req.url === "/health") {
@@ -193,8 +183,6 @@ const healthServer = http.createServer(async (req, res) => {
 })
 
 healthServer.listen(process.env.APP_PORT, () => {
-    isConsumerReady = true
-
     logger.info(`K8s Health server listening on port ${process.env.APP_PORT}`);
     logger.info(`Consumer ${consumerName} is ready!`)
 
