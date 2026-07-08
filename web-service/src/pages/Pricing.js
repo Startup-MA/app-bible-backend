@@ -160,7 +160,6 @@ function Pricing() {
             setIsUserLoggedIn(true)
             setUserData(data.data.data[0])
             setIsLoaded(true)
-            console.log(data)
         }).catch(error => {
             setIsLoaded(true)
 
@@ -249,7 +248,6 @@ function Pricing() {
                 withCredentials: true
             },
         ).then(data => {
-            console.log(data)
             setTimeout(() => {
                 updater.updateData()
                 setIsLoaded(true)

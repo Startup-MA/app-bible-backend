@@ -191,18 +191,13 @@ function Billing() {
     }
 
     const getSubscription = async (controller = {}) => {
-        const start = new Date().getTime()
         setIsLoaded(false)
 
         const res = axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/customer/getSubscription`, {
             withCredentials: true,
             signal: controller.signal
         }).then(data => {
-            console.log(`getSubscription finished in: ${new Date().getTime() - start}`)
-
             if (data.data.data) {
-                console.log(data)
-                console.log(data.data.data)
                 setSubscriptionData(data.data.data.data)
 
                 setSubscriptionStatus(data.data.data.data.status)
@@ -242,14 +237,12 @@ function Billing() {
     }
 
     const getPaymentMethod = async (controller = {}) => {
-        const start = new Date().getTime()
         setIsLoaded(false)
 
         const res = axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/customer/getCurrentPaymentMethod`, {
             withCredentials: true,
             signal: controller.signal
         }).then(data => {
-            console.log(`getPaymentMethod finished in: ${new Date().getTime() - start}`)
             if (data.data.data) {
                 setPaymentMethod(data.data.data)
                 setIsNoPaymentMethod(false)
@@ -281,14 +274,12 @@ function Billing() {
     }
 
     const getTransactionsList = async (controller = {}) => {
-        const start = new Date().getTime()
         setIsLoaded(false)
 
         const res = axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/customer/getLastYearTransactions`, {
             withCredentials: true,
             signal: controller.signal
         }).then(data => {
-            console.log(`getTransactionsList finished in: ${new Date().getTime() - start}`)
 
             if (data.data.data) {
                 setTransactionsList(data.data.data)
@@ -321,7 +312,6 @@ function Billing() {
     }
 
     const updatePaymentMethod = () => {
-        const start = new Date().getTime()
         setIsLoaded(false)
 
         axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/customer/getUpdatePaymentMethodTransaction`,
@@ -329,7 +319,6 @@ function Billing() {
                 withCredentials: true
             }
         ).then(data => {
-            console.log(`updatePaymentMethod finished in: ${new Date().getTime() - start}`)
             setIsLoaded(true)
             
             if (data.data.data) {
