@@ -30,7 +30,10 @@ jobs:
       - name: Terraform Init
         working-directory: ./terraform
         run: terraform init
-        
+        env:
+          # Passes your DO token to Terraform
+          TF_WORKSPACE: "stage-cluster"
+      
       - name: Terraform Apply
         working-directory: ./terraform
         run: terraform apply -auto-approve
