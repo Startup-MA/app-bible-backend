@@ -67,10 +67,10 @@ jobs:
       - name: Build Frontend
         working-directory: ./web-service
         env:
-          REACT_APP_BACKEND_URL=${{ secrets.BACKEND_URL_DEV }}
-          REACT_APP_PADDLE_INITIALIZE_TOKEN=${{ secrets.PADDLE_INITIALIZE_TOKEN_SANDBOX }}
-          REACT_APP_NODE_ENV=${{ secrets.NODE_ENV_DEV }}
-          REACT_APP_PADDLE_ENVIRONMENT=${{ secrets.PADDLE_ENVIRONMENT_STAGE}}
+          REACT_APP_BACKEND_URL: ${{ secrets.BACKEND_URL_DEV }}
+          REACT_APP_PADDLE_INITIALIZE_TOKEN: ${{ secrets.PADDLE_INITIALIZE_TOKEN_SANDBOX }}
+          REACT_APP_NODE_ENV: ${{ secrets.NODE_ENV_DEV }}
+          REACT_APP_PADDLE_ENVIRONMENT: ${{ secrets.PADDLE_ENVIRONMENT_STAGE}}
         run: |
           npm ci
           npm run build
