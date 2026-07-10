@@ -169,7 +169,17 @@ jobs:
           kubectl rollout status deployment/redis-cache -n app-bible-backend --timeout=120s
 
       - name: 3. Run Database Migrations & Seeding Job & Redis-Broker Setup
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Get the correct image hash
+          DEV_SHA=$(gh pr list --base stage --state merged --limit 1 --json headRefOid --jq '.[0].headRefOid')
+          if [ -z "$DEV_SHA" ]; then
+            DEV_SHA=${{ github.sha }}
+          fi
+
+          sed -i "s/COMMIT_HASH_PLACEHOLDER/$DEV_SHA/g" ./k8s/stage/api/migration-job.yml
+
           # Jobs in Kubernetes cannot be re-applied if they already finished in a previous run.
           # We must delete the old job first, ignoring errors if it doesn't exist.
           kubectl delete job api-migration-setup-job --ignore-not-found
