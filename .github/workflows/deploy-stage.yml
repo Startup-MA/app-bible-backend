@@ -105,7 +105,7 @@ jobs:
           token: ${{ secrets.DO_PAT }}
           
       - name: Connect to DigitalOcean Cluster
-        run: doctl kubernetes cluster kubeconfig save bible-stage
+        run: doctl kubernetes cluster kubeconfig save bible-stage-v2
         
       - name: Inject Cloudflare Tunnel Secret
         # Creates the token secret securely so the cloudflared pod can boot
