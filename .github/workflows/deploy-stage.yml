@@ -111,6 +111,9 @@ jobs:
           
       - name: Connect to DigitalOcean Cluster
         run: doctl kubernetes cluster kubeconfig save bible-stage
+
+      - name: Configure Kubernetes System Components
+        run: kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
         
       - name: Inject Cloudflare Tunnel Secret
         # Creates the token secret securely so the cloudflared pod can boot
@@ -152,13 +155,13 @@ jobs:
             --from-literal=RESEND_FROM_ADDRESS="${{ secrets.RESEND_FROM_ADDRESS_STAGE }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: Install CloudNativePG Operator
+      - name: 2. Install CloudNativePG Operator
         run: |
           kubectl apply --server-side -f https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.22/releases/cnpg-1.22.0.yaml
           
           kubectl rollout status deployment/cnpg-controller-manager -n cnpg-system --timeout=120s
       
-      - name: 2. Deploy Infrastructure & ConfigMaps
+      - name: 3. Deploy Infrastructure & ConfigMaps
         run: |
           # Apply your configs and databases first
           kubectl apply -f ./k8s/stage/configmaps/
@@ -173,7 +176,7 @@ jobs:
           kubectl rollout status deployment/redis-emails -n app-bible-backend --timeout=120s
           kubectl rollout status deployment/redis-cache -n app-bible-backend --timeout=120s
 
-      - name: 3. Run Database Migrations & Seeding Job & Redis-Broker Setup
+      - name: 4. Run Database Migrations & Seeding Job & Redis-Broker Setup
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -197,7 +200,7 @@ jobs:
           # CRITICAL: Pause the pipeline until the Job completes successfully
           kubectl wait --for=condition=complete job/api-migration-setup-job -n app-bible-backend --timeout=300s
 
-      - name: 4. Deploy API Layer and Consumers
+      - name: 5. Deploy API Layer and Consumers
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
