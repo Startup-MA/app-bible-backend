@@ -114,7 +114,7 @@ jobs:
           kubectl apply -f ./k8s/stage/namespace.yml
 
           kubectl create secret generic tunnel-token \
-            --from-literal=token=${{ secrets.CF_TUNNEL_TOKEN_STAGE }} \
+            --from-literal=token="${{ secrets.CF_TUNNEL_TOKEN_STAGE }}" \
             --namespace=app-bible-backend --dry-run=client -o yaml | kubectl apply -f -
           
           kubectl apply -f ./k8s/stage/cloudflare-tunnel/cloudflare-tunnel.yml
@@ -125,26 +125,26 @@ jobs:
           # Spaces Secrets for Database Backups
           kubectl create secret generic do-spaces-creds \
             --namespace=app-bible-backend \
-            --from-literal=ACCESS_KEY_ID=${{ secrets.SPACES_ACCESS_KEY_ID_STAGE }} \
-            --from-literal=ACCESS_SECRET_KEY=${{ secrets.SPACES_SECRET_KEY_STAGE }} \
+            --from-literal=ACCESS_KEY_ID="${{ secrets.SPACES_ACCESS_KEY_ID_STAGE }}" \
+            --from-literal=ACCESS_SECRET_KEY="${{ secrets.SPACES_SECRET_KEY_STAGE }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
           kubectl create secret generic api-secrets \
             --namespace=app-bible-backend \
-            --from-literal=NODE_ENV_STAGE=${{ secrets.NODE_ENV_STAGE }} \
-            --from-literal=ADMIN_EMAILS=${{ secrets.ADMIN_EMAILS }} \
-            --from-literal=ADMIN_PASSWORDS_HASHES=${{ secrets.ADMIN_PASSWORDS_HASHES }} \
-            --from-literal=REDIS_SESSION_SECRET=${{ secrets.REDIS_SESSION_SECRET }} \
-            --from-literal=PADDLE_ALLOW_LIST=${{ secrets.PADDLE_SANDBOX_ALLOW_LIST }} \
-            --from-literal=PADDLE_API_KEY=${{ secrets.PADDLE_API_KEY_SANDBOX }} \
-            --from-literal=PADDLE_WEBHOOK_SECRET_KEY=${{ secrets.PADDLE_WEBHOOK_SECRET_KEY_SANDBOX_STAGE }} \
-            --from-literal=PADDLE_API_URL=${{ secrets.PADDLE_API_URL_SANDBOX }} \
+            --from-literal=NODE_ENV_STAGE="${{ secrets.NODE_ENV_STAGE }}" \
+            --from-literal=ADMIN_EMAILS="${{ secrets.ADMIN_EMAILS }}" \
+            --from-literal=ADMIN_PASSWORDS_HASHES="${{ secrets.ADMIN_PASSWORDS_HASHES }}" \
+            --from-literal=REDIS_SESSION_SECRET="${{ secrets.REDIS_SESSION_SECRET }}" \
+            --from-literal=PADDLE_ALLOW_LIST="${{ secrets.PADDLE_SANDBOX_ALLOW_LIST }}" \
+            --from-literal=PADDLE_API_KEY="${{ secrets.PADDLE_API_KEY_SANDBOX }}" \
+            --from-literal=PADDLE_WEBHOOK_SECRET_KEY="${{ secrets.PADDLE_WEBHOOK_SECRET_KEY_SANDBOX_STAGE }}" \
+            --from-literal=PADDLE_API_URL="${{ secrets.PADDLE_API_URL_SANDBOX }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
           kubectl create secret generic mailers-secrets \
             --namespace=app-bible-backend \
-            --from-literal=RESEND_API_KEY=${{ secrets.RESEND_API_KEY }} \
-            --from-literal=RESEND_FROM_ADDRESS=${{ secrets.RESEND_FROM_ADDRESS_STAGE }} \
+            --from-literal=RESEND_API_KEY="${{ secrets.RESEND_API_KEY }}" \
+            --from-literal=RESEND_FROM_ADDRESS="${{ secrets.RESEND_FROM_ADDRESS_STAGE }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
       - name: 2. Deploy Infrastructure & ConfigMaps
