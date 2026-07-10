@@ -13,7 +13,7 @@ resource "digitalocean_kubernetes_cluster" "main" {
     name     = var.cluster_name
     region   = var.region
     version  = data.digitalocean_kubernetes_versions.latest.latest_version
-    vpc_uuid = digitalocean_vpc.stage_vpc.id
+    vpc_uuid = digitalocean_vpc.main.id
 
     # 4. Define the Node Pool
     node_pool {
