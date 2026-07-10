@@ -150,7 +150,9 @@ jobs:
       - name: Install CloudNativePG Operator
         run: |
           kubectl apply --server-side -f https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.22/releases/cnpg-1.22.0.yaml
-
+          
+          kubectl rollout status deployment/cnpg-controller-manager -n cnpg-system --timeout=120s
+      
       - name: 2. Deploy Infrastructure & ConfigMaps
         run: |
           # Apply your configs and databases first
