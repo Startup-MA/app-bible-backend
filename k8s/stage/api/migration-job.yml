@@ -5,8 +5,8 @@ metadata:
   namespace: app-bible-backend
 spec:
   backoffLimit: 2 
+  ttlSecondsAfterFinished: 600
   template:
-    ttlSecondsAfterFinished: 600
     spec:
       restartPolicy: Never 
       containers:
