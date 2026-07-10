@@ -86,7 +86,7 @@ jobs:
           
       - name: Sync Assets to B2 Bucket
         # Syncs the built files and deletes old ones not in the build
-        run: b2 sync --delete ./web-service/dist b2://${{ secrets.B2_BUCKET_NAME_STAGE }}
+        run: b2 sync --delete ./web-service/build b2://${{ secrets.B2_BUCKET_NAME_STAGE }}
 
   # ==========================================
   # PHASE 3: Deploy Backend to Kubernetes
