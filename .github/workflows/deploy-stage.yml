@@ -163,10 +163,10 @@ jobs:
           kubectl apply -f ./k8s/stage/cache/
           
           # CRITICAL: Pause the pipeline until the databases are fully running
-          kubectl rollout status cluster/bible-pg-cluster --timeout=120s
-          kubectl rollout status deployment/task-broker --timeout=120s
-          kubectl rollout status deployment/redis-emails --timeout=120s
-          kubectl rollout status deployment/redis-cache --timeout=120s
+          kubectl rollout status cluster/bible-pg-cluster -n app-bible-backend --timeout=120s
+          kubectl rollout status deployment/task-broker -n app-bible-backend --timeout=120s
+          kubectl rollout status deployment/redis-emails -n app-bible-backend --timeout=120s
+          kubectl rollout status deployment/redis-cache -n app-bible-backend --timeout=120s
 
       - name: 3. Run Database Migrations & Seeding Job & Redis-Broker Setup
         run: |
@@ -178,7 +178,7 @@ jobs:
           kubectl apply -f ./k8s/stage/api/migration-job.yml
           
           # CRITICAL: Pause the pipeline until the Job completes successfully
-          kubectl wait --for=condition=complete job/api-migration-setup-job --timeout=300s
+          kubectl wait --for=condition=complete job/api-migration-setup-job -n app-bible-backend --timeout=300s
 
       - name: 4. Deploy API Layer and Consumers
         env:
@@ -198,4 +198,4 @@ jobs:
           kubectl apply -f ./k8s/stage/consumers/
           
           # Optional: Wait for the API to be ready before marking the pipeline as "Success"
-          kubectl rollout status deployment/api --timeout=120s
+          kubectl rollout status deployment/api -n app-bible-backend --timeout=120s
