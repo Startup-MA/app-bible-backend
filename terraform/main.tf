@@ -1,6 +1,18 @@
 # 1. Get the latest recommended Kubernetes version from DigitalOcean
 data "digitalocean_kubernetes_versions" "latest" {}
 
+data "digitalocean_project" "main_project" {
+    name = "Bible"
+}
+
+resource "digitalocean_project_resources" "cluster_attachment" {
+    project = data.digitalocean_project.main_project.id
+    
+    resources = [
+        digitalocean_kubernetes_cluster.main.urn
+    ]
+}
+
 # 2. Create a private Virtual Private Cloud (VPC) for security
 resource "digitalocean_vpc" "main" {
     name     = "${var.cluster_name}-vpc"
@@ -16,7 +28,7 @@ resource "digitalocean_kubernetes_cluster" "main" {
     vpc_uuid = digitalocean_vpc.main.id
 
     ha = var.enable_ha
-    
+
     # 4. Define the Node Pool
     node_pool {
         name       = "worker-pool"
