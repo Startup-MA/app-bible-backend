@@ -23,3 +23,9 @@ variable "node_count" {
 	type    = number
 	default = 3
 }
+
+variable "enable_ha" {
+  description = "Enable High Availability control plane"
+  type        = bool
+  default     = false
+}
