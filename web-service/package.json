@@ -5,6 +5,7 @@
   "license": "ISC",
   "author": "",
   "main": "index.js",
+  "homepage": ".",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
