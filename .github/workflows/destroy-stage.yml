@@ -10,6 +10,20 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Install doctl (DigitalOcean CLI)
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DO_PAT }}
+          
+      - name: Connect to DigitalOcean Cluster
+        run: doctl kubernetes cluster kubeconfig save bible-stage
+
+      - name: Gracefully delete Kubernetes resources
+        run: |
+          echo "Attempting to delete the namespace to clear PVCs..."
+          kubectl delete namespace app-bible-backend --timeout=300s --ignore-not-found || true
+          echo "Kubernetes cleanup finished or bypassed. Moving to Terraform."
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
