@@ -15,6 +15,8 @@ resource "digitalocean_kubernetes_cluster" "main" {
     version  = data.digitalocean_kubernetes_versions.latest.latest_version
     vpc_uuid = digitalocean_vpc.main.id
 
+    ha = var.enable_ha
+    
     # 4. Define the Node Pool
     node_pool {
         name       = "worker-pool"
