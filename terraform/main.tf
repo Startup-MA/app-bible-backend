@@ -9,7 +9,8 @@ resource "digitalocean_project_resources" "cluster_attachment" {
     project = data.digitalocean_project.main_project.id
     
     resources = [
-        digitalocean_kubernetes_cluster.main.urn
+        digitalocean_kubernetes_cluster.main.urn,
+        digitalocean_vpc.main.urn
     ]
 }
 

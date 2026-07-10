@@ -76,10 +76,13 @@ jobs:
           npm run build
 
       - name: Setup Backblaze B2 CLI
-        uses: svenstaro/b2@v2.0.0
-        with:
-          b2_application_key_id: ${{ secrets.B2_KEY_ID_STAGE }}
-          b2_application_key: ${{ secrets.B2_APP_KEY_STAGE }}
+        run: |
+          # 1. Download the official B2 Linux binary and make it executable
+          sudo curl -L -o /usr/local/bin/b2 https://github.com/Backblaze/B2_Command_Line_Tool/releases/latest/download/b2-linux
+          sudo chmod +x /usr/local/bin/b2
+          
+          # 2. Authorize the CLI with your account credentials
+          b2 account authorize "${{ secrets.B2_KEY_ID_STAGE }}" "${{ secrets.B2_APP_KEY_STAGE }}"
           
       - name: Sync Assets to B2 Bucket
         # Syncs the built files and deletes old ones not in the build
