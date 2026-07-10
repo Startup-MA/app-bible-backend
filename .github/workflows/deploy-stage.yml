@@ -42,7 +42,7 @@ jobs:
           TF_WORKSPACE: "stage-cluster"
           TF_VAR_do_token: ${{ secrets.DO_PAT }}
           TF_VAR_region: "nyc3"
-          TF_VAR_cluster_name: "bible-stage-v2"
+          TF_VAR_cluster_name: "bible-stage"
           TF_VAR_node_size: "s-2vcpu-4gb"    # Small, cheap servers for testing
           TF_VAR_node_count: 3
           TF_VAR_enable_ha: false
@@ -105,7 +105,7 @@ jobs:
           token: ${{ secrets.DO_PAT }}
           
       - name: Connect to DigitalOcean Cluster
-        run: doctl kubernetes cluster kubeconfig save bible-stage-v2
+        run: doctl kubernetes cluster kubeconfig save bible-stage
         
       - name: Inject Cloudflare Tunnel Secret
         # Creates the token secret securely so the cloudflared pod can boot
@@ -114,7 +114,7 @@ jobs:
           kubectl apply -f ./k8s/stage/namespace.yml
 
           kubectl create secret generic tunnel-token \
-            --from-literal=token=${{ secrets.CF_TUNNEL_TOKEN }} \
+            --from-literal=token=${{ secrets.CF_TUNNEL_TOKEN_STAGE }} \
             --namespace=app-bible-backend --dry-run=client -o yaml | kubectl apply -f -
           
           kubectl apply -f ./k8s/stage/cloudflare-tunnel/cloudflare-tunnel.yml
