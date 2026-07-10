@@ -183,11 +183,13 @@ jobs:
             DEV_SHA=${{ github.sha }}
           fi
 
-          sed -i "s/COMMIT_HASH_PLACEHOLDER/$DEV_SHA/g" ./k8s/stage/api/migration-job.yml
+          SHORT_SHA=${DEV_SHA:0:7}
+
+          sed -i "s/COMMIT_HASH_PLACEHOLDER/$SHORT_SHA/g" ./k8s/stage/api/migration-job.yml
 
           # Jobs in Kubernetes cannot be re-applied if they already finished in a previous run.
           # We must delete the old job first, ignoring errors if it doesn't exist.
-          kubectl delete job api-migration-setup-job --ignore-not-found
+          kubectl delete job api-migration-setup-job -n app-bible-backend --ignore-not-found
           
           # Apply the fresh job
           kubectl apply -f ./k8s/stage/api/migration-job.yml
@@ -205,8 +207,10 @@ jobs:
             DEV_SHA=${{ github.sha }}
           fi
           
+          SHORT_SHA=${DEV_SHA:0:7}
+
           # Inject the hash into the application manifests
-          sed -i "s/COMMIT_HASH_PLACEHOLDER/$DEV_SHA/g" ./k8s/stage/api/api-deployment.yml ./k8s/stage/api/migration-job.yml ./k8s/stage/consumers/mailers-statefulset.yml ./k8s/stage/consumers/soldiers-statefulset.yml
+          sed -i "s/COMMIT_HASH_PLACEHOLDER/$SHORT_SHA/g" ./k8s/stage/api/api-deployment.yml ./k8s/stage/api/migration-job.yml ./k8s/stage/consumers/mailers-statefulset.yml ./k8s/stage/consumers/soldiers-statefulset.yml
           
           # Finally, apply the actual applications!
           kubectl apply -f ./k8s/stage/api/api-deployment.yml
