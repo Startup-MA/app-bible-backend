@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-emails
+  namespace: app-bible-backend
+  labels:
+    app: redis-emails
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-emails
+  template:
+    metadata:
+      labels:
+        app: redis-emails
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - task-broker
+                  - redis-emails
+                  - redis-cache
+              topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: redis
+        image: redis
+        
+        # Configure Redis for queues/streams:
+        # We set maxmemory to protect the Kubernetes Pod from OOMKilled errors.
+        # We DO NOT use an eviction policy (defaults to 'noeviction').
+        # This ensures Redis never silently deletes pending emails if the queue gets too large.
+        args: ["--maxmemory", "100mb", "--maxmemory-policy", "allkeys-lru"]
+        
+        ports:
+          - containerPort: 6379
+            name: redis
+          
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 150m
+            memory: 150Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-emails
+  namespace: app-bible-backend
+spec:
+  # This makes the service accessible only within the cluster
+  type: ClusterIP
+  selector:
+    app: redis-emails
+  ports:
+    - protocol: TCP
+      port: 6379
+      targetPort: 6379

@@ -1,0 +1,42 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Pooler
+metadata:
+  name: bible-pg-pooler-rw
+  namespace: app-bible-backend
+spec:
+  cluster:
+    name: bible-pg-cluster
+
+  instances: 1
+
+  type: rw 
+
+  pgbouncer:
+    poolMode: transaction 
+    parameters:
+      max_client_conn: "1000" 
+      default_pool_size: "20"
+      
+  template:
+    spec:
+      containers:
+        - name: pgbouncer
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 150m
+              memory: 128Mi
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchExpressions:
+                - key: cnpg.io/poolerName
+                  operator: In
+                  values:
+                  - bible-pg-pooler-rw

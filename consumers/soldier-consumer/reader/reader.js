@@ -1,16 +1,18 @@
+import os from "os"
 import redisClient from "../connections/redis.js"
 import dotenv from "dotenv"
 import handleMessge from "../messageHandler/handleMessage.js"
 import sleep from "../utils/sleep.js"
 import { logger } from "../utils/logger.js"
+import { setupRedisStreams } from "../scripts/redisSetup.js"
 
 dotenv.config()
 
-const { Rome } = redisClient
+const { TasksQueue } = redisClient
 
 const consumerName = process.env.POD_NAME || os.hostname()
 
-const streamName = process.env.STREAM_NAME
+const streamName = process.env.TASKS_STREAM_NAME
 const deadMessageQueueName = process.env.DEAD_MESSAGES_QUEUE_NAME
 const groupName = process.env.GROUP_NAME
 const deliveriesCounterLimit = process.env.DELIVERIES_COUNTER_LIMIT
@@ -22,7 +24,7 @@ const SLEEP = process.env.SLEEP
 async function reader() {
     while (true) {
         try {
-            const pendOrRegMess = await Rome.XREADGROUP(
+            const pendOrRegMess = await TasksQueue.XREADGROUP(
                 groupName,
                 consumerName,
                 {
@@ -41,7 +43,7 @@ async function reader() {
                 for (let i = 0; i < pendOrRegMess[0]["messages"].length; i++) {
 
                     if (pendOrRegMess[0]["messages"][i]["deliveriesCounter"] > deliveriesCounterLimit) {
-                        await Rome.XADD(
+                        await TasksQueue.XADD(
                             deadMessageQueueName,
                             "*",
                             {
@@ -49,7 +51,7 @@ async function reader() {
                             }
                         )
 
-                        await Rome.XACKDEL(
+                        await TasksQueue.XACKDEL(
                             streamName,
                             groupName,
                             pendOrRegMess[0]["messages"][i]["id"],
@@ -67,11 +69,17 @@ async function reader() {
                 logger.warn("Queue is empty")
             }
         } catch (err) {
-            logger.error("Error during XPENDING_RANGE:")
-            logger.error("", {stack: err.stack})
+            if (err.message.includes("NOGROUP")) {
+                logger.warn("Redis amnesia detected! Rebuilding streams...")
 
-            logger.warn(`Sleep for ${SLEEP} ms.....`)
-            await sleep(SLEEP)
+                await setupRedisStreams(TasksQueue) 
+            } else {
+                logger.error("Error during XPENDING_RANGE:")
+                logger.error("", {stack: err.stack})
+
+                logger.warn(`Sleep for ${SLEEP} ms.....`)
+                await sleep(SLEEP)
+            }
         }
     }
 }

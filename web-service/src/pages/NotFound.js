@@ -8,6 +8,7 @@ import Loader from "../components/Loader.js"
 import SignUp from "../components/SignUp.js"
 import Login from "../components/Login.js"
 import Reset from "../components/Reset.js"
+import Error from "../components/Error.js"
 
 import "../styles/NotFound.css"
 

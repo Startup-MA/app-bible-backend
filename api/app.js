@@ -10,8 +10,9 @@ import userRouter from "./routes/userRouter.js"
 import sysRouter from "./routes/sysRouter.js"
 import webhooksRouter from "./routes/webhooksRouter.js"
 import customerRouter from "./routes/customerRouter.js"
+import livenessRouter from "./routes/livenessRouter.js"
 
- import { errorHandler } from "./middleware/errorHandler.js"
+import { errorHandler } from "./middleware/errorHandler.js"
 import { morganMiddleware } from "./middleware/morgan.js"
 
 import { swaggerSpec } from "./utils/swaggerSpec.js"
@@ -27,7 +28,6 @@ app.use(cors({
     credentials: true
 }))
 
-app.set("view engine", "ejs")
 app.use(morganMiddleware)
 app.use("/api/webhooks", webhooksRouter)
 
@@ -35,9 +35,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 app.use(session)
-// app.use("/api/user", authenticate.session, authenticate.userMobile)
-// app.use("/api/customer", authenticate.session)
-// app.use(/api)
+
 app.use("/api/auth", authRouter)
 app.use("/api/pass", passRouter)
 app.use("/api/user", userRouter)
@@ -45,6 +43,8 @@ app.use("/api/customer", customerRouter)
 app.use("/api/sys", sysRouter)
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 app.use("/api", dashboardRouter)
+
+app.use("/liveness", livenessRouter)
 
 app.use(notFound)
 

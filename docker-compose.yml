@@ -1,0 +1,78 @@
+services:
+  api:
+    image: ${DOCKERHUB_USERNAME}/api:${IMAGE_TAG:-latest}
+    container_name: api
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    env_file:
+      - .env.api
+    depends_on:
+      - task-queue
+      - email-queue
+      - cache
+      - pg-db
+  # emperor-consumer:
+  #   image: ${DOCKERHUB_USERNAME}/emperor-consumer:${IMAGE_TAG:-latest}
+  #   container_name: emperor-consumer
+  #   restart: unless-stopped
+  #   env_file:
+  #     - .env.emperor-consumer
+  #   depends_on:
+  #     - api
+  soldier-consumer:
+    image: ${DOCKERHUB_USERNAME}/soldier-consumer:${IMAGE_TAG:-latest}
+    container_name: soldier-consumer
+    restart: unless-stopped
+    ports:
+      - 3003:3000
+    env_file:
+      - .env.soldier-consumer
+    depends_on:
+      - api
+  mailer:
+    image: ${DOCKERHUB_USERNAME}/mailer:${IMAGE_TAG:-latest}
+    container_name: mailer
+    restart: unless-stopped
+    ports:
+      - 3002:3000
+    env_file:
+      - .env.mailer
+    depends_on:
+      - api
+  web-service:
+    image: ${DOCKERHUB_USERNAME}/web-service:${IMAGE_TAG:-latest}
+    container_name: web-service
+    restart: unless-stopped
+    ports:
+      - ${FRONTEND_PORT}:80
+    depends_on:
+      - api
+  task-queue:
+    image: redis
+    container_name: task-queue
+    restart: always
+  email-queue:
+    image: redis
+    container_name: email-queue
+    restart: always
+  cache:
+    image: redis
+    container_name: cache
+    restart: always
+  rcli:
+    image: "redis"
+    container_name: rcli
+    depends_on:
+      - task-queue
+      - email-queue
+  pg-db:
+    image: postgres
+    container_name: pg-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${PGUSER}
+      POSTGRES_PASSWORD: ${PGPASSWORD}
+      POSTGRES_DB: ${PGDATABASE}
+
+

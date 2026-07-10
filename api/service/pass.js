@@ -4,7 +4,7 @@ import redisClient from "../connections/redis.js"
 import AppError from "../errors/AppError.js"
 import { logger } from "../utils/logger.js"
 
-const { Rome } = redisClient
+const { TasksQueue } = redisClient
 
 async function forgot(email) {
     const userData = await userDAO.findUserByEmail(email)
@@ -15,8 +15,8 @@ async function forgot(email) {
 
     try {
         await taskQueue.publish(
-            Rome,
-            process.env.ROME_STREAM_PRIV_NAME,
+            TasksQueue,
+            process.env.TASKS_STREAM_NAME,
             {
                 processingFlowType: "sendResetPasswordLink",
                 email: email
@@ -42,8 +42,8 @@ async function reset(uuid, new_password) {
 
     try {
         await taskQueue.publish(
-            Rome,
-            process.env.ROME_STREAM_PRIV_NAME,
+            TasksQueue,
+            process.env.TASKS_STREAM_NAME,
             {
                 processingFlowType: "createNewPassword",
                 uuid: uuid,

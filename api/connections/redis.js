@@ -4,11 +4,11 @@ import { logger } from "../utils/logger.js"
 
 dotenv.config()
 
-const redisClientRome = await createClient({
-        url: process.env.REDIS_ROME_URL
+const redisClientTasksQueue = await createClient({
+        url: process.env.REDIS_TASKSQUEUE_URL
     })
     .on("error", err => {
-        logger.error("ROME Redis Client Error")
+        logger.error("Tasks Queue Redis Client Error")
         logger.error({stack: err.stack})
     })
     .connect()
@@ -23,8 +23,18 @@ const redisClientCache = await createClient({
     })
     .connect()
 
+const redisClientMailer = await createClient({
+        url: process.env.REDIS_MAILER_URL
+    })
+    .on("error", err => {
+        logger.error("MAILER Redis Client Error")
+        logger.error({stack: err.stack})
+    })
+    .connect()
+
 
 export default {
-    Rome: redisClientRome,
-    Cache: redisClientCache
+    TasksQueue: redisClientTasksQueue,
+    Cache: redisClientCache,
+    Mailer: redisClientMailer
 }

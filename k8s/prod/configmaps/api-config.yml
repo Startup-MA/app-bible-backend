@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-config
+  namespace: app-bible-backend
+data:
+  
+  # Redis
+  REDIS_TASKSQUEUE_URL: redis://task-broker.app-bible-backend.svc.cluster.local:6379
+  REDIS_MAILER_URL: redis://redis-emails.app-bible-backend.svc.cluster.local:6379
+  REDIS_CACHE_URL: redis://redis-cache.app-bible-backend.svc.cluster.local:6379
+  TASKS_STREAM_NAME: queue:tasks
+  MAILER_STREAM_NAME: queue:emails
+  DEAD_MESSAGES_QUEUE_NAME_TASKQUEUE: queue:dead-tasks
+  DEAD_MESSAGES_QUEUE_NAME_EMAILS: queue:deadEmails
+  GROUP_NAME_TASKQUEUE: soldiers
+  GROUP_NAME_EMAILS: mailers
+
+  APP_PORT: "3000"
+
+  # CNPG
+  MAX: "10"
+  CONNECTION_TIMEOUT_MILLIS: "5000"
+  IDLE_TIMEOUT_MILLIS: "5000"
+
+  FRONT_URL: https://stage.app-bible.com
+
+  # HASHING
+  SALT_ROUNDS: "12"
+
+  # PADDLE API URL
+  PADDLE_API_URL: sandbox-api.paddle.com

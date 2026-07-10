@@ -1,0 +1,127 @@
+---
+# 1. THE SERVICE (Internal Load Balancer)
+apiVersion: v1
+kind: Service
+metadata:
+  name: bible-api-service
+  namespace: app-bible-backend
+spec:
+  selector:
+    app: api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: ClusterIP
+
+---
+# 2. THE DEPLOYMENT (Your Node.js Application)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: app-bible-backend
+spec:
+  # We leave replicas out here because the HPA (below) will control it!
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      # Spread API pods across different Droplets for High Availability!
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - api
+      containers:
+        - name: api
+          image: bibleapp/api:COMMIT_HASH_PLACEHOLDER
+          imagePullPolicy: Always
+
+          ports:
+            - containerPort: 3000
+          
+          envFrom:
+            - configMapRef:
+                name: api-config
+            - secretRef:
+                name: api-secrets
+          env:
+            - name: PGHOST
+              value: bible-pg-pooler-ro
+            - name: PGDATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: bible-pg-cluster-app
+                  key: dbname
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: bible-pg-cluster-app
+                  key: password
+            - name: PGPORT
+              value: "5432"
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: bible-pg-cluster-app
+                  key: user
+
+          # Protecting the Droplet from Memory Leaks
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m" # Half a core max per pod
+              memory: "256Mi"
+
+          # Liveness Probe (Restarts the pod if it freezes or deadlocks)
+          livenessProbe:
+            httpGet:
+              path: /liveness/health
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+
+          # Readiness Probe (Removes pod from rotation if it is overwhelmed)
+          readinessProbe:
+            httpGet:
+              path: /liveness/ready
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+
+---
+# 3. HORIZONTAL POD AUTOSCALER (The Auto-Scaler)
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: bible-api-hpa
+  namespace: app-bible-backend
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api
+  minReplicas: 2 # Minimum pods on low load
+  maxReplicas: 5 # Maximum pods on high load
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        # If the average CPU across all pods hits 70%, add another pod!
+        target:
+          type: Utilization
+          averageUtilization: 70

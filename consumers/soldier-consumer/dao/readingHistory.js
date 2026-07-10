@@ -11,6 +11,7 @@ async function syncUserReadingHistory(readingHistory, id_user) {
                         entity_uuid,
                         id_user
                     ) VALUES($1, $2, $3)
+                    ON CONFLICT (entity_uuid) DO NOTHING
                 `,
                 [
                     readingHistory["created"]["user_reading_history_json"],

@@ -1,0 +1,237 @@
+name: Deploy to Dev Droplet (Docker Hub)
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  # PHASE 1: Build and Push Images to Docker Hub
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Declare Short Git SHA
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push API
+        uses: docker/build-push-action@v5
+        with:
+          context: ./api
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/api:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/api:${{ steps.vars.outputs.sha_short }}
+
+      # - name: Build and push Emperor-Consumer
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./consumers/emperor-consumer
+      #     push: true
+      #     tags: |
+      #       ${{ secrets.DOCKERHUB_USERNAME }}/emperor-consumer:latest
+      #       ${{ secrets.DOCKERHUB_USERNAME }}/emperor-consumer:${{ steps.vars.outputs.sha_short }}
+      
+      - name: Build and push Soldier-Consumer
+        uses: docker/build-push-action@v5
+        with:
+          context: ./consumers/soldier-consumer
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/soldier-consumer:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/soldier-consumer:${{ steps.vars.outputs.sha_short }}
+
+      - name: Build and push Mailer
+        uses: docker/build-push-action@v5
+        with:
+          context: ./consumers/mailer
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/mailer:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/mailer:${{ steps.vars.outputs.sha_short }}
+
+      - name: Build and push Web-Service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./web-service
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/web-service:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/web-service:${{ steps.vars.outputs.sha_short }}
+          build-args: |
+            REACT_APP_BACKEND_URL=${{ secrets.BACKEND_URL_DEV }}
+            REACT_APP_PADDLE_INITIALIZE_TOKEN=${{ secrets.PADDLE_INITIALIZE_TOKEN_SANDBOX }}
+            REACT_APP_NODE_ENV=${{ secrets.NODE_ENV_DEV }}
+            REACT_APP_PADDLE_ENVIRONMENT=${{ secrets.PADDLE_ENVIRONMENT_DEV }}
+
+  # PHASE 2: Deploy to Droplet (Runs only after Phase 1 succeeds)
+  deploy-to-droplet:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Declare Short Git SHA
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      # NEW: Copy ONLY the docker-compose.yml file from GitHub to the Droplet
+      - name: Copy docker-compose file to Droplet
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.DROPLET_IP_DEV }}
+          username: root
+          key: ${{ secrets.DO_SSH_KEY_DEV }}
+          source: "docker-compose.yml, db"
+          target: "/root/app-bible-backend"
+          timeout: 120s
+          command_timeout: 120s
+
+      - name: Deploy to DigitalOcean via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DROPLET_IP_DEV }}
+          username: root
+          key: ${{ secrets.DO_SSH_KEY_DEV }}
+          script: |
+            cd /root/app-bible-backend
+            
+            # DOCKER-COMPOSE envs
+
+            cat << 'EOF' > .env
+            IMAGE_TAG=${{ steps.vars.outputs.sha_short }}
+            DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
+            API_PORT=${{ secrets.API_PORT }}
+            FRONTEND_PORT=${{ secrets.FRONTEND_PORT }}
+            PGDATABASE=${{ secrets.PGDATABASE }}
+            PGPASSWORD=${{ secrets.PGPASSWORD }}
+            PGUSER=${{ secrets.PGUSER }}
+            TASKS_STREAM_NAME=${{secrets.TASKS_STREAM_NAME}}
+            DEAD_MESSAGES_QUEUE_NAME=${{secrets.DEAD_MESSAGES_QUEUE_NAME}}
+            TASKS_GROUP_NAME=${{secrets.TASKS_GROUP_NAME}}
+            EMAILS_STREAM_NAME=${{secrets.EMAILS_STREAM_NAME}}
+            MAILERS_GROUP_NAME=${{secrets.MAILERS_GROUP_NAME}}
+            DEAD_MESS_EMAIL_QUEUE_NAME=${{secrets.DEAD_MESS_EMAIL_QUEUE_NAME}}
+            EOF
+
+            # API envs
+            cat << 'EOF' > .env.api
+            NODE_ENV=${{ secrets.NODE_ENV_DEV }}
+            FRONT_URL=${{ secrets.FRONTEND_URL_DEV}}
+            PGDATABASE=${{ secrets.PGDATABASE }}
+            PGHOST=${{ secrets.PGHOST }}
+            PGPASSWORD=${{ secrets.PGPASSWORD }}
+            PGPORT=${{ secrets.PGPORT }}
+            PGUSER=${{ secrets.PGUSER }}
+            MAX=${{ secrets.MAX }}
+            CONNECTION_TIMEOUT_MILLIS=${{ secrets.CONNECTION_TIMEOUT_MILLIS }}
+            IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}
+            ADMIN_EMAILS=${{ secrets.ADMIN_EMAILS }}
+            ADMIN_PASSWORDS_HASHES='${{ secrets.ADMIN_PASSWORDS_HASHES }}'
+            APP_PORT=${{ secrets.API_PORT }}
+            REDIS_TASKSQUEUE_URL=${{ secrets.REDIS_TASKSQUEUE_URL }}
+            REDIS_MAILER_URL=${{ secrets.REDIS_MAILER_URL }}
+            REDIS_CACHE_URL=${{ secrets.REDIS_CACHE_URL }}
+            TASKS_STREAM_NAME=${{ secrets.TASKS_STREAM_NAME }}
+            MAILER_STREAM_NAME=${{ secrets.MAILER_STREAM_NAME }}
+            DEAD_MESSAGES_QUEUE_NAME_TASKQUEUE=${{ secrets.DEAD_MESS_REG_QUEUE_NAME }}
+            DEAD_MESSAGES_QUEUE_NAME_EMAILS=${{ secrets.DEAD_MESS_EMAIL_QUEUE_NAME }}
+            GROUP_NAME_TAKSQUEUE=${{ secrets.TASKS_GROUP_NAME }}
+            GROUP_NAME_EMAILS=${{ secrets.MAILERS_GROUP_NAME }}
+            REDIS_SESSION_SECRET=${{ secrets.REDIS_SESSION_SECRET }}
+            SALT_ROUNDS=${{ secrets.SALT_ROUNDS_DEV }}
+            PADDLE_ALLOW_LIST=${{ secrets.PADDLE_SANDBOX_ALLOW_LIST }}
+            PADDLE_API_KEY=${{ secrets.PADDLE_API_KEY_SANDBOX }}
+            PADDLE_WEBHOOK_SECRET_KEY=${{ secrets.PADDLE_WEBHOOK_SECRET_KEY_SANDBOX }}
+            PADDLE_API_URL=${{ secrets.PADDLE_API_URL_SANDBOX }}
+            EOF
+            
+            # # EMPEROR-CONSUMER envs
+
+            # cat << 'EOF' > .env.emperor-consumer
+            # NODE_ENV=${{ secrets.NODE_ENV_DEV }}
+            # REDIS_ROME_URL=${{ secrets.REDIS_ROME_URL }}
+            # REDIS_MAILER_URL=${{ secrets.REDIS_MAILER_URL }}
+            # STREAM_NAME=${{ secrets.PRIV_STREAM_NAME }}
+            # MAILER_STREAM_NAME=${{ secrets.MAILER_STREAM_NAME }}
+            # DEAD_MESSAGES_QUEUE_NAME=${{ secrets.DEAD_MESS_PRIV_QUEUE_NAME }}
+            # GROUP_NAME=${{ secrets.PRIV_GROUP_NAME }}
+            # DELIVERIES_COUNTER_LIMIT=${{ secrets.DELIVERIES_COUNTER_LIMIT }}
+            # COUNT=${{ secrets.COUNT }}
+            # BLOCK=${{ secrets.BLOCK }}
+            # CLAIM=${{ secrets.CLAIM }}
+            # SLEEP=${{ secrets.SLEEP }}
+            # PGDATABASE=${{ secrets.PGDATABASE }}
+            # PGHOST=${{ secrets.PGHOST }}
+            # PGPASSWORD=${{ secrets.PGPASSWORD }}
+            # PGPORT=${{ secrets.PGPORT }}
+            # PGUSER=${{ secrets.PGUSER }}
+            # MAX=${{ secrets.MAX }}
+            # CONNECTION_TIMEOUT_MILLIS=${{ secrets.CONNECTION_TIMEOUT_MILLIS }}
+            # IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}
+            # EOF
+            
+            # MAILER envs
+
+            cat << 'EOF' > .env.mailer
+            NODE_ENV=${{ secrets.NODE_ENV_DEV }}
+            REDIS_MAILER_URL=${{ secrets.REDIS_MAILER_URL }}
+            STREAM_NAME=${{ secrets.MAILER_STREAM_NAME }}
+            DEAD_MESSAGES_QUEUE_NAME=${{ secrets.DEAD_MESS_EMAIL_QUEUE_NAME }}
+            GROUP_NAME=${{ secrets.MAILERS_GROUP_NAME }}
+            DELIVERIES_COUNTER_LIMIT=${{ secrets.DELIVERIES_COUNTER_LIMIT }}
+            COUNT=${{ secrets.COUNT }}
+            BLOCK=${{ secrets.BLOCK }}
+            CLAIM=${{ secrets.CLAIM }}
+            SLEEP=${{ secrets.SLEEP }}
+            APP_PORT=${{ secrets.API_PORT }}
+            RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
+            RESEND_FROM_ADDRESS=${{ secrets.RESEND_FROM_ADDRESS_DEV }}
+            EOF
+            
+            # SOLDIER-CONSUMER envs
+
+            cat << 'EOF' > .env.soldier-consumer
+            NODE_ENV=${{ secrets.NODE_ENV_DEV }}
+            REDIS_TASKSQUEUE_URL=${{ secrets.REDIS_TASKSQUEUE_URL }}
+            REDIS_MAILER_URL=${{ secrets.REDIS_MAILER_URL }}
+            MAILER_STREAM_NAME=${{ secrets.MAILER_STREAM_NAME }}
+            TASKS_STREAM_NAME=${{ secrets.TASKS_STREAM_NAME }}
+            DEAD_MESSAGES_QUEUE_NAME=${{ secrets.DEAD_MESS_REG_QUEUE_NAME }}
+            GROUP_NAME=${{ secrets.TASKS_GROUP_NAME }}
+            DELIVERIES_COUNTER_LIMIT=${{ secrets.DELIVERIES_COUNTER_LIMIT }}
+            COUNT=${{ secrets.COUNT }}
+            BLOCK=${{ secrets.BLOCK }}
+            CLAIM=${{ secrets.CLAIM }}
+            SLEEP=${{ secrets.SLEEP }}
+            APP_PORT=${{ secrets.API_PORT }}
+            PGDATABASE=${{ secrets.PGDATABASE }}
+            PGHOST=${{ secrets.PGHOST }}
+            PGPASSWORD=${{ secrets.PGPASSWORD }}
+            PGPORT=${{ secrets.PGPORT }}
+            PGUSER=${{ secrets.PGUSER }}
+            MAX=${{ secrets.MAX }}
+            CONNECTION_TIMEOUT_MILLIS=${{ secrets.CONNECTION_TIMEOUT_MILLIS }}
+            IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}
+            FRONT_URL=${{ secrets.FRONTEND_URL_DEV }}
+            EOF
+
+            docker compose down
+            
+            docker compose run --rm api npm run migrate:up
+            docker compose run --rm api npm run seed
+            docker compose run --rm api npm run redis:setup
+
+            docker compose up -d
+
+            docker image prune -a -f

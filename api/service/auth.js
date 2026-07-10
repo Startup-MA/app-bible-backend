@@ -5,7 +5,7 @@ import encryptor from "../utils/encryptor.js"
 import AppError from "../errors/AppError.js"
 import { logger } from "../utils/logger.js"
 
-const { Rome } = redisClient
+const { TasksQueue } = redisClient
 
 async function register(email, password, code) {
     const userData = await userDAO.findUserByEmail(email)
@@ -15,8 +15,8 @@ async function register(email, password, code) {
     }
 
     await taskQueue.publish(
-        Rome,
-        process.env.ROME_STREAM_PRIV_NAME,
+        TasksQueue,
+        process.env.TASKS_STREAM_NAME,
         {
             processingFlowType: "registerNewUser",
             email: email,
@@ -49,8 +49,8 @@ async function login(email, password, code) {
     }
     
     await taskQueue.publish(
-        Rome,
-        process.env.ROME_STREAM_PRIV_NAME,
+        TasksQueue,
+        process.env.TASKS_STREAM_NAME,
         {
             processingFlowType: "sendNewVerificationCode",
             id_user: String(userData[0]["id_user"]),
@@ -83,8 +83,8 @@ async function resetCode(email, password, code) {
     }
     
     await taskQueue.publish(
-        Rome,
-        process.env.ROME_STREAM_PRIV_NAME,
+        TasksQueue,
+        process.env.TASKS_STREAM_NAME,
         {
             processingFlowType: "sendNewVerificationCode",
             id_user: String(userData[0]["id_user"]),
@@ -111,8 +111,8 @@ async function verifyUserByCode(code) {
     }
 
     await taskQueue.publish(
-        Rome,
-        process.env.ROME_STREAM_PRIV_NAME,
+        TasksQueue,
+        process.env.TASKS_STREAM_NAME,
         {
             processingFlowType: "deleteUserVerificationCode",
             id_user: String(userData[0]["id_user"]),

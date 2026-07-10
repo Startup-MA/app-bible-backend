@@ -14,10 +14,11 @@ export default session({
     resave: false,
     name: "sessionId",
     cookie: {
+        sameSite: process.env.NODE_ENV === "production" ? "none" : false,
         // sameSite: "none",
-        // secure: process.env.NODE_ENV === "production" ? true : false,
-        secure: false,
-        httpOnly: false,
+        secure: process.env.NODE_ENV === "production" ? true : false,
+        // secure: true,
+        httpOnly: process.env.NODE_ENV === "production" ? true : false,
         maxAge: 1000 * 60 * 120 // ms
     }
 })

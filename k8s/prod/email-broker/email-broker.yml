@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-emails
+  namespace: app-bible-backend
+  labels:
+    app: redis-emails
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-emails
+  template:
+    metadata:
+      labels:
+        app: redis-emails
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - task-broker
+                  - redis-emails
+                  - redis-cache
+              topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: redis
+        image: redis
+        
+        args: ["--maxmemory", "400mb", "--maxmemory-policy", "allkeys-lru"]
+        
+        ports:
+          - containerPort: 6379
+            name: redis
+          
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"  # Hard ceiling for the Pod
+            cpu: "500m"      # Half a CPU core max
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-emails
+  namespace: app-bible-backend
+spec:
+  # This makes the service accessible only within the cluster
+  type: ClusterIP
+  selector:
+    app: redis-emails
+  ports:
+    - protocol: TCP
+      port: 6379
+      targetPort: 6379

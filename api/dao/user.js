@@ -23,7 +23,7 @@ async function findUserById(id_user) {
     const result = await pg.query(
         `
             SELECT
-            id_user,
+            users.id_user,
             name,
             surname,
             age,
@@ -32,7 +32,10 @@ async function findUserById(id_user) {
             personal_info,
             is_admin
             FROM users
-            WHERE id_user = $1
+            LEFT JOIN
+            personal_infos
+            ON users.id_user = personal_infos.id_user
+            WHERE users.id_user = $1
         `,
         [
             id_user
@@ -79,64 +82,9 @@ async function findUserByCode(code) {
     return result["rows"]
 }
 
-async function setNewUUID(id_user) {
-
-    const result = await pg.queryTransaction(async (client) => {
-        let uuid = ""
-
-        const user_ver = await client.query(
-            `
-                SELECT 
-                id_user
-                FROM users_verification
-                WHERE id_user = $1
-            `,
-            [
-                id_user
-            ]
-        )
-
-        if (user_ver["rows"].length) {
-            uuid = await client.query(
-                `
-                    UPDATE
-                    users_verification
-                    SET uuid = $1
-                    WHERE id_user = $2
-                    RETURNING uuid
-                `,
-                [   
-                    randomUUID(),
-                    id_user
-                ]
-            )
-
-            return uuid
-        }
-        
-        uuid = await client.query(
-            `    
-                INSERT INTO
-                users_verification(uuid, id_user)
-                VALUES($1, $2)
-                RETURNING uuid
-            `,
-            [
-                randomUUID(),
-               id_user
-            ]
-        )
-
-        return uuid 
-    })
-
-    return result["rows"]
-}
-
 export default {
     findUserByEmail: findUserByEmail,
     findUserById: findUserById,
     findUserByToken: findUserByToken,
-    findUserByCode: findUserByCode,
-    setNewUUID: setNewUUID,
+    findUserByCode: findUserByCode
 }

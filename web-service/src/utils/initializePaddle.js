@@ -6,7 +6,7 @@ export let updater = {
 
 export const paddle = await initializePaddle({
     token: process.env.REACT_APP_PADDLE_INITIALIZE_TOKEN,
-    environment: "sandbox",
+    environment: process.env.REACT_APP_PADDLE_ENVIRONMENT,
     eventCallback: (data) => {
         if (data.name === "checkout.completed") {
             console.log("checkout.completed")

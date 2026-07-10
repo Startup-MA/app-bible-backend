@@ -3,7 +3,7 @@ import taskQueue from "../utils/redisQueryEngine.js"
 import redisClient from "../connections/redis.js"
 import { logger } from "../utils/logger.js"
 
-const { Rome } = redisClient
+const { TasksQueue } = redisClient
 
 async function getAllBibleTextVersions() {
     const allBibleVersions = await sysDAO.getAllBibleTextVersions()
@@ -23,9 +23,9 @@ async function getAllLangs() {
 }
 
 async function createTicket(ticket) {
-    taskQueue.publish(
-        Rome,
-        process.env.ROME_STREAM_REGULAR_NAME,
+    await taskQueue.publish(
+        TasksQueue,
+        process.env.TASKS_STREAM_NAME,
         {
             processingFlowType: "createTicket",
             ticket: JSON.stringify(ticket)
@@ -37,9 +37,9 @@ async function createTicket(ticket) {
 }
 
 async function deleteTickets(from, to) {
-    taskQueue.publish(
-        Rome,
-        process.env.ROME_STREAM_REGULAR_NAME,
+    await taskQueue.publish(
+        TasksQueue,
+        process.env.TASKS_STREAM_NAME,
         {
             processingFlowType: "deleteTickets",
             from: String(from),

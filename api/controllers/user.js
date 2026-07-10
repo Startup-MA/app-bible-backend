@@ -42,7 +42,7 @@ async function syncBookmarks(req, res, next) {
         id_user: String(id)
     })
 
-    res.status(StatusCodes.OK).json({
+    return res.status(StatusCodes.OK).json({
         status: "success",
         message: "Bookmarks are accepted for sync"
     })
@@ -59,7 +59,7 @@ async function syncNotes(req, res, next) {
         id_user: String(id)
     })
 
-    res.status(StatusCodes.OK).json({
+    return res.status(StatusCodes.OK).json({
         status: "success",
         message: "Notes are accepted for sync"
     })
@@ -84,7 +84,7 @@ async function syncUserReadingHistory(req, res, next) {
         id_user: String(id)
     })
 
-    res.status(StatusCodes.OK).json({
+    return res.status(StatusCodes.OK).json({
         status: "success",
         message: "User Reading History is accepted for sync"
     })
@@ -101,7 +101,7 @@ async function syncHighlights(req, res, next) {
         id_user: String(id)
     })
 
-    res.status(StatusCodes.OK).json({
+    return res.status(StatusCodes.OK).json({
         status: "success",
         message: "Highlights are accepted for sync"
     })
@@ -118,7 +118,7 @@ async function syncPraylist(req, res, next) {
         id_user: String(id)
     })
 
-    res.status(StatusCodes.OK).json({
+    return res.status(StatusCodes.OK).json({
         status: "success",
         message: "Praylist is accepted for sync"
     })
@@ -136,7 +136,7 @@ async function getUserBookmarks(req, res, next) {
         number
     )
 
-    res.status(StatusCodes.OK).json({
+    return res.status(StatusCodes.OK).json({
         status: "success",
         data: {
             bookmarks: result.data
@@ -156,7 +156,7 @@ async function getUserNotes(req, res, next) {
         number
     )
 
-    res.status(StatusCodes.OK).json({
+    return res.status(StatusCodes.OK).json({
         status: "success",
         data: {
             notes: result.data
@@ -173,7 +173,7 @@ async function getUserReadingHistory(req, res, next) {
         id,
     )
 
-    res.status(StatusCodes.OK).json({
+    return res.status(StatusCodes.OK).json({
         status: "success",
         data: {
             reading_history: result.data
@@ -190,7 +190,7 @@ async function getUserHighlights(req, res, next) {
         id
     )
 
-    res.status(StatusCodes.OK).json({
+    return res.status(StatusCodes.OK).json({
         status: "success",
         data: {
             highlights: result.data
@@ -210,7 +210,7 @@ async function getUserPraylist(req, res, next) {
         number
     )
 
-    res.status(StatusCodes.OK).json({
+    return res.status(StatusCodes.OK).json({
         status: "success",
         data: {
             praylist: result.data

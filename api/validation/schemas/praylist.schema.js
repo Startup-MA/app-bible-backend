@@ -8,7 +8,7 @@ const title = Joi.string()
     .trim()
     .required()
     .max(20, "utf8")
-    .message({
+    .messages({
         "string.base": "title must be a string",
         "string.empty": "title connot be empty",
         "string.max": "title could not exceed 20 charcters",

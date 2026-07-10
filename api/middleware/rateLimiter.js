@@ -15,7 +15,11 @@ export const loginRateLimiter = rateLimit({
     store: new RedisStore({
         sendCommand: (...args) => Cache.sendCommand(args),
         prefix: "rl:login:"
-    })
+    }),
+    // keyGenerator: (req) => {
+    //     return req.headers['cf-connecting-ip'] || req.ip;
+    // },
+    // requestIp: (req) => req.ip
 })
 
 export const resetCodeRateLimiter = rateLimit({
@@ -29,7 +33,12 @@ export const resetCodeRateLimiter = rateLimit({
     store: new RedisStore({
         sendCommand: (...args) => Cache.sendCommand(args),
         prefix: "rl:resetCode:"
-    })
+    }),
+    // keyGenerator: (req) => {
+    //     return req.headers['cf-connecting-ip'] || req.ip;
+    // },
+    // requestIp: (req) => req.ip
+
 })
 
 export const webhooksRateLimiter = rateLimit({
@@ -43,7 +52,12 @@ export const webhooksRateLimiter = rateLimit({
     store: new RedisStore({
         sendCommand: (...args) => Cache.sendCommand(args),
         prefix: "rl:webhook:"
-    })
+    }),
+    // keyGenerator: (req) => {
+    //     return req.headers['cf-connecting-ip'] || req.ip;
+    // },
+    // requestIp: (req) => req.ip
+
 })
 
 export const getSubscriptionRateLimiter = rateLimit({
@@ -57,7 +71,11 @@ export const getSubscriptionRateLimiter = rateLimit({
     store: new RedisStore({
         sendCommand: (...args) => Cache.sendCommand(args),
         prefix: "rl:getSubscription:"
-    })
+    }),
+    // keyGenerator: (req) => {
+    //     return req.headers['cf-connecting-ip'] || req.ip;
+    // },
+    // requestIp: (req) => req.ip
 })
 
 export const getCurrentPaymentMethodRateLimiter = rateLimit({
@@ -71,7 +89,11 @@ export const getCurrentPaymentMethodRateLimiter = rateLimit({
     store: new RedisStore({
         sendCommand: (...args) => Cache.sendCommand(args),
         prefix: "rl:getCurrentPaymentMethod:"
-    })
+    }),
+    // keyGenerator: (req) => {
+    //     return req.headers['cf-connecting-ip'] || req.ip;
+    // },
+    // requestIp: (req) => req.ip
 })
 
 export const getLastYearTransactionsRateLimiter = rateLimit({
@@ -85,7 +107,11 @@ export const getLastYearTransactionsRateLimiter = rateLimit({
     store: new RedisStore({
         sendCommand: (...args) => Cache.sendCommand(args),
         prefix: "rl:getLastYearTransactions:"
-    })
+    }),
+    // keyGenerator: (req) => {
+    //     return req.headers['cf-connecting-ip'] || req.ip;
+    // },
+    // requestIp: (req) => req.ip
 })
 
 export const cancelSubscriptionRateLimiter = rateLimit({
@@ -99,7 +125,11 @@ export const cancelSubscriptionRateLimiter = rateLimit({
     store: new RedisStore({
         sendCommand: (...args) => Cache.sendCommand(args),
         prefix: "rl:cancelSubscription:"
-    })
+    }),
+    // keyGenerator: (req) => {
+    //     return req.headers['cf-connecting-ip'] || req.ip;
+    // },
+    // requestIp: (req) => req.ip
 })
 
 export const cancelScheduledCancelRateLimiter = rateLimit({
@@ -113,7 +143,11 @@ export const cancelScheduledCancelRateLimiter = rateLimit({
     store: new RedisStore({
         sendCommand: (...args) => Cache.sendCommand(args),
         prefix: "rl:cancelScheduledCancel:"
-    })
+    }),
+    // keyGenerator: (req) => {
+    //     return req.headers['cf-connecting-ip'] || req.ip;
+    // },
+    // requestIp: (req) => req.ip
 })
 
 export const getUpdatePaymentMethodTransactionRateLimiter = rateLimit({
@@ -127,7 +161,10 @@ export const getUpdatePaymentMethodTransactionRateLimiter = rateLimit({
     store: new RedisStore({
         sendCommand: (...args) => Cache.sendCommand(args),
         prefix: "rl:getUpdatePaymentMethodTransaction:"
-    })
+    }),
+    // keyGenerator: (req) => {
+    //     return req.headers['cf-connecting-ip'] || req.ip;
+    // }
 })
 
 export const upgradePlanRateLimiter = rateLimit({
@@ -141,5 +178,8 @@ export const upgradePlanRateLimiter = rateLimit({
     store: new RedisStore({
         sendCommand: (...args) => Cache.sendCommand(args),
         prefix: "rl:upgradePlan:"
-    })
+    }),
+    // keyGenerator: (req) => {
+    //     return req.headers['cf-connecting-ip'] || req.ip;
+    // }
 })
