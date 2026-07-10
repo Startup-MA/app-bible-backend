@@ -24,7 +24,5 @@ resource "digitalocean_kubernetes_cluster" "main" {
 
     timeouts {
         create = "1h" #for creation
-        update = "1h" #for updates (like node scaling)
-        delete = "30m"
     }
 }
