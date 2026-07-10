@@ -129,6 +129,8 @@ jobs:
 
       - name: 1. Create Dynamic Secrets
         # The --dry-run... part ensures it updates existing secrets safely without throwing an error.
+        env:
+          ADMIN_PASSWORDS_HASHES: ${{ secrets.ADMIN_PASSWORDS_HASHES }}
         run: |
           # Spaces Secrets for Database Backups
           kubectl create secret generic do-spaces-creds \
@@ -141,7 +143,7 @@ jobs:
             --namespace=app-bible-backend \
             --from-literal=NODE_ENV_STAGE="${{ secrets.NODE_ENV_STAGE }}" \
             --from-literal=ADMIN_EMAILS="${{ secrets.ADMIN_EMAILS }}" \
-            --from-literal=ADMIN_PASSWORDS_HASHES="${{ secrets.ADMIN_PASSWORDS_HASHES }}" \
+            --from-literal=ADMIN_PASSWORDS_HASHES=$ADMIN_PASSWORDS_HASHES \
             --from-literal=REDIS_SESSION_SECRET="${{ secrets.REDIS_SESSION_SECRET }}" \
             --from-literal=PADDLE_ALLOW_LIST="${{ secrets.PADDLE_SANDBOX_ALLOW_LIST }}" \
             --from-literal=PADDLE_API_KEY="${{ secrets.PADDLE_API_KEY_SANDBOX }}" \
