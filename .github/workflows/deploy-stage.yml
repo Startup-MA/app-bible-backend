@@ -147,6 +147,10 @@ jobs:
             --from-literal=RESEND_FROM_ADDRESS="${{ secrets.RESEND_FROM_ADDRESS_STAGE }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
+      - name: Install CloudNativePG Operator
+        run: |
+          kubectl apply --server-side -f https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.22/releases/cnpg-1.22.0.yaml
+
       - name: 2. Deploy Infrastructure & ConfigMaps
         run: |
           # Apply your configs and databases first
