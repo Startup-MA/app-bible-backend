@@ -4,6 +4,11 @@ terraform {
             source  = "digitalocean/digitalocean"
             version = "~> 2.0"
         }
+
+        time = {
+            source  = "hashicorp/time"
+            version = "~> 0.11.0"
+        }
     }
     
     # THIS TELLS TERRAFORM TO USE YOUR FREE HASHICORP ACCOUNT
