@@ -33,11 +33,11 @@ jobs:
         working-directory: ./terraform
         run: terraform init
         env:
-          # Passes your DO token to Terraform
           TF_WORKSPACE: "stage-cluster"
 
       - name: Terraform Destroy
-        # This command deletes everything managed by Terraform to save you money
+        working-directory: ./terraform
         run: terraform destroy -auto-approve
         env:
+          TF_WORKSPACE: "stage-cluster"
           TF_VAR_do_token: ${{ secrets.DO_PAT }}
