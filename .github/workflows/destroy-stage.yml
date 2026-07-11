@@ -41,3 +41,5 @@ jobs:
         env:
           TF_WORKSPACE: "stage-cluster"
           TF_VAR_do_token: ${{ secrets.DO_PAT }}
+          TF_VAR_region: "nyc3"
+          TF_VAR_cluster_name: "bible-stage"
