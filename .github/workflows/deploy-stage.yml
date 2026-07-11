@@ -29,7 +29,13 @@ jobs:
           
       - name: Terraform Init
         working-directory: ./terraform
-        run: terraform init
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ secrets.SPACES_BUCKET_NAME_STAGE }}" \
+            -backend-config="key=terraform-state/terraform.tfstate" \
+            -backend-config="endpoint=${{ secrets.SPACES_ENDPOINT_STAGE }}" \
+            -backend-config="access_key=${{ secrets.SPACES_ACCESS_KEY_ID_STAGE }}" \
+            -backend-config="secret_key=${{ secrets.SPACES_SECRET_KEY_STAGE }}"
         env:
           # Passes your DO token to Terraform
           TF_WORKSPACE: "stage-cluster"
