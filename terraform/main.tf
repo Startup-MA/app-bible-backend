@@ -40,12 +40,3 @@ resource "digitalocean_kubernetes_cluster" "main" {
         create = "1h" #for creation
     }
 }
-
-terraform {
-  backend "s3" {
-    skip_credentials_validation = true
-    skip_metadata_api_check     = true
-    skip_region_validation      = true
-    region                      = "us-east-1"
-  }
-}
