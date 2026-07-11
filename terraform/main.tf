@@ -20,6 +20,13 @@ resource "digitalocean_vpc" "main" {
     ip_range = "10.10.0.0/16"
 }
 
+resource "time_sleep" "wait_for_droplets_to_die" {
+    depends_on = [digitalocean_vpc.main]
+
+    # When destroying, pause the entire pipeline for 3 minutes!
+    destroy_duration = "3m" 
+}
+
 # 3. Create the Kubernetes Cluster
 resource "digitalocean_kubernetes_cluster" "main" {
     name     = var.cluster_name
@@ -29,6 +36,8 @@ resource "digitalocean_kubernetes_cluster" "main" {
 
     ha = var.enable_ha
 
+    depends_on = [time_sleep.wait_for_droplets_to_die]
+    
     # 4. Define the Node Pool
     node_pool {
         name       = "worker-pool"
