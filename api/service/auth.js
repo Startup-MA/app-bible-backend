@@ -7,7 +7,7 @@ import { logger } from "../utils/logger.js"
 
 const { TasksQueue } = redisClient
 
-async function register(email, password, code) {
+async function register(email, password) {
     const userData = await userDAO.findUserByEmail(email)
     
     if (userData.length) {
@@ -20,8 +20,7 @@ async function register(email, password, code) {
         {
             processingFlowType: "registerNewUser",
             email: email,
-            password: password,
-            code: code
+            password: password
         }  
     ).catch(err => {
         logger.error("[Redis taskQueue] Error during publishing task to the queue")
@@ -33,7 +32,7 @@ async function register(email, password, code) {
     }
 }
 
-async function login(email, password, code) {
+async function login(email, password) {
     let userData = []
 
     userData = await userDAO.findUserByEmail(email)
@@ -54,8 +53,7 @@ async function login(email, password, code) {
         {
             processingFlowType: "sendNewVerificationCode",
             id_user: String(userData[0]["id_user"]),
-            email: email,
-            code: code // vremenno
+            email: email
         }  
     ).catch(err => {
         logger.error("[Redis taskQueue] Error during publishing task to the queue")
@@ -67,7 +65,7 @@ async function login(email, password, code) {
     }
 }
 
-async function resetCode(email, password, code) {
+async function resetCode(email, password) {
     let userData = []
 
     userData = await userDAO.findUserByEmail(email)
@@ -88,8 +86,7 @@ async function resetCode(email, password, code) {
         {
             processingFlowType: "sendNewVerificationCode",
             id_user: String(userData[0]["id_user"]),
-            email: email,
-            code: code
+            email: email
         }  
     ).catch(err => {
         logger.error("[Redis taskQueue] Error during publishing task to the queue")

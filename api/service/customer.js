@@ -1,8 +1,12 @@
 import customerDAO from "../dao/customer.js"
 import userDAO from "../dao/user.js"
+import taskQueue from "../utils/redisQueryEngine.js"
+import redisClient from "../connections/redis.js"
 import AppError from "../errors/AppError.js"
 import ApiGateway from "../outboundAPI/ApiGateway.js"
 import { logger } from "../utils/logger.js"
+
+const { TasksQueue } = redisClient
 
 async function customerUpdate(data) {
     if (!data.data.customData || !data.data.customData.email) {
@@ -18,12 +22,23 @@ async function customerUpdate(data) {
     const customer = await customerDAO.findCustomerById(data.data.customerId)
 
     if (!customer.length) {
-        await customerDAO.addNewCustomer(data, user[0]["id_user"])
-        
-        logger.info("New customer successfully added!")
+        await taskQueue.publish(
+            TasksQueue,
+            process.env.TASKS_STREAM_NAME,
+            {
+                processingFlowType: "addNewCustomer",
+                data: JSON.stringify(data),
+                id_user: String(user[0]["id_user"])
+            }  
+        ).catch(err => {
+            logger.error("[Redis taskQueue] Error during publishing task to the queue")
+            throw err
+        })
+
+        logger.info("New customer successfully added to the Queue!")
 
         return { 
-            message: "New customer successfully added!",
+            message: "New customer successfully added to the Queue!",
             data: user
         }
     }
@@ -42,12 +57,23 @@ async function customerUpdate(data) {
         }
     }
     
-    await customerDAO.updateCustomer(data, user[0]["id_user"])
+    await taskQueue.publish(
+        TasksQueue,
+        process.env.TASKS_STREAM_NAME,
+        {
+            processingFlowType: "updateCustomer",
+            data: JSON.stringify(data),
+            id_user: String(user[0]["id_user"])
+        }  
+    ).catch(err => {
+        logger.error("[Redis taskQueue] Error during publishing task to the queue")
+        throw err
+    })
 
-    logger.info("Customer successfully updated!")
+    logger.info("Customer successfully added to the Queue for update!")
 
     return {
-        message: "Customer successfully updated!",
+        message: "Customer successfully added to the Queue for update!",
         data: customer
     }
 }

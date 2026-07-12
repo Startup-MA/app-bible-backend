@@ -1,12 +1,9 @@
-import dotenv from "dotenv"
 import taskQueue from "../utils/redisQueryEngine.js"
 import redisClient from "../connections/redis.js"
 import userDAO from "../dao/user.js"
 import { logger } from "../utils/logger.js"
 
 const { Mailer } = redisClient
-
-dotenv.config()
 
 async function deleteUserVerificationCode(message) {
     let newCode

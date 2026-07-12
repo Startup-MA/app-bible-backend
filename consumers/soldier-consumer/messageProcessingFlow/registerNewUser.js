@@ -14,8 +14,7 @@ async function registerNewUser(message) {
     try {
         newUser = await userDAO.registerNewUser(
             message["message"]["email"],
-            message["message"]["password"],
-            message["message"]["code"],
+            message["message"]["password"]
         )
     } catch(err) {
         logger.error("Error during registering new user transaction")

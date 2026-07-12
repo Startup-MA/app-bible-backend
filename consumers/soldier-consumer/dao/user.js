@@ -1,9 +1,6 @@
 import pg from "../utils/pgQueryEngine.js"
-import dotenv from "dotenv"
 import { randomUUID, randomInt } from "crypto"
 import { logger } from "../utils/logger.js"
-
-dotenv.config()
 
 async function skipPersonalInfo(id_user) {
     await pg.query(
@@ -47,7 +44,7 @@ async function updateProfile(id_user, updateProfileData) {
     )
 }
 
-async function registerNewUser(email, password, code) {
+async function registerNewUser(email, password) {
     const result = await pg.queryTransaction(async (client) => {
         const id = await client.query(
             `
@@ -62,8 +59,7 @@ async function registerNewUser(email, password, code) {
             ]
         )
 
-        // const code = await client.query( //vremenno
-        await client.query(
+        const code = await client.query(
             `    
                 INSERT INTO
                 verification_codes(code, id_user)
@@ -71,16 +67,14 @@ async function registerNewUser(email, password, code) {
                 RETURNING code
             `,
             [
-                // randomInt(100000, 999999),
-                code, // vremenno
+                randomInt(100000, 999999),
                 id["rows"][0]["id_user"]
             ]
         )
 
         return [{
             id: id["rows"][0]["id_user"],
-            // code: code["rows"][0]["code"] //vremenno
-            code: code
+            code: code["rows"][0]["code"]
         }]
     })
     
@@ -89,7 +83,7 @@ async function registerNewUser(email, password, code) {
 
 async function sendNewVerificationCode(id_user, code) {
     const result = await pg.queryTransaction(async (client) => {
-        // let code = "" // vremenno
+        let code = ""
 
         const user_code = await client.query(
             `
@@ -113,8 +107,7 @@ async function sendNewVerificationCode(id_user, code) {
                     RETURNING code
                 `,
                 [   
-                    // randomInt(100000, 999999),
-                    code, //vremenno
+                    randomInt(100000, 999999),
                     id_user
                 ]
             )
@@ -130,8 +123,7 @@ async function sendNewVerificationCode(id_user, code) {
                 RETURNING code
             `,
             [
-                // randomInt(100000, 999999),
-                code, //vremenno
+                randomInt(100000, 999999),
                 id_user
             ]
         )
