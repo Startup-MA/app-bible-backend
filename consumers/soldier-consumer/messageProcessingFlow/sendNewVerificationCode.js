@@ -13,8 +13,7 @@ async function sendNewVerificationCode(message) {
 
     try {
         newCode = await userDAO.sendNewVerificationCode(
-            message["message"]["id_user"],
-            message["message"]["code"]   // vremenno
+            message["message"]["id_user"]
         )
     } catch(err) {
         logger.error("Error during setting new verification code transaction")

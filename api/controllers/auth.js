@@ -2,46 +2,39 @@ import authService from "../service/auth.js"
 import encryptor from "../utils/encryptor.js"
 import { StatusCodes } from "http-status-codes"
 import redisClient from "../connections/redis.js"
-import { randomInt } from "crypto"
 import { logger } from "../utils/logger.js"
 
 const { Cache } = redisClient
 
 async function registration(req, res, next) {
     const { email, password } = req.body 
-    const code = randomInt(100000, 999999) // vremenno
+
     logger.info(`Registering new user`)
 
     const result = await authService.register(
         email,
-        await encryptor.encrypt(password),
-        String(code)
+        await encryptor.encrypt(password)
     )
 
     return res.status(StatusCodes.OK).json({
         status: "success",
-        message: result.message,
-        code: code
+        message: result.message
     })     
 }
 
 async function login(req, res, next) {
     const { email, password } = req.body
 
-    const code = randomInt(100000, 999999) // vremenno
-
     logger.info(`Logging a user`)
 
     const result = await authService.login(
         email,
-        password,
-        String(code) // vremenno
+        password
     )
         
     return res.status(StatusCodes.OK).json({
         status: "success",
         message: result.message,
-        code: code
     })
 }
 
@@ -63,20 +56,16 @@ async function logout(req, res, next) {
 async function resetCode(req, res, next) {
     const { email, password } = req.body
 
-    const code = randomInt(100000, 999999) // vremenno
-
     logger.info(`Resetting code for a user`)
 
     const result = await authService.resetCode(
         email,
-        password,
-        String(code) // vremenno
+        password
     )
     
     return res.status(StatusCodes.OK).json({
         status: "success",
-        message: result.message,
-        code: code
+        message: result.message
     })
 }
 
