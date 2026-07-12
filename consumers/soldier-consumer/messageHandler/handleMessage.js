@@ -2,7 +2,8 @@ import skipPersonalInfo from "../messageProcessingFlow/skipPersonalInfo.js"
 import updateProfile from "../messageProcessingFlow/updateProfile.js"
 import sendResetPasswordLink from "../messageProcessingFlow/sendResetPasswordLink.js"
 import createNewPassword from "../messageProcessingFlow/createNewPassword.js"
-import addNewClient from "../messageProcessingFlow/addNewClient.js"
+import addNewCustomer from "../messageProcessingFlow/addNewCustomer.js"
+import updateCustomer from "../messageProcessingFlow/updateCustomer.js"
 import registerNewUser from "../messageProcessingFlow/registerNewUser.js"
 import sendNewVerificationCode from "../messageProcessingFlow/sendNewVerificationCode.js"
 import deleteUserVerificationCode from "../messageProcessingFlow/deleteUserVerificationCode.js"
@@ -54,8 +55,11 @@ async function messageHandler(message) {
         case "createNewPassword":
             await createNewPassword(message)
             break
-        case "addNewClient":
-            await addNewClient(message)
+        case "addNewCustomer":
+            await addNewCustomer(message)
+            break
+        case "updateCustomer":
+            await updateCustomer(message)
             break
         case "createTicket":
             await createTicket(message)

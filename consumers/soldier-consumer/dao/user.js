@@ -1,9 +1,6 @@
 import pg from "../utils/pgQueryEngine.js"
-import dotenv from "dotenv"
 import { randomUUID, randomInt } from "crypto"
 import { logger } from "../utils/logger.js"
-
-dotenv.config()
 
 async function skipPersonalInfo(id_user) {
     await pg.query(
