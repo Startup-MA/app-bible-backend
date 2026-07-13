@@ -36,6 +36,16 @@ jobs:
         env:
           TF_WORKSPACE: "stage-cluster"
 
+      - name: Wipe Staging Database Backups
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.SPACES_ACCESS_KEY_ID_STAGE }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.SPACES_SECRET_KEY_STAGE }}
+        run: |
+          echo "Emptying the staging database backups folder in DO Spaces..."
+          aws s3 rm s3://bible-app-db-backups-stage/database-backups/ \
+            --recursive \
+            --endpoint-url https://nyc3.digitaloceanspaces.com || true
+
       - name: Terraform Destroy
         working-directory: ./terraform
         run: terraform destroy -auto-approve
