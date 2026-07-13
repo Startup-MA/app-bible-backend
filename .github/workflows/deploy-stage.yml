@@ -136,6 +136,14 @@ jobs:
             --set loki.resources.requests.memory="256Mi" \
             --set loki.resources.limits.cpu="500m" \
             --set loki.resources.limits.memory="512Mi" \
+            --set promtail.resources.requests.cpu="50m" \
+            --set promtail.resources.requests.memory="128Mi" \
+            --set promtail.resources.limits.cpu="100m" \
+            --set promtail.resources.limits.memory="128Mi" \
+            --set grafana.resources.requests.cpu="50m" \
+            --set grafana.resources.requests.memory="128Mi" \
+            --set grafana.resources.limits.cpu="100m" \
+            --set grafana.resources.limits.memory="128Mi" \
             --wait --timeout 5m0s
 
       - name: Configure Kubernetes System Components
