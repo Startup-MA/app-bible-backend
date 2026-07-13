@@ -132,6 +132,10 @@ jobs:
             --set loki.persistence.enabled=true \
             --set loki.persistence.storageClassName="do-block-storage" \
             --set loki.persistence.size=10Gi \
+            --set loki.resources.requests.cpu="100m" \
+            --set loki.resources.requests.memory="256Mi" \
+            --set loki.resources.limits.cpu="500m" \
+            --set loki.resources.limits.memory="512Mi" \
             --wait --timeout 5m0s
 
       - name: Configure Kubernetes System Components
