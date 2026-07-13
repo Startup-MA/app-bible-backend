@@ -112,6 +112,27 @@ jobs:
       - name: Connect to DigitalOcean Cluster
         run: doctl kubernetes cluster kubeconfig save bible-stage
 
+      - name: Create Observability Namespace securely
+        run: |
+          kubectl create namespace observability --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Add and Update Grafana Helm Chart
+        run: |
+          helm repo add grafana https://grafana.github.io/helm-charts
+          helm repo update
+
+      - name: Deploy or Upgrade Loki Stack (PLG)
+        run: |
+          helm upgrade --install loki grafana/loki-stack \
+            --namespace observability \
+            --set grafana.enabled=true \
+            --set promtail.enabled=true \
+            --set grafana.adminPassword="${{ secrets.GRAFANA_ADMIN_PASSWORD_STAGE }}" \
+            --set loki.persistence.enabled=true \
+            --set loki.persistence.storageClassName="do-block-storage" \
+            --set loki.persistence.size=10Gi \
+            --wait --timeout 5m0s
+
       - name: Configure Kubernetes System Components
         run: kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
         
