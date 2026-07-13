@@ -36,6 +36,8 @@ resource "digitalocean_kubernetes_cluster" "main" {
 
     ha = var.enable_ha
 
+    destroy_all_associated_resources = var.destroy_associated_resources
+
     depends_on = [time_sleep.wait_for_droplets_to_die]
     
     # 4. Define the Node Pool

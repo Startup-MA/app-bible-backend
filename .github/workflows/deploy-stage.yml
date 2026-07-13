@@ -46,6 +46,7 @@ jobs:
           TF_VAR_node_size: "s-2vcpu-4gb"    # Small, cheap servers for testing
           TF_VAR_node_count: 3
           TF_VAR_enable_ha: false
+          TF_VAR_destroy_associated_resources: true
 
   # ==========================================
   # PHASE 2: Deploy Frontend to Backblaze B2

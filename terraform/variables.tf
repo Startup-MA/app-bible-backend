@@ -29,3 +29,9 @@ variable "enable_ha" {
   type        = bool
   default     = false
 }
+
+variable "destroy_associated_resources" {
+  description = "Automatically delete orphaned resources like load balancers and volumes when the cluster is destroyed."
+  type        = bool
+  default     = true 
+}
