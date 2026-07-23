@@ -1,0 +1,23 @@
+export const topics = [
+    "Anxiety",
+    "Peace",
+    "Trust",
+    "Patience",
+    "Courage",
+    "Gratitude",
+    "Wisdom",
+    "Forgiveness",
+    "Rest",
+    "Love",
+    "Hope",
+    "Purpose",
+    "Faith",
+    "Joy",
+    "Humility",
+    "Kindness",
+    "Obedience", 
+    "Mercy",
+    "Truth",
+	"Protection",
+	"Providence"
+]

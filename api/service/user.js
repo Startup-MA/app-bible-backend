@@ -47,6 +47,21 @@ async function updateProfile(id_user, updatedProfileData) {
     })
 }
 
+async function createOrUpdateUserTopics(id_user, userTopics) {
+    await taskQueue.publish(
+        TasksQueue,
+        process.env.TASKS_STREAM_NAME,
+        {
+            processingFlowType: "createOrUpdateUserTopics",
+            id_user: String(id_user),
+            userTopics: JSON.stringify(userTopics)
+        }  
+    ).catch(err => {
+        logger.error("[Redis taskQueue] Error updating users topics")
+        throw err
+    })
+}
+
 async function sync(data) {
     await taskQueue.publish(
         TasksQueue,
@@ -118,6 +133,7 @@ export default {
     skipPersonalInfo: skipPersonalInfo,
     getProfile: getProfile,
     updateProfile: updateProfile,
+    createOrUpdateUserTopics: createOrUpdateUserTopics,
     sync: sync,
     getUserBookmarks: getUserBookmarks,
     getUserNotes: getUserNotes,

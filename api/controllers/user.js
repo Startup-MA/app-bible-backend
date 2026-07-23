@@ -2,6 +2,7 @@ import userService from "../service/user.js"
 import { StatusCodes } from "http-status-codes"
 import { logger } from "../utils/logger.js"
 import AppError from "../errors/AppError.js"
+import { create } from "domain"
 
 async function skipPersonalInfo(req, res, next) {
     const { id, device } = req.session.user
@@ -28,6 +29,21 @@ async function updateProfile(req, res, next) {
     return res.status(StatusCodes.OK).json({
         status: "success",
         message: "New profile data is accepted for update"
+    })
+}
+
+async function createOrUpdateUserTopics(req, res, next) {
+    const userTopics = req.body
+
+    const { id, device } = req.session.user
+
+    logger.info(`Creating or Updating topics for user: ${id} device: ${device}`)
+
+    await userService.createOrUpdateUserTopics(id, userTopics)
+
+    return res.status(StatusCodes.OK).json({
+        status: "success",
+        message: "Topics are accepted for update"
     })
 }
 
@@ -221,6 +237,7 @@ async function getUserPraylist(req, res, next) {
 export default {
     skipPersonalInfo: skipPersonalInfo,
     updateProfile: updateProfile,
+    createOrUpdateUserTopics: createOrUpdateUserTopics,
     syncBookmarks: syncBookmarks,
     syncNotes: syncNotes,
     syncUserReadingHistory: syncUserReadingHistory,
