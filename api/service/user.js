@@ -1,11 +1,13 @@
 import taskQueue from "../utils/redisQueryEngine.js"
 import redisClient from "../connections/redis.js"
 import userDAO from "../dao/user.js"
+import customerDAO from "../dao/customer.js"
 import bookmarkDAO from "../dao/bookmark.js"
 import noteDAO from "../dao/note.js"
 import readingHistoryDAO from "../dao/readingHistory.js"
 import highlightsDAO from "../dao/highlight.js"
 import praylistDAO from "../dao/praylist.js"
+import AppError from "../errors/AppError.js"
 import { logger } from "../utils/logger.js"
 
 const { TasksQueue } = redisClient
@@ -48,6 +50,16 @@ async function updateProfile(id_user, updatedProfileData) {
 }
 
 async function createOrUpdateUserTopics(id_user, userTopics) {
+    const customerInfo = await customerDAO.getAllCustomerInfoById(id_user)
+
+    if (!((customerInfo[0].subscription_tier === "Advanced" &&
+        customerInfo[0].subscription_status === "active") || 
+        (customerInfo[0].subscription_tier === "Premium" &&
+        customerInfo[0].subscription_status === "active"))) {
+
+        throw AppError.conflict("Not allowed to access. User doesn't have enough rights or an active susbscription.")
+    }
+
     await taskQueue.publish(
         TasksQueue,
         process.env.TASKS_STREAM_NAME,

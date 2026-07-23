@@ -5,7 +5,7 @@ async function createOrUpdateUserTopics(message) {
     try {
         await userDAO.createOrUpdateUserTopics(
             message["message"]["id_user"],
-            message["message"]["userTopics"] 
+            JSON.parse(message["message"]["userTopics"]) 
         )
     } catch (err) {
         logger.error("Error occured during update user topics transaction")

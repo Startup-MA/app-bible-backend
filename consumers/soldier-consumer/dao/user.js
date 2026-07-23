@@ -58,7 +58,7 @@ async function createOrUpdateUserTopics(id_user, userTopics) {
             WHERE users_topics.updated_at < $3
         `,
         [
-            userTopics.topics,
+            userTopics.topics.join(", "),
             id_user,
             userTopics.updated_at
         ]
