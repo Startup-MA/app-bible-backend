@@ -1,5 +1,6 @@
 import skipPersonalInfo from "../messageProcessingFlow/skipPersonalInfo.js"
 import updateProfile from "../messageProcessingFlow/updateProfile.js"
+import createOrUpdateUserTopics from "../messageProcessingFlow/createOrUpdateUserTopics.js"
 import sendResetPasswordLink from "../messageProcessingFlow/sendResetPasswordLink.js"
 import createNewPassword from "../messageProcessingFlow/createNewPassword.js"
 import addNewCustomer from "../messageProcessingFlow/addNewCustomer.js"
@@ -39,6 +40,9 @@ async function messageHandler(message) {
             break
         case "updateProfile":
             await updateProfile(message)
+            break
+        case "createOrUpdateUserTopics":
+            await createOrUpdateUserTopics(message)
             break
         case "registerNewUser":
             await registerNewUser(message)

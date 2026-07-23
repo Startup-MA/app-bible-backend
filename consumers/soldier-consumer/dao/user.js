@@ -1,6 +1,7 @@
 import pg from "../utils/pgQueryEngine.js"
 import { randomUUID, randomInt } from "crypto"
 import { logger } from "../utils/logger.js"
+import { create } from "domain"
 
 async function skipPersonalInfo(id_user) {
     await pg.query(
@@ -30,7 +31,7 @@ async function updateProfile(id_user, updateProfileData) {
             age = EXCLUDED.age,
             personal_info = EXCLUDED.personal_info,
             updated_at = $7
-            WHERE personal_infos.updated_at < $7
+            WHERE personal_infos.updated_at < $7 
         `,
         [
             updateProfileData.name,
@@ -40,6 +41,26 @@ async function updateProfile(id_user, updateProfileData) {
             updateProfileData.age,
             id_user,
             updateProfileData.occurredAt
+        ]
+    )
+}
+
+async function createOrUpdateUserTopics(id_user, userTopics) {
+    await pg.query(
+        `
+            INSERT INTO 
+            users_topics(topics, id_user)
+            VALUES ($1, $2)
+            ON CONFLICT(id_user)
+            DO UPDATE SET
+            topics = EXCLUDED.topics,
+            updated_at = $3
+            WHERE users_topics.updated_at < $3
+        `,
+        [
+            userTopics.topics,
+            id_user,
+            userTopics.updated_at
         ]
     )
 }
@@ -243,6 +264,7 @@ async function updatePassword(uuid, new_password) {
 export default {
     skipPersonalInfo: skipPersonalInfo,
     updateProfile: updateProfile,
+    createOrUpdateUserTopics: createOrUpdateUserTopics,
     registerNewUser: registerNewUser,
     sendNewVerificationCode: sendNewVerificationCode,
     deleteUserVerificationCode: deleteUserVerificationCode,
