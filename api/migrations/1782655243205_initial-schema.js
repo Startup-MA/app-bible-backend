@@ -32,6 +32,14 @@ export const up = (pgm) => {
             id_user INT UNIQUE REFERENCES users(id_user)
         );
 
+        CREATE TABLE users_topics (
+            id_user_topics INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            topics VARCHAR(250),
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            id_user INT UNIQUE REFERENCES users(id_user)
+        );
+
         CREATE TABLE customers (
             id_customer INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
             subscription_id VARCHAR(30) UNIQUE NOT NULL,
@@ -218,6 +226,7 @@ export const down = (pgm) => {
         DROP FUNCTION IF EXISTS update_timestamp_column();
         DROP FUNCTION IF EXISTS refresh_timestamps();
 
+        DROP TABLE users_topics;
         DROP TABLE personal_infos;
         DROP TABLE customers;
         DROP TABLE verification_codes;
