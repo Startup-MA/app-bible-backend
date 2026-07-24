@@ -19,6 +19,7 @@ userRouter.use(authenticate.session)
 userRouter.use(authenticate.userMobile)
 
 userRouter.post("/createOrUpdateUserTopics", validate(createOrUpdateUserTopicsSchema, "body"), userController.createOrUpdateUserTopics)
+userRouter.get("/getUserTopics", userController.getUserTopics)
 
 userRouter.post("/syncBookmarks", validate(syncBookmarksSchema, "body"), userController.syncBookmarks)
 userRouter.get("/getUserBookmarks", validate(getUserBookmarksSchema, "body"), userController.getUserBookmarks)

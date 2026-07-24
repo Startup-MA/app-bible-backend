@@ -47,6 +47,22 @@ async function createOrUpdateUserTopics(req, res, next) {
     })
 }
 
+async function getUserTopics(req, res, next) {
+    const { id, device } = req.session.user
+
+    logger.info(`Retrieving topics for user: ${id} device: ${device}`)
+
+    const result = await userService.getUserTopics(id)
+
+    return res.status(StatusCodes.OK).json({
+        status: "success",
+        message: "User topics",
+        data: {
+            topics: result.data
+        }
+    })
+}
+
 async function syncBookmarks(req, res, next) {
     const { id, device } = req.session.user
 
@@ -238,6 +254,7 @@ export default {
     skipPersonalInfo: skipPersonalInfo,
     updateProfile: updateProfile,
     createOrUpdateUserTopics: createOrUpdateUserTopics,
+    getUserTopics: getUserTopics,
     syncBookmarks: syncBookmarks,
     syncNotes: syncNotes,
     syncUserReadingHistory: syncUserReadingHistory,

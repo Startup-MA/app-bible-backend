@@ -10,6 +10,6 @@ const updated_at = Joi.date()
     })
 
 export const createOrUpdateUserTopicsSchema = Joi.object({
-    topics: Joi.array().items(Joi.string().valid(...topics)).min(1),
+    topics: Joi.array().items(Joi.string().valid(...topics)).min(1).max(topics.length),
     updated_at: updated_at
 }).and("topics", "updated_at")

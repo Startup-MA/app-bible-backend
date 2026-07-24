@@ -1,6 +1,7 @@
 import taskQueue from "../utils/redisQueryEngine.js"
 import redisClient from "../connections/redis.js"
 import userDAO from "../dao/user.js"
+import topicsDAO from "../dao/topics.js"
 import customerDAO from "../dao/customer.js"
 import bookmarkDAO from "../dao/bookmark.js"
 import noteDAO from "../dao/note.js"
@@ -72,6 +73,24 @@ async function createOrUpdateUserTopics(id_user, userTopics) {
         logger.error("[Redis taskQueue] Error updating users topics")
         throw err
     })
+}
+
+async function getUserTopics(id_user) {
+    const customerInfo = await customerDAO.getAllCustomerInfoById(id_user)
+
+    if (!((customerInfo[0].subscription_tier === "Advanced" &&
+        customerInfo[0].subscription_status === "active") || 
+        (customerInfo[0].subscription_tier === "Premium" &&
+        customerInfo[0].subscription_status === "active"))) {
+
+        throw AppError.conflict("Not allowed to access. User doesn't have enough rights or an active susbscription.")
+    }
+
+    const userTopics = await topicsDAO.getUserTopics(id_user)
+
+    return {
+        data: userTopics
+    }
 }
 
 async function sync(data) {
@@ -146,6 +165,7 @@ export default {
     getProfile: getProfile,
     updateProfile: updateProfile,
     createOrUpdateUserTopics: createOrUpdateUserTopics,
+    getUserTopics: getUserTopics,
     sync: sync,
     getUserBookmarks: getUserBookmarks,
     getUserNotes: getUserNotes,
