@@ -1,9 +1,9 @@
 paths:
-  /api/user/syncPraylist:
+  /api/user/syncPrayers:
     post:
       tags:
         - User (Requires "Mobile" authentication)
-      summary: Accepts praylist data objects for sync (Requires authentication - "Cookie" headers field to be filled with active mobile session).
+      summary: Accepts prayers data objects for sync (Requires authentication - "Cookie" headers field to be filled with active mobile session).
       requestBody:
         description: Body object for sync. 
         required: true
@@ -20,11 +20,11 @@ paths:
                     properties:
                       title:
                         type: string
-                        maxLength: 20
+                        maxLength: 100
                         example: Title
                       content:
                         type: string
-                        maxLength: 250
+                        maxLength: 1000
                         example: some content
                       uuid: 
                         type: string
@@ -42,11 +42,11 @@ paths:
                     properties:
                       new_title:
                         type: string
-                        maxLength: 20
+                        maxLength: 100
                         example: New Title
                       new_content:
                         type: string
-                        maxLength: 250
+                        maxLength: 1000
                         example: Some New Content
                       uuid: 
                         type: string
@@ -82,7 +82,7 @@ paths:
                     example: success
                   message:
                     type: string
-                    example: Praylist accepted for sync
+                    example: Prayers are accepted for sync
         400:
           description: Validation for the given input did not passed (Unprocessible format of the entity).
           content:

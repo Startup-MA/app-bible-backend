@@ -1,19 +1,19 @@
 import pg from "../utils/pgQueryEngine.js"
 
-async function getUserPraylistByUserIdAndStartId(id_user, start_id, number) {
+async function getUserPrayersByUserIdAndStartId(id_user, start_id, number) {
     const result = await pg.query(
         `
             SELECT 
-            id_pray AS id,
-            pray_title AS title,
-            pray_content AS content,
+            id_prayer AS id,
+            prayer_title AS title,
+            prayer_content AS content,
             entity_uuid AS uuid,
             created_at,
             updated_at
-            FROM pray_list
+            FROM prayers
             WHERE id_user = $1
-            AND id_pray >= $2
-            ORDER BY id_pray ASC
+            AND id_prayer >= $2
+            ORDER BY id_prayer ASC
             LIMIT ${number}
         `,
         [
@@ -26,5 +26,5 @@ async function getUserPraylistByUserIdAndStartId(id_user, start_id, number) {
 }
 
 export default {
-    getUserPraylistByUserIdAndStartId: getUserPraylistByUserIdAndStartId
+    getUserPrayersByUserIdAndStartId: getUserPrayersByUserIdAndStartId
 }

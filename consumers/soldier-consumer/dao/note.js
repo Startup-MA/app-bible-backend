@@ -39,7 +39,7 @@ async function syncNotes(notes, id_user) {
 
     await pg.queryTransaction(async (client) => {
         if (notes["created"]) {
-            await client.query(
+            console.log(await client.query(
                 `
                     INSERT INTO 
                     notes(
@@ -77,7 +77,7 @@ async function syncNotes(notes, id_user) {
                     Array(created.uuids.length).fill(id_user),
                     created.bible_ids
                 ]
-            )
+            ))
         }   
 
         if (notes["updated"]) {

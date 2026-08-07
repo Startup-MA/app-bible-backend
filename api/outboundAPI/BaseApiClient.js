@@ -27,7 +27,7 @@ class BaseApiClient {
         })
     }
 
-    async request(options, cacheConfig = null) {
+    async request(options) {
         if (this.rateLimitConfig && Cache.isReady) {
             const { keyPrefix, points, duration } = this.rateLimitConfig
             
@@ -44,7 +44,7 @@ class BaseApiClient {
                     
                     logger.warn("Local rate limit predictive pause")
 
-                    throw AppError.too_many_requests("Third-party API rate limit exceeded")
+                    throw AppError.too_many_requests("[Predictive Pause]: Third-party API rate limit exceeded=" + waitTimeMs)
                 }
             } catch (rejection) {
                 if (rejection instanceof AppError) {
@@ -63,7 +63,7 @@ class BaseApiClient {
             return responseData
         } catch (error) {
             if (error.response && error.response.status === 429) {
-                const headerRetry = error.response.headers['retry-after']
+                const headerRetry =  error.response.headers["retry-after"] || error.response.headers["retry-after-ms"] / 1000
                 const retrySecs = parseInt(headerRetry, 10) || 60
 
                 logger.error(`[CRITICAL] Hard 429 from ${options.url}. Halting cluster for ${retrySecs}s`)
@@ -77,7 +77,7 @@ class BaseApiClient {
                     }
                 }
 
-                throw AppError.too_many_requests("Provider rate limit reached")
+                throw AppError.too_many_requests("[API Provider]: API rate limit reached=" + retrySecs)
             }
 
             this.handleError(error, options.url)

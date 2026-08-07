@@ -3,7 +3,7 @@ paths:
     get:
       tags:
         - System
-      summary: Retrieve a list of all available system languages.
+      summary: Retrieves a list of all available system languages.
       responses:
         200:
           description: A list of all available system languages.

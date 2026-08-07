@@ -1,0 +1,86 @@
+paths:
+  /api/sys/getUserDailyVersePrayer:
+    get:
+      tags:
+        - User (Requires "Mobile" authentication)
+      summary: Retrieves user daily generated content (verse and prayer).
+      responses:
+        200:
+          description: User daily content.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: User verse and prayer
+                  data:
+                    type: object
+                    properties:
+                      verse:
+                        type: object
+                        properties:
+                          book:
+                            type: string
+                            example: Acts
+                          chapter:
+                            type: string
+                            example: 20
+                          verse:
+                            type: string
+                            example: 35
+                      prayer:
+                        type: object
+                        properties:
+                          title:
+                            type: string
+                            example: A Heart of Mercy and Patience
+                          prayer:
+                            type: string
+                            example: Heavenly Father, as we reflect on Your words in Acts 20:35, remind us of the blessedness of giving and showing mercy, just as You have shown us patience and compassion. Grant us the grace to forgive those who have hurt us, to extend mercy to others, and to practice patience in all circumstances. May our hearts be filled with Your love, allowing us to emulate Your kindness and understanding. Help us to remember that in serving others with humility and mercy, we mirror the divine love You have for us. Let our lives be a testament to Your enduring patience and boundless mercy, drawing others closer to Your grace. Amen.
+                      lang_name:
+                        type: string
+                        example: English
+        401:
+          description: Authentication error (Session has expired or there is no such session).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Access forbidden
+        409:
+          description: Subscription level doesn't allow to access this content.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Not allowed to access. User doesn't have enough rights or an active susbscription.
+        500:
+          description: If internal server error occurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: Internal Server Error

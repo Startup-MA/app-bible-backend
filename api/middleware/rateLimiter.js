@@ -5,11 +5,12 @@ import redisClient from "../connections/redis.js"
 const { Cache } = redisClient
 
 export const loginRateLimiter = rateLimit({
-    windowMs: 1000,
+    windowMs: 10000,
     limit: 1,
     standardHeaders: true,
     legacyHeaders: false,
     message: {
+        status: "error",
         message: "Too many requests"
     },
     store: new RedisStore({
@@ -28,6 +29,7 @@ export const resetCodeRateLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     message: {
+        status: "error",
         message: "Too many requests"
     },
     store: new RedisStore({
@@ -47,6 +49,7 @@ export const webhooksRateLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     message: {
+        status: "error",
         message: "Too many requests"
     },
     store: new RedisStore({
@@ -66,6 +69,7 @@ export const getSubscriptionRateLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     message: {
+        status: "error",
         message: "Too many requests"
     },
     store: new RedisStore({
@@ -84,6 +88,7 @@ export const getCurrentPaymentMethodRateLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     message: {
+        status: "error",
         message: "Too many requests"
     },
     store: new RedisStore({
@@ -102,6 +107,7 @@ export const getLastYearTransactionsRateLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     message: {
+        status: "error",
         message: "Too many requests"
     },
     store: new RedisStore({
@@ -120,6 +126,7 @@ export const cancelSubscriptionRateLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     message: {
+        status: "error",
         message: "Too many requests"
     },
     store: new RedisStore({
@@ -138,6 +145,7 @@ export const cancelScheduledCancelRateLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     message: {
+        status: "error",
         message: "Too many requests"
     },
     store: new RedisStore({
@@ -156,6 +164,7 @@ export const getUpdatePaymentMethodTransactionRateLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     message: {
+        status: "error",
         message: "Too many requests"
     },
     store: new RedisStore({
@@ -173,11 +182,30 @@ export const upgradePlanRateLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     message: {
+        status: "error",
         message: "Too many requests"
     },
     store: new RedisStore({
         sendCommand: (...args) => Cache.sendCommand(args),
         prefix: "rl:upgradePlan:"
+    }),
+    // keyGenerator: (req) => {
+    //     return req.headers['cf-connecting-ip'] || req.ip;
+    // }
+})
+
+export const generateDailyVersePrayerRateLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    limit: 2,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        status: "error",
+        message: "Too many requests"
+    },
+    store: new RedisStore({
+        sendCommand: (...args) => Cache.sendCommand(args),
+        prefix: "rl:generateDailyVersePrayer:"
     }),
     // keyGenerator: (req) => {
     //     return req.headers['cf-connecting-ip'] || req.ip;

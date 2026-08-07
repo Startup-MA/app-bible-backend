@@ -1,0 +1,117 @@
+paths:
+  /api/user/getUserPrayers:
+    get:
+      tags:
+        - User (Requires "Mobile" authentication)
+      summary: Returns paginated user prayers (Requires authentication - "Cookie" headers field to be filled with active mobile session).
+      requestBody:
+        description: Pagination settings. 
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                start_id:
+                  type: integer
+                  description: id to start pagination from
+                  example: 1
+                number:
+                  type: integer
+                  minimum: 1
+                  maximum: 100
+                  description: number of desired elements to get in one request
+                  example: 100
+      responses:
+        200:
+          description: List of paginated prayers.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      praylist:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              example: 1
+                            title:
+                              type: string
+                              maxLength: 20
+                              example: Title
+                            content:
+                              type: string
+                              maxLength: 250
+                              example: some content
+                            uuid: 
+                              type: string
+                              format: uuid
+                              example: 89392837-edf0-4683-ab2b-87861220a366
+                            created_at:
+                              type: string
+                              format: date-time
+                              example: "2026-03-24T10:30:00+01:00"
+                            updated_at:
+                              type: string
+                              format: date-time
+                              example: "2026-04-24T00:30:00+00:00"
+        400:
+          description: Validation for the given input did not passed (Unprocessible format of the entity).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Validation error
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                          description: Body field that did not passed the validation process.
+                          example: number
+                        message:
+                          type: string
+                          example: number must be less than or equal to 100
+        401:
+          description: Authentication error (Session has expired or there is no such session).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Access forbidden
+        500:
+          description: If internal server error occurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: Internal Server Error

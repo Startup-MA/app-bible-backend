@@ -18,6 +18,14 @@ paths:
                   items:
                     type: object
                     properties:
+                      book:
+                        type: string
+                        example: "Genesis"
+                      chapter:
+                        type: number
+                        minimum: 1
+                        maximum: 200
+                        example: 37
                       verses_combination:
                         type: array
                         items:
@@ -42,6 +50,8 @@ paths:
                         maximum: 60
                         example: 1
                     required:
+                      - book
+                      - chapter
                       - verses_combination
                       - content
                       - date

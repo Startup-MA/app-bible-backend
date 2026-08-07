@@ -154,6 +154,7 @@ jobs:
             PADDLE_API_KEY=${{ secrets.PADDLE_API_KEY_SANDBOX }}
             PADDLE_WEBHOOK_SECRET_KEY=${{ secrets.PADDLE_WEBHOOK_SECRET_KEY_SANDBOX }}
             PADDLE_API_URL=${{ secrets.PADDLE_API_URL_SANDBOX }}
+            OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY_DEV }}
             EOF
             
             # # EMPEROR-CONSUMER envs

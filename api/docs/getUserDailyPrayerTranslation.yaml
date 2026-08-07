@@ -1,0 +1,121 @@
+paths:
+  /api/user/getUserDailyPrayerTranslation:
+    post:
+      tags:
+        - User (Requires "Mobile" authentication)
+      summary: It allows you to get a prayer translation for a particular user (Requires authentication - "Cookie" headers field to be filled with active mobile session).
+      requestBody:
+        description: Body object of desired content translation language. For the available languages see /api/sys/getAllLangs.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                language:
+                  type: string
+                  description: All system available languages (See /api/sys/getAllLangs)
+                  example: Russian
+      responses:
+        200:
+          description: User prayer transltion into given language was successfully generated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: User prayer translation
+                  data:
+                    type: object
+                    properties:
+                      prayer:
+                        type: object
+                        properties:
+                          title:
+                            type: string
+                            example: Сердце милосердия и терпения
+                          prayer:
+                            type: string
+                            example: Небесный Отец, размышляя о Твоих словах в Деяниях 20:35, напомни нам о благословении дарения и проявления милосердия, так же как Ты проявил к нам терпение и сострадание. Даруй нам благодать прощать тех, кто причинил нам боль, проявлять милосердие к другим и проявлять терпение во всех обстоятельствах. Пусть наши сердца наполнятся Твоей любовью, чтобы мы могли подражать Твоей доброте и пониманию. Помоги нам помнить, что служа другим с смирением и милосердием, мы отражаем divine любовь, которую Ты имеешь к нам. Пусть наши жизни станут свидетельством Твоего непрекращающегося терпения и безграничной милости, приближая других к Твоей благодати. Аминь.
+        400:
+          description: Validation for the given input did not passed (Unprocessible format of the entity).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Validation error
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                          description: Body field that did not passed the validation process.
+                          example: language
+                        message:
+                          type: string
+                          example: language must be one of [Albanian, Armenian, Bosnian, Bulgarian, Chinese, Croatian, Estonian, Finnish, French, Georgian, German, Greek, Hindi, Hungarian, Indonesian, Italian, Korean, Latvian, Lithuanian, Malagasy, Montenegrin, Macedonian, Norwegian, Polish, Portuguese, Romanian, Russian, English, Serbian, Slovak, Slovenian, Spanish, Swedish, Tok Pisin, Vietnamese]
+        401:
+          description: Authentication error (Session has expired or there is no such session).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Access forbidden
+        409:
+          description: Subscription level doesn't allow to access this content or there is no daily user content available or trying the same language translation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Translation into the same language is impossible. Change the language.
+        500:
+          description: If internal server error occurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: Internal Server Error
+        502:
+          description: If Third-Party API service returns an error or is unavailable or provides invalid response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: Service failed translating user prayer.

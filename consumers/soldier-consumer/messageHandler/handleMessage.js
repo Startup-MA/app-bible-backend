@@ -1,6 +1,7 @@
 import skipPersonalInfo from "../messageProcessingFlow/skipPersonalInfo.js"
 import updateProfile from "../messageProcessingFlow/updateProfile.js"
 import createOrUpdateUserTopics from "../messageProcessingFlow/createOrUpdateUserTopics.js"
+import createOrUpdateUserVersePrayer from "../messageProcessingFlow/createOrUpdateUserVersePrayer.js"
 import sendResetPasswordLink from "../messageProcessingFlow/sendResetPasswordLink.js"
 import createNewPassword from "../messageProcessingFlow/createNewPassword.js"
 import addNewCustomer from "../messageProcessingFlow/addNewCustomer.js"
@@ -14,7 +15,7 @@ import syncBookmarks from "../messageProcessingFlow/syncBookmarks.js"
 import syncNotes from "../messageProcessingFlow/syncNotes.js"
 import syncUserReadingHistory from "../messageProcessingFlow/syncUserReadingHistory.js"
 import syncHighlights from "../messageProcessingFlow/syncHighlights.js"
-import syncPraylist from "../messageProcessingFlow/syncPraylist.js"
+import syncPrayers from "../messageProcessingFlow/syncPrayers.js"
 
 import redisClient from "../connections/redis.js"
 import dotenv from "dotenv"
@@ -43,6 +44,9 @@ async function messageHandler(message) {
             break
         case "createOrUpdateUserTopics":
             await createOrUpdateUserTopics(message)
+            break
+        case "createOrUpdateUserVersePrayer":
+            await createOrUpdateUserVersePrayer(message)
             break
         case "registerNewUser":
             await registerNewUser(message)
@@ -83,8 +87,8 @@ async function messageHandler(message) {
         case "syncHighlights":
             await syncHighlights(message)
             break
-        case "syncPraylist":
-            await syncPraylist(message)
+        case "syncPrayers":
+            await syncPrayers(message)
             break
         default:
             logger.warn("No such flow!")

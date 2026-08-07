@@ -76,10 +76,30 @@ export const up = (pgm) => {
             country_code VARCHAR(2) UNIQUE
         );
 
+        CREATE TABLE daily_verses (
+            id_daily_verse INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            book VARCHAR(20) NOT NULL,
+            chapter INT NOT NULL,
+            verse INT NOT NULL,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            id_user INT UNIQUE REFERENCES users(id_user)
+        );
+
+        CREATE TABLE daily_prayers (
+            id_daily_prayer INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            prayer_title VARCHAR(100),
+            prayer_content VARCHAR(1000),
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            id_user INT UNIQUE REFERENCES users(id_user),
+            id_lang INT REFERENCES languages(id_lang)
+        );
+
         CREATE TABLE bible_text_versions (
             id_bible_text_version INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
             abb_bible_name VARCHAR(10),
-            full_bible_name VARCHAR(200),
+            full_bible_name VARCHAR(200) UNIQUE,
             is_audio_available BOOLEAN,
             download_link VARCHAR(100),
             id_lang INT REFERENCES languages(id_lang)
@@ -133,10 +153,10 @@ export const up = (pgm) => {
             id_user INT REFERENCES users(id_user)
         );
 
-        CREATE TABLE pray_list (
-            id_pray INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            pray_title VARCHAR(20),
-            pray_content VARCHAR(1000),
+        CREATE TABLE prayers (
+            id_prayer INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            prayer_title VARCHAR(100),
+            prayer_content VARCHAR(1000),
             entity_uuid UUID UNIQUE,
             created_at TIMESTAMPTZ DEFAULT NOW(),
             updated_at TIMESTAMPTZ DEFAULT NOW(),
@@ -226,6 +246,8 @@ export const down = (pgm) => {
         DROP FUNCTION IF EXISTS update_timestamp_column();
         DROP FUNCTION IF EXISTS refresh_timestamps();
 
+        DROP TABLE users_prayers;
+        DROP TABLE users_verses;
         DROP TABLE users_topics;
         DROP TABLE personal_infos;
         DROP TABLE customers;
@@ -235,7 +257,7 @@ export const down = (pgm) => {
         DROP TABLE notes;
         DROP TABLE highlights;
         DROP TABLE users_reading_history;
-        DROP TABLE pray_list;
+        DROP TABLE prayers;
         DROP TABLE users_tickets;
 
         DROP TABLE bible_text_versions;

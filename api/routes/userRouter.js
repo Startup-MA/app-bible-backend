@@ -4,11 +4,14 @@ import validate from "../middleware/validation.js"
 import userController from "../controllers/user.js"
 import { updateProfileSchema } from "../validation/schemas/updateProfile.schema.js"
 import { createOrUpdateUserTopicsSchema } from "../validation/schemas/createOrUpdateUserTopics.schema.js"
+import { generateDailyVersePrayerSchema } from "../validation/schemas/generateDailyVersePrayer.schema.js"
+import { getUserDailyPrayerTranslationSchema } from "../validation/schemas/getUserDailyPrayerTranslation.schema.js"
 import { syncBookmarksSchema, getUserBookmarksSchema } from "../validation/schemas/bookmark.schema.js"
 import { syncNotesSchema, getUserNotesSchema } from "../validation/schemas/note.schema.js"
 import { syncUserReadingHistorySchema } from "../validation/schemas/user.reading.history.schema.js"
 import { syncHighlightsSchema } from "../validation/schemas/highlight.schema.js"
-import { syncPraylistSchema, getUserPraylistSchema } from "../validation/schemas/praylist.schema.js"
+import { syncPrayersSchema, getUserPrayersSchema } from "../validation/schemas/prayers.schema.js"
+import { generateDailyVersePrayerRateLimiter } from "../middleware/rateLimiter.js"
 
 const userRouter = express.Router()
 
@@ -20,6 +23,10 @@ userRouter.use(authenticate.userMobile)
 
 userRouter.post("/createOrUpdateUserTopics", validate(createOrUpdateUserTopicsSchema, "body"), userController.createOrUpdateUserTopics)
 userRouter.get("/getUserTopics", userController.getUserTopics)
+
+userRouter.post("/generateDailyVersePrayer", validate(generateDailyVersePrayerSchema, "body"), userController.generateDailyVersePrayer)
+userRouter.post("/getUserDailyPrayerTranslation", validate(getUserDailyPrayerTranslationSchema, "body"), userController.getUserDailyPrayerTranslation)
+userRouter.get("/getUserDailyVersePrayer", userController.getUserDailyVersePrayer)
 
 userRouter.post("/syncBookmarks", validate(syncBookmarksSchema, "body"), userController.syncBookmarks)
 userRouter.get("/getUserBookmarks", validate(getUserBookmarksSchema, "body"), userController.getUserBookmarks)
@@ -33,7 +40,7 @@ userRouter.get("/getUserReadingHistory", userController.getUserReadingHistory)
 userRouter.post("/syncHighlights", validate(syncHighlightsSchema, "body"), userController.syncHighlights)
 userRouter.get("/getUserHighlights", userController.getUserHighlights)
 
-userRouter.post("/syncPraylist", validate(syncPraylistSchema, "body"), userController.syncPraylist)
-userRouter.get("/getUserPraylist", validate(getUserPraylistSchema, "body"), userController.getUserPraylist)
+userRouter.post("/syncPrayers", validate(syncPrayersSchema, "body"), userController.syncPrayers)
+userRouter.get("/getUserPrayers", validate(getUserPrayersSchema, "body"), userController.getUserPrayers)
 
 export default userRouter

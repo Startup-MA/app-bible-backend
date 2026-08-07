@@ -44,6 +44,12 @@ paths:
                             id:
                               type: string
                               example: 1
+                            book:
+                              type: string
+                              example: Genesis
+                            chapter:
+                              type: number
+                              example: 37 
                             verses_combination:
                               type: array
                               items:

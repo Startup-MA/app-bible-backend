@@ -65,6 +65,65 @@ async function createOrUpdateUserTopics(id_user, userTopics) {
     )
 }
 
+async function createOrUpdateUserVersePrayer(id_user, userLanguage, generatedContent) {
+    const result = await pg.queryTransaction(async (client) => {
+        const id_lang = await client.query(
+            `
+                SELECT id_lang
+                FROM languages
+                WHERE lang_name = $1
+            `,
+            [
+                userLanguage["language"]
+            ]
+        )
+
+        await client.query(
+            `
+                INSERT INTO 
+                daily_verses(book, chapter, verse, id_user)
+                VALUES ($1, $2, $3, $4)
+                ON CONFLICT(id_user)
+                DO UPDATE SET
+                book = EXCLUDED.book,
+                chapter = EXCLUDED.chapter,
+                verse = EXCLUDED.verse,
+                updated_at = $5
+                WHERE daily_verses.updated_at < $5
+            `,
+            [
+                generatedContent["verse"]["book"],
+                generatedContent["verse"]["chapter"],
+                generatedContent["verse"]["verse"],
+                id_user,
+                userLanguage.updated_at
+            ]
+        )
+
+        await client.query(
+            `
+                INSERT INTO 
+                daily_prayers(prayer_title, prayer_content, id_user, id_lang)
+                VALUES ($1, $2, $3, $4)
+                ON CONFLICT(id_user)
+                DO UPDATE SET
+                prayer_title = EXCLUDED.prayer_title,
+                prayer_content = EXCLUDED.prayer_content,
+                id_lang = EXCLUDED.id_lang,
+                updated_at = $5
+                WHERE daily_prayers.updated_at < $5
+            `,
+            [
+                generatedContent["prayer"]["title"],
+                generatedContent["prayer"]["prayer"],
+                id_user,
+                id_lang["rows"][0]["id_lang"],
+                userLanguage.updated_at
+            ]
+        )
+    })
+}
+
 async function registerNewUser(email, password) {
     const result = await pg.queryTransaction(async (client) => {
         const id = await client.query(
@@ -265,6 +324,7 @@ export default {
     skipPersonalInfo: skipPersonalInfo,
     updateProfile: updateProfile,
     createOrUpdateUserTopics: createOrUpdateUserTopics,
+    createOrUpdateUserVersePrayer: createOrUpdateUserVersePrayer,
     registerNewUser: registerNewUser,
     sendNewVerificationCode: sendNewVerificationCode,
     deleteUserVerificationCode: deleteUserVerificationCode,

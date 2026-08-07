@@ -8,6 +8,15 @@ export function errorHandler(err, req, res, next) {
 
     logger.error("", {stack: err.stack})
 
+    if (statusCode == 429) {
+        return res.status(statusCode).set({
+            "Internal-Api-Retry-After": message.split("=")[1]
+        }).json({
+            status: "error",
+            message: message.split("=")[0]
+        })
+    } 
+
     if (err instanceof AppError) {
         return res.status(statusCode).json({
             status: "error",

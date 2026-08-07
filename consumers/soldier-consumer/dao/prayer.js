@@ -1,6 +1,6 @@
 import pg from "../utils/pgQueryEngine.js"
 
-async function syncPraylist(praylist, id_user) {
+async function syncPrayers(prayers, id_user) {
     const created = {
         titles: [],
         contents: [],
@@ -14,31 +14,31 @@ async function syncPraylist(praylist, id_user) {
         updated_ats: []
     }
 
-    if (praylist["created"]) {
-        for (const pray of praylist["created"]) {
-            created.titles.push(pray.title)
-            created.contents.push(pray.content)
-            created.uuids.push(pray.uuid)
+    if (prayers["created"]) {
+        for (const prayer of prayers["created"]) {
+            created.titles.push(prayer.title)
+            created.contents.push(prayer.content)
+            created.uuids.push(prayer.uuid)
         }
     }
 
-    if (praylist["updated"]) {
-        for (const pray of praylist["updated"]) {
-            updated.new_titles.push(pray.new_title),
-            updated.new_contents.push(pray.new_content),
-            updated.uuids.push(pray.uuid),
-            updated.updated_ats.push(pray.updated_at)
+    if (prayers["updated"]) {
+        for (const prayer of prayers["updated"]) {
+            updated.new_titles.push(prayer.new_title),
+            updated.new_contents.push(prayer.new_content),
+            updated.uuids.push(prayer.uuid),
+            updated.updated_ats.push(prayer.updated_at)
         }
     }
 
     await pg.queryTransaction(async (client) => {
-        if (praylist["created"]) {
+        if (prayers["created"]) {
             await client.query(
                 `
                     INSERT INTO 
-                    pray_list(
-                        pray_title,
-                        pray_content,
+                    prayers(
+                        prayer_title,
+                        prayer_content,
                         entity_uuid,
                         id_user
                     ) SELECT * FROM UNNEST(
@@ -57,14 +57,13 @@ async function syncPraylist(praylist, id_user) {
             )
         }   
 
-        if (praylist["updated"]) {
-            console.log(updated)
+        if (prayers["updated"]) {
             await client.query(
                 `
-                    UPDATE pray_list AS pl
+                    UPDATE prayers AS pl
                     SET
-                    pray_title = temp.new_title,
-                    pray_content = temp.new_content,
+                    prayer_title = temp.new_title,
+                    prayer_content = temp.new_content,
                     updated_at = CASE
                         WHEN temp.updated_at > NOW() THEN NOW()
                         ELSE temp.updated_at
@@ -83,14 +82,14 @@ async function syncPraylist(praylist, id_user) {
             )
         }
 
-        if (praylist["deleted"]) {
+        if (prayers["deleted"]) {
             await client.query(
                 `
-                    DELETE FROM pray_list
+                    DELETE FROM prayers
                     WHERE entity_uuid = ANY($1::uuid[])
                 `,
                 [
-                    praylist["deleted"]
+                    prayers["deleted"]
                 ]
             )
         }
@@ -98,5 +97,5 @@ async function syncPraylist(praylist, id_user) {
 }
 
 export default { 
-    syncPraylist: syncPraylist
+    syncPrayers: syncPrayers
 }

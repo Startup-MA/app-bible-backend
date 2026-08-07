@@ -42,6 +42,10 @@ const LANGUAGES = [
     { name: "Vietnamese", code: "VN" }
 ]
 
+const BIBLE_VERSIONS = [
+    {abb_bible_name: "KJV", full_bible_name: "King James Version", is_audio_availbale: true, download_link: "https://some-link.com", id_lang: 28 }
+]
+
 async function seedLanguages() {
     logger.warn(`Seeding languages...`)
 
@@ -60,6 +64,29 @@ async function seedLanguages() {
     }
 
     logger.info(`All languages seeded successfully.`)
+}
+
+async function seedBibleVersions() {
+    logger.warn(`Seeding bible versions...`)
+
+    for (const bible_version of BIBLE_VERSIONS ) {
+        await pg.query(
+            `
+                INSERT INTO bible_text_versions (abb_bible_name, full_bible_name, is_audio_available, download_link, id_lang) 
+                VALUES ($1, $2, $3, $4, $5)
+                ON CONFLICT (full_bible_name) DO NOTHING;
+            `, 
+            [
+                bible_version.abb_bible_name,
+                bible_version.full_bible_name,
+                bible_version.is_audio_availbale,
+                bible_version.download_link,
+                bible_version.id_lang
+            ]
+        )
+    }
+
+    logger.info(`All bible versions seeded successfully.`)
 }
 
 async function seedAdmins() {
@@ -87,10 +114,12 @@ async function seedAdmins() {
     }
 }
 
+
 async function runSeed() {
     try {
         await seedLanguages()
         await seedAdmins()
+        await seedBibleVersions()
 
         logger.info("All seeds completed successfully.")
     } catch (error) {

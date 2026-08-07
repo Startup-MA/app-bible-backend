@@ -57,9 +57,53 @@ async function getUserTopics(req, res, next) {
     return res.status(StatusCodes.OK).json({
         status: "success",
         message: "User topics",
-        data: {
-            topics: result.data
-        }
+        data: result.data
+    })
+}
+
+async function generateDailyVersePrayer(req, res, next) {
+    const userLanguage = req.body
+
+    const { id, device } = req.session.user
+
+    logger.info(`Preparing verse and prayer for user: ${id} device: ${device}`)
+
+    const result = await userService.generateDailyVersePrayer(id, userLanguage)
+
+    return res.status(StatusCodes.OK).json({
+        status: "success",
+        message: result.message,
+        data: result.data
+    })
+}
+
+async function getUserDailyVersePrayer(req, res, next) {
+    const { id, device } = req.session.user
+
+    logger.info(`Retrieving verse and prayer for user: ${id} device: ${device}`)
+
+    const result = await userService.getUserDailyVersePrayer(id)
+
+    return res.status(StatusCodes.OK).json({
+        status: "success",
+        message: result.message,
+        data: result.data
+    })
+}
+
+async function getUserDailyPrayerTranslation(req, res, next) {
+    const userLanguage = req.body
+
+    const { id, device } = req.session.user
+
+    logger.info(`Preparing prayer translation for user: ${id} device: ${device}`)
+
+    const result = await userService.getUserDailyPrayerTranslation(id, userLanguage["language"])
+
+    return res.status(StatusCodes.OK).json({
+        status: "success",
+        message: result.message,
+        data: result.data
     })
 }
 
@@ -139,20 +183,20 @@ async function syncHighlights(req, res, next) {
     })
 }
 
-async function syncPraylist(req, res, next) {
+async function syncPrayers(req, res, next) {
     const { id, device } = req.session.user
 
-    logger.info(`Syncing praylist for user: ${id} device: ${device}`)
+    logger.info(`Syncing prayers for user: ${id} device: ${device}`)
     
     await userService.sync({
-        processingFlowType: "syncPraylist",
-        praylist: JSON.stringify(req.body),
+        processingFlowType: "syncPrayers",
+        prayers: JSON.stringify(req.body),
         id_user: String(id)
     })
 
     return res.status(StatusCodes.OK).json({
         status: "success",
-        message: "Praylist is accepted for sync"
+        message: "Prayers are accepted for sync"
     })
 }
 
@@ -230,13 +274,13 @@ async function getUserHighlights(req, res, next) {
     })
 }
 
-async function getUserPraylist(req, res, next) {
+async function getUserPrayers(req, res, next) {
     const { id, device } = req.session.user
     const { start_id, number } = req.body
     
-    logger.info(`Retrieving praylist for user: ${id} device: ${device}`)
+    logger.info(`Retrieving prayers for user: ${id} device: ${device}`)
     
-    const result = await userService.getUserPraylist(
+    const result = await userService.getUserPrayers(
         id,
         start_id,
         number
@@ -245,7 +289,7 @@ async function getUserPraylist(req, res, next) {
     return res.status(StatusCodes.OK).json({
         status: "success",
         data: {
-            praylist: result.data
+            prayers: result.data
         }
     })
 }
@@ -255,14 +299,17 @@ export default {
     updateProfile: updateProfile,
     createOrUpdateUserTopics: createOrUpdateUserTopics,
     getUserTopics: getUserTopics,
+    generateDailyVersePrayer: generateDailyVersePrayer,
+    getUserDailyVersePrayer: getUserDailyVersePrayer,
+    getUserDailyPrayerTranslation: getUserDailyPrayerTranslation,
     syncBookmarks: syncBookmarks,
     syncNotes: syncNotes,
     syncUserReadingHistory: syncUserReadingHistory,
     syncHighlights: syncHighlights,
-    syncPraylist: syncPraylist,
+    syncPrayers: syncPrayers,
     getUserBookmarks: getUserBookmarks,
     getUserNotes: getUserNotes,
     getUserReadingHistory: getUserReadingHistory,
     getUserHighlights: getUserHighlights,
-    getUserPraylist: getUserPraylist
+    getUserPrayers: getUserPrayers
 }
