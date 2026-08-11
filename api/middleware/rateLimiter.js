@@ -6,7 +6,7 @@ const { Cache } = redisClient
 
 export const loginRateLimiter = rateLimit({
     windowMs: 10000,
-    limit: 1,
+    limit: 11,
     standardHeaders: true,
     legacyHeaders: false,
     message: {

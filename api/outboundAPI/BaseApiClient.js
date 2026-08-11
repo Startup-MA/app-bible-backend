@@ -73,7 +73,8 @@ class BaseApiClient {
                     try {
                         await Cache.setEx(keyPrefix, retrySecs, (points + 1).toString())
                     } catch (e) {
-                        logger.error("Failed to apply cluster penalty block", {stack: e.stack})
+                        logger.error("Failed to apply cluster penalty block")
+                        logger.error("", {stack: e.stack})
                     }
                 }
 

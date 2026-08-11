@@ -5,15 +5,15 @@ import { logger } from "../utils/logger.js"
 class GenAIService extends BaseApiClient {
     constructor() {
         super({
-            baseURL: 'https://api.openai.com/v1',
+            baseURL: "https://api.openai.com/v1",
             timeout: 30000, // AI requests take longer, increase timeout to 30s
             headers: {
-                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-                'Content-Type': 'application/json'
+                "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+                "Content-Type": "application/json"
             },
             // Example: Limit to 50 requests per minute (60 seconds)
             rateLimit: {
-                keyPrefix: 'limit:openai',
+                keyPrefix: "limit:openai",
                 points: 500,
                 duration: 60 
             }
