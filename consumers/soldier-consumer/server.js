@@ -1,6 +1,4 @@
-import os from "os"
 import dotenv from "dotenv"
-import reader from "./reader/reader.js"
 import { logger } from "./utils/logger.js"
 import redisClient from "./connections/redis.js"
 import http from "http"
@@ -8,11 +6,9 @@ import livenessDAO from "./dao/liveness.js"
 
 dotenv.config()
 
-const consumerName = process.env.POD_NAME || os.hostname()
+const { Mailer, healthRedisClient } = redisClient
 
-const { TasksQueue, Mailer, healthRedisClient } = redisClient
-
-const healthServer = http.createServer(async (req, res) => {
+export const healthServer = http.createServer(async (req, res) => {
     logger.info(req.url)
 
     if (req.url === "/ready") {
@@ -77,9 +73,3 @@ const healthServer = http.createServer(async (req, res) => {
     return res.end()
 })
 
-healthServer.listen(process.env.APP_PORT, () => {
-    logger.info(`K8s Health server listening on port ${process.env.APP_PORT}`);
-    logger.info(`Consumer ${consumerName} is ready!`)
-
-   reader()
-})

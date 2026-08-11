@@ -17,4 +17,6 @@ data:
   CLAIM: "300000"
   SLEEP: "1000"
 
+  REDIS_CACHE_URL: redis://redis-cache.app-bible-backend.svc.cluster.local:6379
+
   APP_PORT: "3000"

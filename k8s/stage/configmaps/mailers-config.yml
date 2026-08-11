@@ -8,6 +8,7 @@ data:
   NODE_ENV: development
 
   REDIS_MAILER_URL: redis://redis-emails.app-bible-backend.svc.cluster.local:6379
+  REDIS_CACHE_URL: redis://redis-cache.app-bible-backend.svc.cluster.local:6379
   STREAM_NAME: queue:emails
   DEAD_MESSAGES_QUEUE_NAME: queue:deadEmails
   GROUP_NAME: mailers

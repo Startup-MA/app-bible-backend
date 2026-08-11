@@ -187,6 +187,7 @@ jobs:
             cat << 'EOF' > .env.mailer
             NODE_ENV=${{ secrets.NODE_ENV_DEV }}
             REDIS_MAILER_URL=${{ secrets.REDIS_MAILER_URL }}
+            REDIS_CACHE_URL=${{ secrets.REDIS_CACHE_URL }}
             STREAM_NAME=${{ secrets.MAILER_STREAM_NAME }}
             DEAD_MESSAGES_QUEUE_NAME=${{ secrets.DEAD_MESS_EMAIL_QUEUE_NAME }}
             GROUP_NAME=${{ secrets.MAILERS_GROUP_NAME }}
