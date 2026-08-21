@@ -4,8 +4,6 @@ import { logger } from "../logger.js"
 import { setupRedisStreams } from "../scripts/redisSetup.js"
 import redisClient from "../connections/redis.js"
 import { messageProcessing } from "../messageHandler/handleMessage.js"
-import { rateLimit } from "../rateLimits.js/rateLimits.js"
-import { sleep } from "../utils/sleep.js"
 
 dotenv.config()
 
@@ -23,8 +21,6 @@ const SLEEP = process.env.SLEEP
 const { redisClientMAILER, Cache } = redisClient
 
 export async function readPendings() {
-    const { keyPrefix, points, duration } = rateLimit
-
     while (true) {
         try {
             const pendOrRegMess = await redisClientMAILER.XREADGROUP(

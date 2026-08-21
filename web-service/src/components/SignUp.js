@@ -7,9 +7,9 @@ import Loader from "../components/Loader.js"
 import "../styles/SignUp.css"
 
 import FormClose from "../assets/FormClose.svg"
-import Google from "../assets/Google.svg"
 import OpenedEye from "../assets/OpenedEye.svg"
 import ClosedEye from "../assets/ClosedEye.svg"
+import GoogleButton from "./GoogleButton.js"
 
 import axios from "axios"
 
@@ -216,10 +216,7 @@ function SignUp({isOpen, setIsSignUp, setIsLogin, onClose}) {
                                     <button onClick={signUpHandler}>
                                         Sign Up
                                     </button>
-                                    <button>
-                                        <img src={Google} />
-                                        Continue with Google
-                                    </button>
+                                    <GoogleButton></GoogleButton>
                                     <p>Have an account? <span onClick={goToLogin}><u>Log in</u></span></p>
                                 </div>
                             </>

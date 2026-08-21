@@ -25,7 +25,7 @@ async function registration(req, res, next) {
 async function login(req, res, next) {
     const { email, password } = req.body
 
-    logger.info(`Logging a user`)
+    logger.info("Logging a user")
 
     const result = await authService.login(
         email,
@@ -36,6 +36,18 @@ async function login(req, res, next) {
         status: "success",
         message: result.message,
     })
+}
+
+async function googleCallback(req, res, next) {
+    logger.info(JSON.stringify(req.body))
+
+    logger.info("Logging with google")
+
+    return res.status(StatusCodes.OK).redirect(process.env.FRONT_URL)
+    // return res.status(StatusCodes.OK).json({
+    //     status: "success",
+    //     message: "Logged in"
+    // })
 }
 
 async function logout(req, res, next) {
@@ -156,6 +168,7 @@ async function verifyCode(req, res, next) {
 export default {
     registration: registration,
     login: login,
+    googleCallback: googleCallback,
     logout: logout,
     resetCode: resetCode,
     verifyCode: verifyCode

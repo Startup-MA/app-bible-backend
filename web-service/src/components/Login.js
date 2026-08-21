@@ -7,6 +7,7 @@ import Error from "../components/Error.js"
 
 import Loader from "../components/Loader.js"
 import Verification  from "../components/Verification.js"
+import GoogleButton from "./GoogleButton.js"
 
 import FormClose from "../assets/FormClose.svg"
 import Close from "../assets/Close.svg"
@@ -211,12 +212,9 @@ function Login({isOpen, setIsLogin, setIsSignUp, setIsReset, onClose}) {
                                         Login
                                     </button>
                                     <button onClick={goToSignUp}>
-                                        Sing up
+                                        Sign up
                                     </button>
-                                    <button>
-                                        <img src={Google} />
-                                        Continue with Google
-                                    </button>
+                                    <GoogleButton></GoogleButton>
                                     <p>Forgot your password? <span onClick={goToReset}>Reset</span></p>
                                 </div>
                             </>

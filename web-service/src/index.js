@@ -11,6 +11,7 @@ import Tickets from "./pages/Tickets.js"
 import NotFound from "./pages/NotFound.js"
 
 import App from "./App"
+import { GoogleOAuthProvider } from "@react-oauth/google"
 
 import "./styles/General.css"
 
@@ -19,17 +20,19 @@ const root = createRoot(rootElement)
 
 root.render(
     <StrictMode>
-        <BrowserRouter>
-            <Routes>
-                <Route path="*" element={<NotFound />} />
-                <Route path="/" element={<App />}/>
-                <Route path="/tickets" element={<Tickets />}/>
-                <Route path="/dashboard/profile" element={<Profile />}/>
-                <Route path="/dashboard/billing" element={<Billing />}/>
-                <Route path="/pricing" element={<Pricing/>}/>
-                <Route path="/contact" element={<Contact/>}/>
-                <Route path="/reset/:uuid" element={<ResetPage/>}/>
-            </Routes>                
-        </BrowserRouter>
+        <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="*" element={<NotFound />} />
+                    <Route path="/" element={<App />}/>
+                    <Route path="/tickets" element={<Tickets />}/>
+                    <Route path="/dashboard/profile" element={<Profile />}/>
+                    <Route path="/dashboard/billing" element={<Billing />}/>
+                    <Route path="/pricing" element={<Pricing/>}/>
+                    <Route path="/contact" element={<Contact/>}/>
+                    <Route path="/reset/:uuid" element={<ResetPage/>}/>
+                </Routes>                
+            </BrowserRouter>
+        </GoogleOAuthProvider>
     </StrictMode>
 )

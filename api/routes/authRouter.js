@@ -18,6 +18,11 @@ authRouter.post("/login",
     authController.login
 )
 
+authRouter.get("/google/callback", 
+    // validate(loginSchema, "body"),
+    authController.googleCallback
+)
+
 authRouter.post("/verifyCode",
     validate(verifyUserCodeSchema, "body"),
     authController.verifyCode
