@@ -13,6 +13,10 @@ async function forgot(email) {
         throw AppError.conflict(`There is no user with such email ${email}`)
     }
 
+    if (userData[0].auth_provider !== "email_password") {
+        throw AppError.forbidden("Forbidden. Use your authentication provider.")
+    }
+
     try {
         await taskQueue.publish(
             TasksQueue,
@@ -37,7 +41,7 @@ async function reset(uuid, new_password) {
     const userData = await userDAO.findUserByToken("reset_passwords", uuid)
 
     if (!userData.length) {
-        throw AppError.conflict("Reset link has expired or it is broken")
+        throw AppError.conflict("Reset link has expired or it is broken.")
     }
 
     try {

@@ -2,6 +2,7 @@ import pg from "../utils/pgQueryEngine.js"
 
 async function getUserReadingHistoryByUserIdAndStartId(id_user) {
     const result = await pg.query(
+        "r",
         `
             SELECT
             id_user_reading_history AS id,

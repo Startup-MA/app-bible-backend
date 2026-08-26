@@ -1,13 +1,49 @@
 import pg from "../utils/pgQueryEngine.js"
-import { randomUUID, randomInt } from "crypto"
+
+async function registerNewUser(email, authProvider, googleId) {
+    const result = await pg.queryTransaction("rw", async (client) => {
+        const id = await client.query(
+            `
+                INSERT INTO
+                users(email, auth_provider)
+                VALUES($1, $2)
+                RETURNING id_user
+            `,
+            [
+                email,
+                authProvider
+            ]
+        )
+
+        await client.query(
+            `    
+                INSERT INTO
+                users_google_auth_info(google_id, id_user)
+                VALUES($1, $2)
+            `,
+            [
+                googleId,
+                id["rows"][0]["id_user"]
+            ]
+        )
+
+        return [{
+            id_user: id["rows"][0]["id_user"]
+        }]
+    })
+
+    return result
+}
 
 async function findUserByEmail(email) {
     const result = await pg.query(
+        "r",
         `
             SELECT
             id_user,
             email,
-            password
+            password,
+            auth_provider
             FROM users
             WHERE email = $1
         `,
@@ -21,6 +57,7 @@ async function findUserByEmail(email) {
 
 async function findUserById(id_user) {
     const result = await pg.query(
+        "r",
         `
             SELECT
             users.id_user,
@@ -47,6 +84,7 @@ async function findUserById(id_user) {
 
 async function findUserByToken(table_name, uuid) {
     const result = await pg.query(
+        "r",
         `
             SELECT
             id_user
@@ -64,6 +102,7 @@ async function findUserByToken(table_name, uuid) {
 
 async function findUserByCode(code) {
     const result = await pg.query(
+        "r",
         `
             SELECT
             users.id_user,
@@ -82,9 +121,30 @@ async function findUserByCode(code) {
     return result["rows"]
 }
 
+async function findUserByGoogleId(googleId) {
+    const result = await pg.query(
+        "r",
+        `
+            SELECT
+            email, google_id, users_google_auth_info.id_user 
+            FROM users_google_auth_info 
+            LEFT JOIN users
+            ON users.id_user = users_google_auth_info.id_user
+            WHERE google_id = $1;
+        `,
+        [
+            googleId
+        ]
+    )
+
+    return result["rows"]
+}
+
 export default {
+    registerNewUser: registerNewUser,
     findUserByEmail: findUserByEmail,
     findUserById: findUserById,
     findUserByToken: findUserByToken,
-    findUserByCode: findUserByCode
+    findUserByCode: findUserByCode,
+    findUserByGoogleId: findUserByGoogleId
 }

@@ -29,3 +29,5 @@ data:
 
   # PADDLE API URL
   PADDLE_API_URL: sandbox-api.paddle.com
+
+  BACKEND_URL: https://stage-api.app-bible.com

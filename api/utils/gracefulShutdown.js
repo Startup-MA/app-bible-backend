@@ -1,6 +1,6 @@
 import dotenv from "dotenv"
 import { logger } from "../utils/logger.js"
-import pool from "../connections/pg.js"
+import pool from "../connections/pg-r.js"
 import redisClient from "../connections/redis.js"
 import redis from "../connections/redis.js"
 import { server } from "../server.js"

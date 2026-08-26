@@ -2,6 +2,7 @@ import pg from "../utils/pgQueryEngine.js"
 
 async function getUserBookmarksByUserIdAndStartId(id_user, start_id, number) {
     const result = await pg.query(
+        "r",
         `
             SELECT 
             id_bookmark AS id,

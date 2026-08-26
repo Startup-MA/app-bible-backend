@@ -6,7 +6,8 @@ const { TasksQueue, Mailer, Cache } = redisClient
 
 async function health() {
     const allPingsPromise = Promise.all([
-        livenessDAO.health(),
+        livenessDAO.health_r(),
+        livenessDAO.health_rw(),
         TasksQueue.ping(),
         Mailer.ping(),
         Cache.ping()

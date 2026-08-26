@@ -3,6 +3,8 @@ import taskQueue from "../utils/redisQueryEngine.js"
 import redisClient from "../connections/redis.js"
 import encryptor from "../utils/encryptor.js"
 import AppError from "../errors/AppError.js"
+import ApiGateway from "../outboundAPI/ApiGateway.js"
+import { decodeIdToken } from "../utils/decodeIdToken.js"
 import { logger } from "../utils/logger.js"
 
 const { TasksQueue } = redisClient
@@ -20,7 +22,8 @@ async function register(email, password) {
         {
             processingFlowType: "registerNewUser",
             email: email,
-            password: password
+            password: password,
+            auth_provider: "email_password"
         }  
     ).catch(err => {
         logger.error("[Redis taskQueue] Error during publishing task to the queue")
@@ -39,6 +42,10 @@ async function login(email, password) {
 
     if (!userData.length) {
         throw AppError.conflict("No user with such email")
+    }
+
+    if (userData[0].auth_provider !== "email_password") {
+        throw AppError.forbidden("Forbidden. Use your authentication provider.")
     }
 
     const match = await encryptor.verify(password, userData[0]["password"])
@@ -65,6 +72,81 @@ async function login(email, password) {
     }
 }
 
+async function exchangeCodeForTokens(authCode) {
+    const result = await ApiGateway.googleAuth.exchangeCodeForTokens(authCode)
+
+    return {
+        data: result
+    }
+}
+
+function extractUserInfoFromToken(idToken) {
+    const userInfo = decodeIdToken(idToken)
+
+    if (!userInfo.email_verified) {
+        throw AppError.forbidden("The email address attached to this Google account is unverified. Please verify your email with Google.")
+    }
+
+    return {
+        data: userInfo
+    }
+}
+
+async function verifyUserByGoogleIdOrEmail(googleId, email) {
+    let userData = await userDAO.findUserByGoogleId(googleId)
+
+    if (userData.length) {
+        if (userData[0].email !== email) {
+            await taskQueue.publish(
+                TasksQueue,
+                process.env.TASKS_STREAM_NAME,
+                {
+                    processingFlowType: "updateEmail",
+                    email: email,
+                    id_user: String(userData[0].id_user)
+                }  
+            ).catch(err => {
+                logger.error("[Redis taskQueue] Error during publishing task to the queue")
+                throw err
+            })
+        }
+
+        return {
+            message: "Logged in successfully",
+            data: userData
+        }
+    }
+
+    userData = await userDAO.findUserByEmail(email)
+
+    if (userData.length) {
+        await taskQueue.publish(
+            TasksQueue,
+            process.env.TASKS_STREAM_NAME,
+            {
+                processingFlowType: "setGoogleId",
+                google_id: googleId,
+                id_user: String(userData[0].id_user)
+            }  
+        ).catch(err => {
+            logger.error("[Redis taskQueue] Error during publishing task to the queue")
+            throw err
+        })
+
+        return {
+            message: "Logged in successfully",
+            data: userData
+        }
+    }
+
+    userData = await userDAO.registerNewUser(email, "google", googleId)
+
+    return {
+        message: "Logged in successfully",
+        data: userData
+    }
+}
+
 async function resetCode(email, password) {
     let userData = []
 
@@ -72,6 +154,10 @@ async function resetCode(email, password) {
 
     if (!userData.length) {
         throw AppError.conflict("No user with such email")
+    }
+
+    if (userData[0].auth_provider !== "email_password") {
+        throw AppError.forbidden("Forbidden. Use your authentication provider.")
     }
 
     const match = await encryptor.verify(password, userData[0]["password"])
@@ -129,6 +215,9 @@ async function verifyUserByCode(code) {
 export default {
     register: register,
     login: login,
+    exchangeCodeForTokens: exchangeCodeForTokens,
+    extractUserInfoFromToken: extractUserInfoFromToken,
+    verifyUserByGoogleIdOrEmail: verifyUserByGoogleIdOrEmail,
     resetCode: resetCode,
     verifyUserByCode: verifyUserByCode
 }

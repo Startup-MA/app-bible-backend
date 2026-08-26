@@ -12,7 +12,6 @@ import prayerDAO from "../dao/prayer.js"
 import AppError from "../errors/AppError.js"
 import ApiGateway from "../outboundAPI/ApiGateway.js"
 import { logger } from "../utils/logger.js"
-import user from "../dao/user.js"
 
 const { TasksQueue } = redisClient
 

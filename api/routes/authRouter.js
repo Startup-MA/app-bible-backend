@@ -18,9 +18,9 @@ authRouter.post("/login",
     authController.login
 )
 
-authRouter.get("/google/callback", 
+authRouter.get("/google", 
     // validate(loginSchema, "body"),
-    authController.googleCallback
+    authController.googleAuth
 )
 
 authRouter.post("/verifyCode",
@@ -33,11 +33,6 @@ authRouter.post("/resetCode",
     validate(resetCodeSchema, "body"),
     authController.resetCode
 )
-
-// authRouter.get("/verifyEmail/:uuid",
-//     validate(verifyUserUUIDSchema, "params"),
-//     authController.verifyEmail
-// )
 
 authRouter.get("/logout", authenticate.session, authController.logout)
 

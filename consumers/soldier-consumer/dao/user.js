@@ -1,7 +1,34 @@
 import pg from "../utils/pgQueryEngine.js"
 import { randomUUID, randomInt } from "crypto"
 import { logger } from "../utils/logger.js"
-import { create } from "domain"
+
+async function updateEmail(email, id_user) {
+    await pg.query(
+        `
+            UPDATE users
+            SET email = $1
+            WHERE id_user = $2
+        `,
+        [
+            email,
+            id_user
+        ]
+    )
+}
+
+async function setGoogleId(google_id, id_user) {
+    await pg.query(
+        `
+            INSERT INTO 
+            users_google_auth_info(google_id, id_user)
+            VALUES ($1, $2)
+        `,
+        [
+            google_id,
+            id_user
+        ]
+    )
+}
 
 async function skipPersonalInfo(id_user) {
     await pg.query(
@@ -124,18 +151,19 @@ async function createOrUpdateUserVersePrayer(id_user, userLanguage, generatedCon
     })
 }
 
-async function registerNewUser(email, password) {
+async function registerNewUser(email, password, auth_provider) {
     const result = await pg.queryTransaction(async (client) => {
         const id = await client.query(
             `
                 INSERT INTO
-                users(email, password)
-                VALUES($1, $2)
+                users(email, password, auth_provider)
+                VALUES($1, $2, $3)
                 RETURNING id_user
             `,
             [
                 email,
-                password
+                password,
+                auth_provider
             ]
         )
 
@@ -321,6 +349,8 @@ async function updatePassword(uuid, new_password) {
 }
 
 export default {
+    updateEmail: updateEmail,
+    setGoogleId: setGoogleId,
     skipPersonalInfo: skipPersonalInfo,
     updateProfile: updateProfile,
     createOrUpdateUserTopics: createOrUpdateUserTopics,

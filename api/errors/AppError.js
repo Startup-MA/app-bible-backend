@@ -10,12 +10,16 @@ class AppError extends Error {
         Error.captureStackTrace(this, this.constructor)
     }
 
-    static not_acceptable(message) {
-        return new AppError(message, StatusCodes.NOT_ACCEPTABLE)
-    }
-    
     static bad_request(message) {
         return new AppError(message, StatusCodes.BAD_REQUEST)
+    }
+
+    static forbidden(message) {
+        return new AppError(message, StatusCodes.FORBIDDEN)
+    }
+
+    static not_acceptable(message) {
+        return new AppError(message, StatusCodes.NOT_ACCEPTABLE)
     }
     
     static too_many_requests(message) {

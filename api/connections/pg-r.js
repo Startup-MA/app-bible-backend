@@ -4,7 +4,7 @@ import { logger } from "../utils/logger.js"
 const pool = new Pool(
     {
         database: process.env.PGDATABASE,
-        host: process.env.PGHOST,
+        host: process.env.PGHOST_R,
         password: process.env.PGPASSWORD,
         port: process.env.PGPORT,
         user: process.env.PGUSER,
@@ -15,7 +15,7 @@ const pool = new Pool(
 )
 
 pool.on("error", (err, client) => {
-    logger.error("Unexpected error on idle database client")
+    logger.error("Unexpected error on idle database client (r)")
     logger.error("", {stack: err.stack})
 })
 

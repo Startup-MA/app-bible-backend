@@ -1,6 +1,5 @@
 import { StatusCodes } from "http-status-codes"
 import customerService from "../service/customer.js"
-import AppError from "../errors/AppError.js"
 import { logger } from "../utils/logger.js"
 import { clearCacheFields } from "../utils/clearCacheFields.js"
 

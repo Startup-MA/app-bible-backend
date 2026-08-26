@@ -38,16 +38,98 @@ async function login(req, res, next) {
     })
 }
 
-async function googleCallback(req, res, next) {
-    logger.info(JSON.stringify(req.body))
+async function googleAuth(req, res, next) {
+    const { code } = req.query
+    const device = req.query.state
 
-    logger.info("Logging with google")
+    const userTokens = await authService.exchangeCodeForTokens(code)
 
-    return res.status(StatusCodes.OK).redirect(process.env.FRONT_URL)
-    // return res.status(StatusCodes.OK).json({
-    //     status: "success",
-    //     message: "Logged in"
-    // })
+    const extractedData = authService.extractUserInfoFromToken(userTokens.data.id_token)
+
+    logger.info(extractedData.data)
+
+    const userData = await authService.verifyUserByGoogleIdOrEmail(extractedData.data.sub, extractedData.data.email)
+
+    const trackerKey = `active_session:user_${userData.data[0]["id_user"]}`
+    
+    const existingSession = JSON.parse(await Cache.get(trackerKey).catch(err => {
+        logger.error(`[Redis Cache] Error extracting existing session from cache by trackerKey ${trackerKey}`)
+        throw err
+    })) || {mobile: "", browser: ""}
+
+    const returnedObject = {
+        status: "success",
+        message: ""
+    }
+        
+    if (device === "mobile") {
+        const del = await Cache.del(existingSession[device]).catch(err => {
+            logger.error(`[Redis Cache] Error deleting existing session: ${existingSession[device]} device: ${device}`)
+            throw err
+        })
+
+        if (del) {
+            returnedObject["message"] = `Session ${existingSession[device]} was closed. Only one session available on mobile!`
+        }
+    } else if (device === "browser") {
+        const del = await Cache.del(existingSession[device]).catch(err => {
+            logger.error(`[Redis Cache] Error deleting existing session: ${existingSession[device]} device: ${device}`)
+            throw err
+        })
+        
+        if (del) {
+            returnedObject["message"] = `Session ${existingSession[device]} was closed. Only one session available in browser!`
+        }
+    }
+
+    req.session.regenerate(async err => {
+        if (err) throw err
+
+        req.session.user = {
+            id: userData.data[0]["id_user"],
+            device: device,
+            is_admin: userData.data[0]["is_admin"]
+        }
+
+        if (device === "mobile") {
+            existingSession[device] = "sess:" + req.sessionID
+            
+            await Cache.set(
+                trackerKey,
+                JSON.stringify(existingSession)
+            ).catch(err => {
+                logger.error(`[Redis Cache] Error setting existing session: ${existingSession[device]} device: ${device}`)
+                throw err
+            })
+        } else {
+            existingSession[device] = "sess:" + req.sessionID
+
+            await Cache.set(
+                trackerKey,
+                JSON.stringify(existingSession)
+            ).catch(err => {
+                logger.error(`[Redis Cache] Error setting existing session: ${existingSession[device]} device: ${device}`)
+                throw err
+            })
+        }
+
+        req.session.save(err => {
+            if (err) throw err
+            
+            if (device === "browser") return res
+                .redirect(`${process.env.FRONT_URL}/dashboard/profile`)
+            
+            if (device === "mobile") return res
+                .status(StatusCodes.OK)
+                .header("sess", JSON.stringify(returnedObject))
+                .json({
+                    status: "success",
+                    message: userData.message
+                })
+            
+          
+        })
+    })
 }
 
 async function logout(req, res, next) {
@@ -55,7 +137,7 @@ async function logout(req, res, next) {
 
     logger.info(`Logging out a user: ${id} from device: ${device}`)
 
-    req.session.destroy(async err => {
+    req.session.destroy(err => {
         if (err) throw err
 
         return res.status(StatusCodes.OK).json({
@@ -120,7 +202,7 @@ async function verifyCode(req, res, next) {
         }
     }
 
-    await req.session.regenerate(async err => {
+    req.session.regenerate(async err => {
         if (err) throw err
 
         req.session.user = {
@@ -151,7 +233,7 @@ async function verifyCode(req, res, next) {
             })
         }
 
-        await req.session.save(err => {
+        req.session.save(err => {
             if (err) throw err
 
             return res
@@ -168,7 +250,7 @@ async function verifyCode(req, res, next) {
 export default {
     registration: registration,
     login: login,
-    googleCallback: googleCallback,
+    googleAuth: googleAuth,
     logout: logout,
     resetCode: resetCode,
     verifyCode: verifyCode

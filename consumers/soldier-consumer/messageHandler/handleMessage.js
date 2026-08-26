@@ -1,3 +1,5 @@
+import updateEmail from "../messageProcessingFlow/updateEmail.js"
+import setGoogleId from "../messageProcessingFlow/setGoogleId.js"
 import skipPersonalInfo from "../messageProcessingFlow/skipPersonalInfo.js"
 import updateProfile from "../messageProcessingFlow/updateProfile.js"
 import createOrUpdateUserTopics from "../messageProcessingFlow/createOrUpdateUserTopics.js"
@@ -36,6 +38,12 @@ async function messageHandler(message) {
     logger.info(JSON.stringify(message))
 
     switch(message["message"]["processingFlowType"]) {
+        case "updateEmail":
+            await updateEmail(message)
+            break
+        case "setGoogleId":
+            await setGoogleId(message)
+            break
         case "skipPersonalInfo":
             await skipPersonalInfo(message)
             break

@@ -29,8 +29,10 @@ spec:
           - secretRef:
               name: api-secrets
         env:
-          - name: PGHOST
-            value: "bible-pg-pooler-rw" 
+          - name: PGHOST_R
+            value: bible-pg-pooler-ro
+          - name: PGHOST_RW
+            value: bible-pg-pooler-rw
           - name: PGPORT
             value: "5432"
           - name: PGDATABASE

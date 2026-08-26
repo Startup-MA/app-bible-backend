@@ -1,6 +1,5 @@
 import BaseApiClient from "./BaseApiClient.js"
 import AppError from "../errors/AppError.js"
-import { logger } from "../utils/logger.js"
 
 class PaddleService extends BaseApiClient {
     constructor() {

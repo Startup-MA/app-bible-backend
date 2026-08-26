@@ -2,6 +2,7 @@ import pg from "../utils/pgQueryEngine.js"
 
 async function getUserHighlightsByUserId(id_user) {
     const result = await pg.query(
+        "r",
         `
             SELECT 
             id_highlight AS id,

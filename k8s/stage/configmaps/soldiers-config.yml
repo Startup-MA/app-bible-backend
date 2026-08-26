@@ -23,7 +23,6 @@ data:
   APP_PORT: "3000"
 
   # CNPG
-  PGHOST: bible-pg-pooler-rw
   MAX: "10"
   CONNECTION_TIMEOUT_MILLIS: "5000"
   IDLE_TIMEOUT_MILLIS: "5000"

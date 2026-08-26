@@ -2,6 +2,7 @@ import pg from "../utils/pgQueryEngine.js"
 
 async function getUserPrayersByUserIdAndStartId(id_user, start_id, number) {
     const result = await pg.query(
+        "r",
         `
             SELECT 
             id_prayer AS id,

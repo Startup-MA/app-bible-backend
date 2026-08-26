@@ -1,13 +1,16 @@
-import runInTransaction from './runInTransaction.js'
-import pool from "../connections/pg.js"
+import runInTransaction from "./runInTransaction.js"
+import pool_r from "../connections/pg-r.js"
+import pool_rw from "../connections/pg-rw.js"
+
 import { logger } from "../utils/logger.js"
 
-const queryWithRetry = async (text, params, maxRetries = 3) => {
+const queryWithRetry = async (pool, text, params, maxRetries=3) => {
 	let attempts = 0
+	const usePool = pool === "r" ? pool_r : pool_rw
 
 	while (attempts < maxRetries) {
 		try {
-			const res = await pool.query(text, params)
+			const res = await usePool.query(text, params)
 
 			return res
 
@@ -35,12 +38,13 @@ const queryWithRetry = async (text, params, maxRetries = 3) => {
 	}
 }
 
-const queryTransactionWithRetry = async (callback, maxRetries = 3) => {
+const queryTransactionWithRetry = async (pool, callback, maxRetries=3) => {
 	let attempts = 0
+	const usePool = pool === "r" ? pool_r : pool_rw
 
 	while (attempts < maxRetries) {
 		try {
-			const res = await runInTransaction(callback, pool)
+			const res = await runInTransaction(callback, usePool)
 
 			return res
 
@@ -71,10 +75,10 @@ function isRetryableError(err) {
   // --- 1. NETWORK / OS ERRORS ---
     // These happen when the TCP link is severed or silent.
     const networkErrors = [
-        'ECONNRESET', // Peer (Pod) reset connection
-        'ETIMEDOUT',  // Network packet lost (silent drop)
-        'EPIPE',      // Writing to a closed socket
-        'EHOSTUNREACH' // Minikube/K8s networking issue
+        "ECONNRESET", // Peer (Pod) reset connection
+        "ETIMEDOUT",  // Network packet lost (silent drop)
+        "EPIPE",      // Writing to a closed socket
+        "EHOSTUNREACH" // Minikube/K8s networking issue
     ]
     if (networkErrors.includes(err.code)) return true
 
@@ -82,30 +86,30 @@ function isRetryableError(err) {
     // Postgres uses 5-char codes. We check the prefix or specific codes.
     if (err.code) {
         // 57Pxx = Admin Shutdown / Crash (e.g., Pod restart)
-        if (err.code.startsWith('57P')) return true
+        if (err.code.startsWith("57P")) return true
         
         // 08xxx = Connection Exceptions
         // 08000, 08003, 08006 = Connection failures
         // 08P01 = Protocol violation (Often sent by PgBouncer on limits)
-        if (err.code.startsWith('08')) return true
+        if (err.code.startsWith("08")) return true
         
         // 53300 = Too many connections (PgBouncer max_client_conn reached)
         // We RETRY this because maybe a slot will free up in 100ms.
-        if (err.code === '53300') return true
+        if (err.code === "53300") return true
     }
 
     // --- 3. GENERIC TEXT MATCHING ---
     // Sometimes (like with timeouts), the library doesn't set 'err.code'.
-    const message = err.message || ''
+    const message = err.message || ""
     
     // Catch pool.query() timeout (client-side limit)
-    if (message.includes('timeout exceeded when trying to connect')) return true
+    if (message.includes("timeout exceeded when trying to connect")) return true
     
     // Catch PgBouncer "query_wait_timeout" (server-side queue limit)
-    if (message.includes('query_wait_timeout')) return true
+    if (message.includes("query_wait_timeout")) return true
     
     // Catch "Connection terminated" (The Zombie Connection)
-    if (message.includes('Connection terminated')) return true
+    if (message.includes("Connection terminated")) return true
 
     // --- 4. DO NOT RETRY ---
     // Syntax errors, Missing columns, Auth failures (password wrong), etc.

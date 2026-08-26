@@ -2,6 +2,7 @@ import pg from "../utils/pgQueryEngine.js"
 
 async function getDailyVersePrayer(id_user) {
     const result = await pg.query(
+        "r",
         `
             SELECT
             book,

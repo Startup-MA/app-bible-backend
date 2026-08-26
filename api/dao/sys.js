@@ -2,6 +2,7 @@ import pg from "../utils/pgQueryEngine.js"
 
 async function getAllBibleTextVersions() {
     const result = await pg.query(
+        "r",
         `
             SELECT
             id_bible_text_version AS id,
@@ -19,6 +20,7 @@ async function getAllBibleTextVersions() {
 
 async function getAllLangs() {
     const result = await pg.query(
+        "r",
         `
             SELECT
             id_lang AS id,
@@ -33,6 +35,7 @@ async function getAllLangs() {
 
 async function getTicketsPerPage(page) {
     const result = await pg.query(
+        "r",
         `
             SELECT 
             id_ticket AS id,

@@ -72,6 +72,8 @@ jobs:
             REACT_APP_PADDLE_INITIALIZE_TOKEN=${{ secrets.PADDLE_INITIALIZE_TOKEN_SANDBOX }}
             REACT_APP_NODE_ENV=${{ secrets.NODE_ENV_DEV }}
             REACT_APP_PADDLE_ENVIRONMENT=${{ secrets.PADDLE_ENVIRONMENT_DEV }}
+            REACT_APP_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID_DEV }}
+            REACT_APP_GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET_DEV }}
 
   # PHASE 2: Deploy to Droplet (Runs only after Phase 1 succeeds)
   deploy-to-droplet:
@@ -129,7 +131,8 @@ jobs:
             NODE_ENV=${{ secrets.NODE_ENV_DEV }}
             FRONT_URL=${{ secrets.FRONTEND_URL_DEV}}
             PGDATABASE=${{ secrets.PGDATABASE }}
-            PGHOST=${{ secrets.PGHOST }}
+            PGHOST_R=${{ secrets.PGHOST }}
+            PGHOST_RW=${{ secrets.PGHOST }}
             PGPASSWORD=${{ secrets.PGPASSWORD }}
             PGPORT=${{ secrets.PGPORT }}
             PGUSER=${{ secrets.PGUSER }}
@@ -155,6 +158,9 @@ jobs:
             PADDLE_WEBHOOK_SECRET_KEY=${{ secrets.PADDLE_WEBHOOK_SECRET_KEY_SANDBOX }}
             PADDLE_API_URL=${{ secrets.PADDLE_API_URL_SANDBOX }}
             OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY_DEV }}
+            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID_DEV }}
+            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET_DEV }}
+            BACKEND_URL=${{ secrets.BACKEND_URL_DEV }}
             EOF
             
             # # EMPEROR-CONSUMER envs

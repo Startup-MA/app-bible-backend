@@ -51,6 +51,7 @@ async function seedLanguages() {
 
     for (const lang of LANGUAGES) {
         await pg.query(
+            "rw",
             `
                 INSERT INTO languages (lang_name, country_code) 
                 VALUES ($1, $2)
@@ -71,6 +72,7 @@ async function seedBibleVersions() {
 
     for (const bible_version of BIBLE_VERSIONS ) {
         await pg.query(
+            "rw",
             `
                 INSERT INTO bible_text_versions (abb_bible_name, full_bible_name, is_audio_available, download_link, id_lang) 
                 VALUES ($1, $2, $3, $4, $5)
@@ -98,6 +100,7 @@ async function seedAdmins() {
             logger.warn(`Seeding admin user: ${adminEmails[i]}...`)
         
             await pg.query(
+                "rw",
                 `
                     INSERT INTO users (email, password, is_admin) 
                     VALUES ($1, $2, 'true')

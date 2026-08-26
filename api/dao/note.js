@@ -2,6 +2,7 @@ import pg from "../utils/pgQueryEngine.js"
 
 async function getUserNotesByUserIdAndStartId(id_user, start_id, number) {
     const result = await pg.query(
+        "r",
         `
             SELECT 
             id_note AS id,
