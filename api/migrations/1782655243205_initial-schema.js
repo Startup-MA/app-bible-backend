@@ -28,14 +28,6 @@ export const up = (pgm) => {
             id_user INT UNIQUE REFERENCES users(id_user)
         );
 
-        CREATE TABLE users_google_auth_info (
-            id_info INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            google_id VARCHAR(255) UNIQUE NOT NULL,
-            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-            id_user INT UNIQUE REFERENCES users(id_user)
-        );
-
         CREATE TABLE users_apple_auth_info (
             id_info INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
             apple_id VARCHAR(255) UNIQUE NOT NULL,
