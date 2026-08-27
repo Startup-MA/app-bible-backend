@@ -46,8 +46,6 @@ async function googleAuth(req, res, next) {
 
     const extractedData = authService.extractUserInfoFromToken(userTokens.data.id_token)
 
-    logger.info(extractedData.data)
-
     const userData = await authService.verifyUserByGoogleIdOrEmail(extractedData.data.sub, extractedData.data.email)
 
     const trackerKey = `active_session:user_${userData.data[0]["id_user"]}`
