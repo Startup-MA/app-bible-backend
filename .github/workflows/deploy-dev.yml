@@ -131,8 +131,7 @@ jobs:
             NODE_ENV=${{ secrets.NODE_ENV_DEV }}
             FRONT_URL=${{ secrets.FRONTEND_URL_DEV}}
             PGDATABASE=${{ secrets.PGDATABASE }}
-            PGHOST_R=${{ secrets.PGHOST }}
-            PGHOST_RW=${{ secrets.PGHOST }}
+            PGHOST=${{ secrets.PGHOST }}
             PGPASSWORD=${{ secrets.PGPASSWORD }}
             PGPORT=${{ secrets.PGPORT }}
             PGUSER=${{ secrets.PGUSER }}

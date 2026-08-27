@@ -4,7 +4,7 @@ import { logger } from "../utils/logger.js"
 const pool = new Pool(
     {
         database: process.env.PGDATABASE,
-        host: process.env.PGHOST_R,
+        host: process.env.PGHOST + (process.env.NODE_ENV !== "dev" ? "-ro" : ""),
         password: process.env.PGPASSWORD,
         port: process.env.PGPORT,
         user: process.env.PGUSER,
