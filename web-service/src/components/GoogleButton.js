@@ -5,7 +5,7 @@ import Google from "../assets/Google.svg"
 function GoogleButton() {
     const handleGoogleLogin = () => {
         const googleAuthUrl = "https://accounts.google.com/o/oauth2/v2/auth"
-        console.log(process.env.REACT_APP_GOOGLE_CLIENT_ID)
+
         const options = {
             client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
             redirect_uri: `${process.env.REACT_APP_BACKEND_URL}/api/auth/google`,
