@@ -560,7 +560,7 @@ function Billing() {
                                 <div className="billing-section cancellation">
                                     <div>
                                         <h1>Cancellation</h1>
-                                        <p>Cancel subscription at end of period</p>
+                                        <p>Cancel subscription at the end of the period</p>
                                     </div>
                                     <div className="control-button">
                                         <button style={subscriptionStatus === "canceled" || subscriptionStatus === "past_due" || isScheduledChange ? {visibility: "hidden"} : {}} onClick={askPopUp}>Cancel</button>

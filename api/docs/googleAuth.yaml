@@ -1,0 +1,93 @@
+paths:
+  /api/auth/google:
+    get:
+      tags:
+        - Auth
+      summary: Verifies user via Google Auth service and logs in giving a newly created session.
+      parameters:
+        - in: query
+          name: state
+          required: true
+          schema:
+            type: string
+            example: mobile
+          description: Type of a session (Only two are allowed "mobile" and "browser")
+        - in: query
+          name: code
+          required: true
+          schema:
+            type: string
+            example: 4/0ATsMZqCN3qUivDzaa39tBIchD7y1hJoJlcJ7bPW198bbimG9AHkC3sjBJUGqX1hf4aFJzg
+          description: Access code provided by Google.
+        - in: query
+          name: scope
+          required: true
+          schema:
+            type: string
+            example: openid email profile
+          description: User data that was provided by Google.
+      responses:
+        200:
+          description: User verification was successful and a newly created session was set and sent in the headers field "Set-Cookie".
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Logged in successfully
+        400:
+          description: Validation for the given input did not passed (Unprocessible format of the entity).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Validation error
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                          description: Body field that did not passed the validation process.
+                          example: device
+                        message:
+                          type: string
+                          example: device must contain mobile or browser
+        403:
+          description: Client tries to login using unverified email.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: The email address attached to this Google account is unverified. Please verify your email with Google.
+        500:
+          description: If internal server error occurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: Internal Server Error

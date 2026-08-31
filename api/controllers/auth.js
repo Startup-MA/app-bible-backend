@@ -42,6 +42,8 @@ async function googleAuth(req, res, next) {
     const { code } = req.query
     const device = req.query.state
 
+    logger.info(code)
+    
     const userTokens = await authService.exchangeCodeForTokens(code)
 
     const extractedData = authService.extractUserInfoFromToken(userTokens.data.id_token)
