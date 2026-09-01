@@ -42,8 +42,6 @@ async function googleAuth(req, res, next) {
     const { code } = req.query
     const device = req.query.state
 
-    logger.info(code)
-    
     const userTokens = await authService.exchangeCodeForTokens(code)
 
     const extractedData = authService.extractUserInfoFromToken(userTokens.data.id_token)
@@ -116,18 +114,17 @@ async function googleAuth(req, res, next) {
         req.session.save(err => {
             if (err) throw err
             
-            if (device === "browser") return res
-                .redirect(`${process.env.FRONT_URL}/dashboard/profile`)
+            if (device === "browser") {
+                return res.redirect(`${process.env.FRONT_URL}/dashboard/profile`)
+            }
             
-            if (device === "mobile") return res
+            return res
                 .status(StatusCodes.OK)
                 .header("sess", JSON.stringify(returnedObject))
                 .json({
                     status: "success",
                     message: userData.message
                 })
-            
-          
         })
     })
 }

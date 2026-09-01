@@ -116,9 +116,8 @@ export const up = (pgm) => {
         CREATE TABLE bible_text_versions (
             id_bible_text_version INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
             abb_bible_name VARCHAR(10),
-            full_bible_name VARCHAR(200) UNIQUE,
+            full_bible_name VARCHAR(200),
             is_audio_available BOOLEAN,
-            download_link VARCHAR(100),
             id_lang INT REFERENCES languages(id_lang)
         );
 

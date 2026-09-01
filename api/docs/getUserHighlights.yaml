@@ -4,6 +4,22 @@ paths:
       tags:
         - User (Requires "Mobile" authentication)
       summary: Returns user highlights object in JSON format (Requires authentication - "Cookie" headers field to be filled with active mobile session).
+      parameters:
+        - in: query
+          name: book
+          required: true
+          schema:
+            type: string
+            example: Genesis
+          description: One of the available book names Genesis, Exodus, Mark ...
+        - in: query
+          name: bible_id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            example: 1
+          description: available bible text version id
       responses:
         200:
           description: User highlights object.
@@ -56,6 +72,31 @@ paths:
                               type: integer
                               minimum: 1
                               example: 1
+        400:
+          description: Validation for the given input did not passed (Unprocessible format of the entity).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Validation error
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                          description: Body field that did not passed the validation process.
+                          example: book
+                        message:
+                          type: string
+                          example: book must be one of [Genesis, Exodus, Leviticus, Numbers...
         401:
           description: Authentication error (Session has expired or there is no such session).
           content:

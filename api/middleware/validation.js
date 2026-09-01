@@ -31,8 +31,17 @@ function validate(schema, location = "body") {
                 errors
             })
         }
-
-        req[location] = value
+        
+        if (location === "query") {
+            Object.defineProperty(req, "query", {
+                value: value,
+                writable: true,
+                configurable: true,
+                enumerable: true
+            })
+        } else {
+            req[location] = value
+        }
 
         return next()
     }

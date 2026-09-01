@@ -202,7 +202,7 @@ async function syncPrayers(req, res, next) {
 
 async function getUserBookmarks(req, res, next) {
     const { id, device } = req.session.user
-    const { start_id, number } = req.body
+    const { start_id, number } = req.query
 
     logger.info(`Retrieving bookmarks for user: ${id} device: ${device}`)
     
@@ -222,7 +222,7 @@ async function getUserBookmarks(req, res, next) {
 
 async function getUserNotes(req, res, next) {
     const { id, device } = req.session.user
-    const { start_id, number } = req.body
+    const { start_id, number } = req.query
     
     logger.info(`Retrieving notes for user: ${id} device: ${device}`)
     
@@ -259,12 +259,11 @@ async function getUserReadingHistory(req, res, next) {
 
 async function getUserHighlights(req, res, next) {
     const { id, device } = req.session.user
-    
+    const { book, bible_id } = req.query
+
     logger.info(`Retrieving highlights for user: ${id} device: ${device}`)
     
-    const result = await userService.getUserHighlights(
-        id
-    )
+    const result = await userService.getUserHighlights(book, bible_id, id)
 
     return res.status(StatusCodes.OK).json({
         status: "success",
@@ -276,7 +275,7 @@ async function getUserHighlights(req, res, next) {
 
 async function getUserPrayers(req, res, next) {
     const { id, device } = req.session.user
-    const { start_id, number } = req.body
+    const { start_id, number } = req.query
     
     logger.info(`Retrieving prayers for user: ${id} device: ${device}`)
     

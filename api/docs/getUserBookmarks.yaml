@@ -4,24 +4,24 @@ paths:
       tags:
         - User (Requires "Mobile" authentication)
       summary: Returns paginated user bookmarks (Requires authentication - "Cookie" headers field to be filled with active mobile session).
-      requestBody:
-        description: Pagination settings. 
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                start_id:
-                  type: integer
-                  description: id to start pagination from
-                  example: 1
-                number:
-                  type: integer
-                  minimum: 1
-                  maximum: 100
-                  description: number of desired elements to get in one request
-                  example: 100
+      parameters:
+        - in: query
+          name: start_id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            example: 1
+          description: id to start pagination from
+        - in: query
+          name: number
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            example: 100
+          description: number of desired elements to get in one request
       responses:
         200:
           description: List of paginated bookmarks.

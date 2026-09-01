@@ -5,11 +5,26 @@ import { logger } from "../utils/logger.js"
 async function getAllBibleTextVersions(req, res, next) {
     logger.info("Extracting all bible text versions")
 
-    const allBibleVersions = await sysService.getAllBibleTextVersions()
+    const { start_id, number } = req.query
+
+    const allBibleVersions = await sysService.getAllBibleTextVersions(start_id, number)
 
     return res.status(StatusCodes.OK).json({
         status: "success",
         data: allBibleVersions.data
+    })
+}
+
+async function getBibleTextVersions(req, res, next) {
+    const { language } = req.query
+
+    logger.info(`Extracting bible text versions for language: ${language}`)
+
+    const bibleVersions = await sysService.getBibleTextVersions(language)
+
+    return res.status(StatusCodes.OK).json({
+        status: "success",
+        data: bibleVersions.data
     })
 }
 
@@ -86,5 +101,6 @@ export default {
     createTicket: createTicket,
     deleteTickets: deleteTickets,
     getAllBibleTextVersions: getAllBibleTextVersions,
+    getBibleTextVersions: getBibleTextVersions,
     getAllLangs: getAllLangs
 }

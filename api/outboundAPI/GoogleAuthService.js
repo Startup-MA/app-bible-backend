@@ -9,7 +9,7 @@ class GoogleAuthService extends BaseApiClient {
             },
             rateLimit: {
                 keyPrefix: "limit:googleAuth",
-                points: 1000,
+                points: 200,
                 duration: 1
             }
         })

@@ -1,6 +1,6 @@
 import pg from "../utils/pgQueryEngine.js"
 
-async function getAllBibleTextVersions() {
+async function getAllBibleTextVersions(start_id, number) {
     const result = await pg.query(
         "r",
         `
@@ -9,10 +9,44 @@ async function getAllBibleTextVersions() {
             abb_bible_name AS name,
             full_bible_name AS full_name,
             is_audio_available AS is_audio,
-            download_link AS link,
-            id_lang AS lang_id
+            lang_name,
+            languages.id_lang AS lang_id
             FROM bible_text_versions
+            LEFT JOIN
+            languages
+            ON languages.id_lang = bible_text_versions.id_lang
+            WHERE id_bible_text_version >= $1
+            ORDER BY id_bible_text_version ASC
+            LIMIT ${number}
+        `,
+        [
+            start_id
+        ]
+    )
+
+    return result["rows"]
+}
+
+async function getBibleTextVersions(language) {
+    const result = await pg.query(
+        "r",
         `
+            SELECT
+            id_bible_text_version AS id,
+            abb_bible_name AS name,
+            full_bible_name AS full_name,
+            is_audio_available AS is_audio,
+            lang_name,
+            languages.id_lang AS lang_id
+            FROM bible_text_versions
+            LEFT JOIN
+            languages
+            ON languages.id_lang = bible_text_versions.id_lang
+            WHERE languages.lang_name = $1
+        `,
+        [
+            language
+        ]
     )
 
     return result["rows"]
@@ -70,5 +104,6 @@ export default {
     getTicketsPerPage: getTicketsPerPage,
     getTicketsCount: getTicketsCount,
     getAllBibleTextVersions: getAllBibleTextVersions,
+    getBibleTextVersions: getBibleTextVersions,
     getAllLangs: getAllLangs
 }

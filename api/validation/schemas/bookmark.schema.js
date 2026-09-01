@@ -1,7 +1,7 @@
 import Joi from "joi"
 import { bibleBooksNames } from "../assets/bibleBooksNames.js"
 
-const id = Joi.number()
+export const id = Joi.number()
     .integer()
     .positive()
     .required()
@@ -11,7 +11,7 @@ const id = Joi.number()
         "any.required": "start_id is required"
     })
 
-const number = Joi
+export const number = Joi
     .number()
     .integer()
     .positive()

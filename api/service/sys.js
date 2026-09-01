@@ -5,11 +5,19 @@ import { logger } from "../utils/logger.js"
 
 const { TasksQueue } = redisClient
 
-async function getAllBibleTextVersions() {
-    const allBibleVersions = await sysDAO.getAllBibleTextVersions()
+async function getAllBibleTextVersions(start_id, number) {
+    const allBibleVersions = await sysDAO.getAllBibleTextVersions(start_id, number)
 
     return {
         data: allBibleVersions
+    }
+}
+
+async function getBibleTextVersions(language) {
+    const bibleVersions = await sysDAO.getBibleTextVersions(language)
+
+    return {
+        data: bibleVersions
     }
 }
 
@@ -73,5 +81,6 @@ export default {
     createTicket: createTicket,
     deleteTickets: deleteTickets,
     getAllBibleTextVersions: getAllBibleTextVersions,
+    getBibleTextVersions: getBibleTextVersions,
     getAllLangs: getAllLangs
 }

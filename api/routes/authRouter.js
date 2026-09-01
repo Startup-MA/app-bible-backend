@@ -19,7 +19,6 @@ authRouter.post("/login",
 )
 
 authRouter.get("/google", 
-    // validate(loginSchema, "body"),
     authController.googleAuth
 )
 

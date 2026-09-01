@@ -5,11 +5,19 @@ import authenticate from "../middleware/authenticate.js"
 import { createTicketSchema } from "../validation/schemas/createTicket.schema.js"
 import { deleteTicketsSchema } from "../validation/schemas/deleteTickets.schema.js"
 import { getTicketsPerPageSchema } from "../validation/schemas/getTicketsPerPage.schema.js"
+import { getBibleTextVersionsSchema } from "../validation/schemas/getBibleTextVersions.schema.js"
+import { getAllBibleTextVersionsSchema } from "../validation/schemas/getAllBibleTextVersions.schema.js"
 
 const sysRouter = express.Router()
 
 sysRouter.get("/getAllBibleTextVersions",
+    validate(getAllBibleTextVersionsSchema, "query"),
     sysController.getAllBibleTextVersions
+)
+
+sysRouter.get("/getBibleTextVersions",
+    validate(getBibleTextVersionsSchema, "query"),
+    sysController.getBibleTextVersions
 )
 
 sysRouter.get("/getAllLangs",

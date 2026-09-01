@@ -47,7 +47,7 @@ const book = Joi.object()
 
 const userReadingHistoryJson = Joi.object()
     .pattern(
-        Joi.string().valid(...bibleVersions),
+        Joi.string(),
         book
     ).min(1).max(66)
     .messages({

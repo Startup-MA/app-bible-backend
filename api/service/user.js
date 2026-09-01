@@ -284,10 +284,8 @@ async function getUserReadingHistory(id_user) {
     }
 }
 
-async function getUserHighlights(id_user) {
-    const userHighlights = await highlightsDAO.getUserHighlightsByUserId(
-        id_user
-    )
+async function getUserHighlights(book, bible_id, id_user) {
+    const userHighlights = await highlightsDAO.getUserHighlightsByUserId(book, bible_id, id_user)
     
     return {
         data: userHighlights

@@ -12,6 +12,7 @@ import { syncUserReadingHistorySchema } from "../validation/schemas/user.reading
 import { syncHighlightsSchema } from "../validation/schemas/highlight.schema.js"
 import { syncPrayersSchema, getUserPrayersSchema } from "../validation/schemas/prayers.schema.js"
 import { generateDailyVersePrayerRateLimiter } from "../middleware/rateLimiter.js"
+import { getHighlightsSchema } from "../validation/schemas/getHighlights.schema.js"
 
 const userRouter = express.Router()
 
@@ -29,18 +30,18 @@ userRouter.post("/getUserDailyPrayerTranslation", validate(getUserDailyPrayerTra
 userRouter.get("/getUserDailyVersePrayer", userController.getUserDailyVersePrayer)
 
 userRouter.post("/syncBookmarks", validate(syncBookmarksSchema, "body"), userController.syncBookmarks)
-userRouter.get("/getUserBookmarks", validate(getUserBookmarksSchema, "body"), userController.getUserBookmarks)
+userRouter.get("/getUserBookmarks", validate(getUserBookmarksSchema, "query"), userController.getUserBookmarks)
 
 userRouter.post("/syncNotes", validate(syncNotesSchema, "body"), userController.syncNotes)
-userRouter.get("/getUserNotes", validate(getUserNotesSchema, "body"), userController.getUserNotes)
+userRouter.get("/getUserNotes", validate(getUserNotesSchema, "query"), userController.getUserNotes)
 
 userRouter.post("/syncUserReadingHistory", validate(syncUserReadingHistorySchema, "body"), userController.syncUserReadingHistory)
 userRouter.get("/getUserReadingHistory", userController.getUserReadingHistory)
 
 userRouter.post("/syncHighlights", validate(syncHighlightsSchema, "body"), userController.syncHighlights)
-userRouter.get("/getUserHighlights", userController.getUserHighlights)
+userRouter.get("/getUserHighlights", validate(getHighlightsSchema, "query"), userController.getUserHighlights)
 
 userRouter.post("/syncPrayers", validate(syncPrayersSchema, "body"), userController.syncPrayers)
-userRouter.get("/getUserPrayers", validate(getUserPrayersSchema, "body"), userController.getUserPrayers)
+userRouter.get("/getUserPrayers", validate(getUserPrayersSchema, "query"), userController.getUserPrayers)
 
 export default userRouter

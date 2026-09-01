@@ -12,7 +12,7 @@ function GoogleButton() {
             response_type: "code",
             scope: "openid email profile",
             state: "browser",
-            prompt: "consent"
+            prompt: "select_account"
         }
 
         const queryString = new URLSearchParams(options).toString()
