@@ -17,7 +17,7 @@ class PaddleService extends BaseApiClient {
         })
     }
 
-    async getSubscription(subscription_id) {
+    getSubscription(subscription_id) {
         return this.request(
             { method: "GET", url: `/subscriptions/${subscription_id}` },
         )
@@ -118,14 +118,14 @@ class PaddleService extends BaseApiClient {
         throw AppError.bad_gateway("Empty transactions list")
     }
 
-    async cancelSubscription(subscription_id) {
+    cancelSubscription(subscription_id) {
         return this.request({
             method: "POST",
             url: `/subscriptions/${subscription_id}/cancel`
         })
     }
 
-    async cancelScheduledCancel(subscription_id) {
+    cancelScheduledCancel(subscription_id) {
         return this.request({
             method: "PATCH",
             url: `/subscriptions/${subscription_id}`,
@@ -135,14 +135,14 @@ class PaddleService extends BaseApiClient {
         })
     }
 
-    async getUpdatePaymentMethodTransaction(subscription_id) {
+    getUpdatePaymentMethodTransaction(subscription_id) {
         return this.request({
             method: "GET",
             url: `/subscriptions/${subscription_id}/update-payment-method-transaction`,
         })
     }
 
-    async upgradePlan(subscription_id, data) {
+    upgradePlan(subscription_id, data) {
         return this.request({
             method: "PATCH",
             url: `/subscriptions/${subscription_id}`,

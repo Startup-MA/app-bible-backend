@@ -10,6 +10,7 @@ import FormClose from "../assets/FormClose.svg"
 import OpenedEye from "../assets/OpenedEye.svg"
 import ClosedEye from "../assets/ClosedEye.svg"
 import GoogleButton from "./GoogleButton.js"
+import AppleButton from "./AppleButton.js"
 
 import axios from "axios"
 
@@ -216,7 +217,10 @@ function SignUp({isOpen, setIsSignUp, setIsLogin, onClose}) {
                                     <button onClick={signUpHandler}>
                                         Sign Up
                                     </button>
-                                    <GoogleButton></GoogleButton>
+                                        <div>
+                                            <AppleButton></AppleButton>
+                                            <GoogleButton></GoogleButton>
+                                        </div>
                                     <p>Have an account? <span onClick={goToLogin}><u>Log in</u></span></p>
                                 </div>
                             </>

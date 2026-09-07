@@ -5,6 +5,7 @@ import encryptor from "../utils/encryptor.js"
 import AppError from "../errors/AppError.js"
 import ApiGateway from "../outboundAPI/ApiGateway.js"
 import { decodeIdToken } from "../utils/decodeIdToken.js"
+import { verifyAppleIdToken } from "../utils/verifyAppleIdToken.js"
 import { logger } from "../utils/logger.js"
 
 const { TasksQueue } = redisClient
@@ -80,7 +81,7 @@ async function exchangeCodeForTokens(authCode) {
     }
 }
 
-function extractUserInfoFromToken(idToken) {
+function extractUserInfoFromGoogleToken(idToken) {
     const userInfo = decodeIdToken(idToken)
 
     if (!userInfo.email_verified) {
@@ -92,8 +93,8 @@ function extractUserInfoFromToken(idToken) {
     }
 }
 
-async function verifyUserByGoogleIdOrEmail(googleId, email) {
-    let userData = await userDAO.findUserByGoogleId(googleId)
+async function verifyUserByGoogleSubOrEmail(googleSub, email) {
+    let userData = await userDAO.findUserByGoogleSub(googleSub)
 
     if (userData.length) {
         if (userData[0].email !== email) {
@@ -124,8 +125,8 @@ async function verifyUserByGoogleIdOrEmail(googleId, email) {
             TasksQueue,
             process.env.TASKS_STREAM_NAME,
             {
-                processingFlowType: "setGoogleId",
-                google_id: googleId,
+                processingFlowType: "setGoogleSub",
+                google_sub: googleSub,
                 id_user: String(userData[0].id_user)
             }  
         ).catch(err => {
@@ -139,7 +140,79 @@ async function verifyUserByGoogleIdOrEmail(googleId, email) {
         }
     }
 
-    userData = await userDAO.registerNewUser(email, "google", googleId)
+    userData = await userDAO.registerNewUser(email, "google", googleSub)
+
+    return {
+        message: "Logged in successfully",
+        data: userData
+    }
+}
+
+async function extractUserInfoFromAppleToken(id_token, client_id) {
+    const decodedToken = await verifyAppleIdToken(id_token, client_id)
+
+    return {
+        data: decodedToken
+    }
+}
+
+async function verifyUserByAppleSubOrEmail(decodedToken, code, platform) {
+    let userData = await userDAO.findUserByAppleSub(decodedToken.data.sub)
+
+    if (userData.length) {
+        if (!decodedToken.data.email.endsWith("@privaterelay.appleid.com") && userData[0].email !== decodedToken.data.email) {
+            await taskQueue.publish(
+                TasksQueue,
+                process.env.TASKS_STREAM_NAME,
+                {
+                    processingFlowType: "updateEmail",
+                    email: decodedToken.data.email,
+                    id_user: String(userData[0].id_user)
+                }  
+            ).catch(err => {
+                logger.error("[Redis taskQueue] Error during publishing task to the queue")
+                throw err
+            })
+        }
+
+        return {
+            message: "Logged in successfully",
+            data: userData
+        }
+    } else if (decodedToken.data.email.endsWith("@privaterelay.appleid.com")) {
+        return {
+            message: "Email verification required",
+            data: userData
+        }
+    }
+    
+    const result = await ApiGateway.appleAuth.exchangeAppleCode(code, platform)
+    const refresh_token = result.refresh_token
+
+    userData = await userDAO.findUserByEmail(decodedToken.data.email)
+
+    if (userData.length) {
+        await taskQueue.publish(
+            TasksQueue,
+            process.env.TASKS_STREAM_NAME,
+            {
+                processingFlowType: "setAppleSub",
+                apple_sub: decodedToken.data.sub,
+                refresh_token: refresh_token,
+                id_user: String(userData[0].id_user)
+            }  
+        ).catch(err => {
+            logger.error("[Redis taskQueue] Error during publishing task to the queue")
+            throw err
+        })
+
+        return {
+            message: "Logged in successfully",
+            data: userData
+        }
+    }
+    
+    userData = await userDAO.registerNewUser(decodedToken.data.email, "apple", decodedToken.data.sub, refresh_token)
 
     return {
         message: "Logged in successfully",
@@ -216,8 +289,10 @@ export default {
     register: register,
     login: login,
     exchangeCodeForTokens: exchangeCodeForTokens,
-    extractUserInfoFromToken: extractUserInfoFromToken,
-    verifyUserByGoogleIdOrEmail: verifyUserByGoogleIdOrEmail,
+    extractUserInfoFromGoogleToken: extractUserInfoFromGoogleToken,
+    verifyUserByGoogleSubOrEmail: verifyUserByGoogleSubOrEmail,
+    verifyUserByAppleSubOrEmail: verifyUserByAppleSubOrEmail,
+    extractUserInfoFromAppleToken: extractUserInfoFromAppleToken,
     resetCode: resetCode,
     verifyUserByCode: verifyUserByCode
 }

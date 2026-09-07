@@ -16,15 +16,30 @@ async function updateEmail(email, id_user) {
     )
 }
 
-async function setGoogleId(google_id, id_user) {
+async function setGoogleSub(google_sub, id_user) {
     await pg.query(
         `
             INSERT INTO 
-            users_google_auth_info(google_id, id_user)
+            users_google_auth_info(google_sub, id_user)
             VALUES ($1, $2)
         `,
         [
-            google_id,
+            google_sub,
+            id_user
+        ]
+    )
+}
+
+async function setAppleSub(apple_sub, refresh_token, id_user) {
+    await pg.query(
+        `
+            INSERT INTO 
+            users_apple_auth_info(apple_sub, refresh_token, id_user)
+            VALUES ($1, $2, $3)
+        `,
+        [
+            apple_sub,
+            refresh_token,
             id_user
         ]
     )
@@ -350,7 +365,8 @@ async function updatePassword(uuid, new_password) {
 
 export default {
     updateEmail: updateEmail,
-    setGoogleId: setGoogleId,
+    setGoogleSub: setGoogleSub,
+    setAppleSub: setAppleSub,
     skipPersonalInfo: skipPersonalInfo,
     updateProfile: updateProfile,
     createOrUpdateUserTopics: createOrUpdateUserTopics,

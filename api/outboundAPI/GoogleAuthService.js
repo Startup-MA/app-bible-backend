@@ -15,7 +15,7 @@ class GoogleAuthService extends BaseApiClient {
         })
     }
 
-    async exchangeCodeForTokens(authCode) {
+    exchangeCodeForTokens(authCode) {
         return this.request({
             method: "POST",
             url: `/token`,

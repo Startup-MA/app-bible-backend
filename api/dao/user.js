@@ -1,6 +1,6 @@
 import pg from "../utils/pgQueryEngine.js"
 
-async function registerNewUser(email, authProvider, googleId) {
+async function registerNewUser(email, auth_provider, client_id, refresh_token = null) {
     const result = await pg.queryTransaction("rw", async (client) => {
         const id = await client.query(
             `
@@ -11,21 +11,37 @@ async function registerNewUser(email, authProvider, googleId) {
             `,
             [
                 email,
-                authProvider
+                auth_provider
             ]
         )
 
-        await client.query(
-            `    
-                INSERT INTO
-                users_google_auth_info(google_id, id_user)
-                VALUES($1, $2)
-            `,
-            [
-                googleId,
-                id["rows"][0]["id_user"]
-            ]
-        )
+        if (auth_provider === "google") {
+            await client.query(
+                `    
+                    INSERT INTO
+                    users_google_auth_info(google_sub, id_user)
+                    VALUES($1, $2)
+                `,
+                [
+                    client_id,
+                    id["rows"][0]["id_user"]
+                ]
+            )
+        } else {
+            await client.query(
+                `    
+                    INSERT INTO
+                    users_apple_auth_info(apple_sub, refresh_token, id_user)
+                    VALUES($1, $2, $3)
+                `,
+                [
+                    client_id,
+                    refresh_token,
+                    id["rows"][0]["id_user"]
+                ]
+            )
+        }
+        
 
         return [{
             id_user: id["rows"][0]["id_user"]
@@ -121,19 +137,38 @@ async function findUserByCode(code) {
     return result["rows"]
 }
 
-async function findUserByGoogleId(googleId) {
+async function findUserByGoogleSub(google_sub) {
     const result = await pg.query(
         "r",
         `
             SELECT
-            email, google_id, users_google_auth_info.id_user 
+            email, google_sub, users_google_auth_info.id_user 
             FROM users_google_auth_info 
             LEFT JOIN users
             ON users.id_user = users_google_auth_info.id_user
-            WHERE google_id = $1;
+            WHERE google_sub = $1;
         `,
         [
-            googleId
+            google_sub
+        ]
+    )
+
+    return result["rows"]
+}
+
+async function findUserByAppleSub(apple_sub) {
+    const result = await pg.query(
+        "r",
+        `
+            SELECT
+            email, apple_sub, users_apple_auth_info.id_user 
+            FROM users_apple_auth_info 
+            LEFT JOIN users
+            ON users.id_user = users_apple_auth_info.id_user
+            WHERE apple_sub = $1;
+        `,
+        [
+            apple_sub
         ]
     )
 
@@ -146,5 +181,6 @@ export default {
     findUserById: findUserById,
     findUserByToken: findUserByToken,
     findUserByCode: findUserByCode,
-    findUserByGoogleId: findUserByGoogleId
+    findUserByGoogleSub: findUserByGoogleSub,
+    findUserByAppleSub: findUserByAppleSub
 }

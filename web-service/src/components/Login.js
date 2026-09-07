@@ -8,6 +8,7 @@ import Error from "../components/Error.js"
 import Loader from "../components/Loader.js"
 import Verification  from "../components/Verification.js"
 import GoogleButton from "./GoogleButton.js"
+import AppleButton from "./AppleButton.js"
 
 import FormClose from "../assets/FormClose.svg"
 import Close from "../assets/Close.svg"
@@ -214,7 +215,10 @@ function Login({isOpen, setIsLogin, setIsSignUp, setIsReset, onClose}) {
                                     <button onClick={goToSignUp}>
                                         Sign up
                                     </button>
-                                    <GoogleButton></GoogleButton>
+                                    <div>
+                                        <AppleButton></AppleButton>
+                                        <GoogleButton></GoogleButton>
+                                    </div>
                                     <p>Forgot your password? <span onClick={goToReset}>Reset</span></p>
                                 </div>
                             </>

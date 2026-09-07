@@ -22,6 +22,10 @@ authRouter.get("/google",
     authController.googleAuth
 )
 
+authRouter.post("/apple", 
+    authController.appleAuth
+)
+
 authRouter.post("/verifyCode",
     validate(verifyUserCodeSchema, "body"),
     authController.verifyCode

@@ -50,6 +50,21 @@
     width: 65%;
 }
 
+.auth-form-controlls div {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.auth-form-controlls div button {
+    width: 48%;
+}
+
+.auth-form-controlls div button:first-child {
+    border: 1px solid #868686;
+    background: transparent;
+}
+
 .auth-form-inputs input {
     all: unset;
     width: 100%;
@@ -89,8 +104,11 @@
     margin-top: 0;
 }
 
+.auth-form-controlls button:first-child img {
+    width: 30px;
+}
+
 .auth-form-controlls button img {
-    margin-right: 1em;
     width: 25px;
 }
 
@@ -109,6 +127,11 @@
     background-color: transparent;
     border-color: black;
     color: black;
+}
+
+.auth-form-controlls div button:first-child:active {
+    background-color: #F4F4F4!important;
+    border-color: #868686!important;
 }
 
 .validation-error-message {

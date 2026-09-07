@@ -74,7 +74,7 @@ jobs:
             REACT_APP_PADDLE_ENVIRONMENT=${{ secrets.PADDLE_ENVIRONMENT_DEV }}
             REACT_APP_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID_DEV }}
             REACT_APP_GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET_DEV }}
-
+            REACT_APP_APPLE_SERVICE_ID=${{ secrets.APPLE_SERVICE_ID_DEV}}
   # PHASE 2: Deploy to Droplet (Runs only after Phase 1 succeeds)
   deploy-to-droplet:
     needs: build-and-push
@@ -160,6 +160,11 @@ jobs:
             GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID_DEV }}
             GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET_DEV }}
             BACKEND_URL=${{ secrets.BACKEND_URL_DEV }}
+            APPLE_TEAM_ID=${{ secrets.APPLE_TEAM_ID }}
+            APPLE_KEY_ID=${{ secrets.APPLE_KEY_ID_DEV}}
+            APPLE_SERVICE_ID=${{ secrets.APPLE_SERVICE_ID_DEV }}
+            APPLE_PRIVATE_KEY="${{ secrets.APPLE_PRIVATE_KEY_DEV }}"
+            APPLE_APP_ID=${{ secrets.APPLE_APP_ID_DEV }}
             EOF
             
             # # EMPEROR-CONSUMER envs
