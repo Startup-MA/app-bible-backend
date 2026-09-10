@@ -30,19 +30,36 @@ async function setGoogleSub(google_sub, id_user) {
     )
 }
 
-async function setAppleSub(apple_sub, refresh_token, id_user) {
-    await pg.query(
-        `
-            INSERT INTO 
-            users_apple_auth_info(apple_sub, refresh_token, id_user)
-            VALUES ($1, $2, $3)
-        `,
-        [
-            apple_sub,
-            refresh_token,
-            id_user
-        ]
-    )
+async function setAppleSub(apple_sub, refresh_token, id_user, delete_ver_code=false, email=null) {
+    await pg.queryTransaction(async (client) => {
+        await client.query(
+            `
+                INSERT INTO 
+                users_apple_auth_info(apple_sub, refresh_token, id_user)
+                VALUES ($1, $2, $3)
+            `,
+            [
+                apple_sub,
+                refresh_token,
+                id_user
+            ]
+        )
+
+        if (delete_ver_code) {
+            await client.query(
+                `    
+                    DELETE FROM
+                    hidden_email_verification_codes
+                    WHERE email = $1
+                `,
+                [
+                    email
+                ]
+            )
+        }
+
+    })
+
 }
 
 async function skipPersonalInfo(id_user) {
@@ -204,7 +221,7 @@ async function registerNewUser(email, password, auth_provider) {
     return result
 }
 
-async function sendNewVerificationCode(id_user, code) {
+async function sendNewVerificationCode(id_user) {
     const result = await pg.queryTransaction(async (client) => {
         let code = ""
 
@@ -248,6 +265,59 @@ async function sendNewVerificationCode(id_user, code) {
             [
                 randomInt(100000, 999999),
                 id_user
+            ]
+        )
+
+        return code
+    })
+
+    return result["rows"]
+}
+
+async function sendHiddenEmailVerificationCode(email) {
+    const result = await pg.queryTransaction(async (client) => {
+        let code = ""
+
+        const user_code = await client.query(
+            `
+                SELECT 
+                email
+                FROM hidden_email_verification_codes
+                WHERE email = $1
+            `,
+            [
+                email
+            ]
+        )
+
+        if (user_code["rows"].length) {
+            code = await client.query(
+                `
+                    UPDATE
+                    hidden_email_verification_codes
+                    SET code = $1
+                    WHERE email = $2
+                    RETURNING code
+                `,
+                [   
+                    randomInt(100000, 999999),
+                    email
+                ]
+            )
+
+            return code
+        }
+        
+        code = await client.query(
+            `    
+                INSERT INTO
+                hidden_email_verification_codes(code, email)
+                VALUES($1, $2)
+                RETURNING code
+            `,
+            [
+                randomInt(100000, 999999),
+                email
             ]
         )
 
@@ -373,6 +443,7 @@ export default {
     createOrUpdateUserVersePrayer: createOrUpdateUserVersePrayer,
     registerNewUser: registerNewUser,
     sendNewVerificationCode: sendNewVerificationCode,
+    sendHiddenEmailVerificationCode: sendHiddenEmailVerificationCode,
     deleteUserVerificationCode: deleteUserVerificationCode,
     createPasswordResetLink: createPasswordResetLink,
     updatePassword: updatePassword

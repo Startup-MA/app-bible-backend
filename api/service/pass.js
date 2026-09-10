@@ -41,7 +41,7 @@ async function reset(uuid, new_password) {
     const userData = await userDAO.findUserByToken("reset_passwords", uuid)
 
     if (!userData.length) {
-        throw AppError.conflict("Reset link has expired or it is broken.")
+        throw AppError.conflict("Reset link has expired or it's invalid.")
     }
 
     try {

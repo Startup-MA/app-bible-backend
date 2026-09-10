@@ -2,7 +2,7 @@ import express from "express"
 import authController from "../controllers/auth.js"
 import validate from "../middleware/validation.js"
 import authenticate from "../middleware/authenticate.js"
-import { registerSchema, loginSchema, resetCodeSchema, verifyUserUUIDSchema, verifyUserCodeSchema } from "../validation/schemas/user.schema.js"
+import { registerSchema, loginSchema, resetCodeSchema, verifyUserUUIDSchema, verifyUserCodeSchema, userHiddenEmailVerifySchema, userHiddenEmailVerifyCodeSchema } from "../validation/schemas/user.schema.js"
 import { loginRateLimiter, resetCodeRateLimiter } from "../middleware/rateLimiter.js"
 
 const authRouter = express.Router()
@@ -24,6 +24,24 @@ authRouter.get("/google",
 
 authRouter.post("/apple", 
     authController.appleAuth
+)
+
+authRouter.post("/hiddenEmailVerify/:uuid",
+    validate(verifyUserUUIDSchema, "params"),
+    validate(userHiddenEmailVerifySchema, "body"),
+    authController.hiddenEmailVerify
+)
+
+authRouter.post("/hiddenEmailCodeVerify/:uuid", 
+    validate(verifyUserUUIDSchema, "params"),
+    validate(userHiddenEmailVerifyCodeSchema, "body"),
+    authController.hiddenEmailCodeVerify
+)
+
+authRouter.post("/hiddenEmailCodeReset/:uuid",
+    validate(verifyUserUUIDSchema, "params"),
+    validate(userHiddenEmailVerifySchema, "body"),
+    authController.hiddenEmailCodeReset
 )
 
 authRouter.post("/verifyCode",

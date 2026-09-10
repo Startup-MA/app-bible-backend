@@ -25,7 +25,9 @@ async function sendNewVerificationCode(message) {
         process.env.MAILER_STREAM_NAME,
         {
             reason: "Verification",
-            to: message["message"]["email"].split(/\+test\d+/).join(""),
+            to: process.env.NODE_ENV === "development" ? 
+                message["message"]["email"].split(/\+test\d+/).join("") : 
+                message["message"]["email"],
             subject: "Verification code",
             html: `
                 <p>Your verification code for ${message["message"]["email"]} <b>(Expires in 30 minutes)</b>: </p></br>

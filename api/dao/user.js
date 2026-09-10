@@ -1,13 +1,13 @@
 import pg from "../utils/pgQueryEngine.js"
 
-async function registerNewUser(email, auth_provider, client_id, refresh_token = null) {
+async function registerNewUser(email, auth_provider, client_id, refresh_token = null, delete_ver_code = false) {
     const result = await pg.queryTransaction("rw", async (client) => {
-        const id = await client.query(
+        const user = await client.query(
             `
                 INSERT INTO
                 users(email, auth_provider)
                 VALUES($1, $2)
-                RETURNING id_user
+                RETURNING id_user, is_admin
             `,
             [
                 email,
@@ -24,7 +24,7 @@ async function registerNewUser(email, auth_provider, client_id, refresh_token = 
                 `,
                 [
                     client_id,
-                    id["rows"][0]["id_user"]
+                    user["rows"][0]["id_user"]
                 ]
             )
         } else {
@@ -37,14 +37,27 @@ async function registerNewUser(email, auth_provider, client_id, refresh_token = 
                 [
                     client_id,
                     refresh_token,
-                    id["rows"][0]["id_user"]
+                    user["rows"][0]["id_user"]
                 ]
             )
         }
-        
+
+        if (delete_ver_code) {
+            await client.query(
+                `    
+                    DELETE FROM
+                    hidden_email_verification_codes
+                    WHERE email = $1
+                `,
+                [
+                    email
+                ]
+            )
+        }
 
         return [{
-            id_user: id["rows"][0]["id_user"]
+            id_user: user["rows"][0]["id_user"],
+            is_admin: user["rows"][0]["is_admin"]
         }]
     })
 
@@ -59,7 +72,8 @@ async function findUserByEmail(email) {
             id_user,
             email,
             password,
-            auth_provider
+            auth_provider,
+            is_admin
             FROM users
             WHERE email = $1
         `,
@@ -137,12 +151,32 @@ async function findUserByCode(code) {
     return result["rows"]
 }
 
+async function findUserByEmailAndCode(email, code) {
+    const result = await pg.query(
+        "r",
+        `
+            SELECT
+            email
+            FROM hidden_email_verification_codes
+            WHERE email = $1
+            AND code = $2
+            AND expires_at > CURRENT_TIMESTAMP
+        `,
+        [
+            email,
+            code
+        ]
+    )
+
+    return result["rows"]
+}
+
 async function findUserByGoogleSub(google_sub) {
     const result = await pg.query(
         "r",
         `
             SELECT
-            email, google_sub, users_google_auth_info.id_user 
+            email, google_sub, users_google_auth_info.id_user, is_admin
             FROM users_google_auth_info 
             LEFT JOIN users
             ON users.id_user = users_google_auth_info.id_user
@@ -161,7 +195,7 @@ async function findUserByAppleSub(apple_sub) {
         "r",
         `
             SELECT
-            email, apple_sub, users_apple_auth_info.id_user 
+            email, apple_sub, users_apple_auth_info.id_user, is_admin 
             FROM users_apple_auth_info 
             LEFT JOIN users
             ON users.id_user = users_apple_auth_info.id_user
@@ -182,5 +216,6 @@ export default {
     findUserByToken: findUserByToken,
     findUserByCode: findUserByCode,
     findUserByGoogleSub: findUserByGoogleSub,
-    findUserByAppleSub: findUserByAppleSub
+    findUserByAppleSub: findUserByAppleSub,
+    findUserByEmailAndCode: findUserByEmailAndCode
 }

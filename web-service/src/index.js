@@ -9,7 +9,7 @@ import Profile from "./pages/Profile.js"
 import Billing from "./pages/Billing.js"
 import Tickets from "./pages/Tickets.js"
 import NotFound from "./pages/NotFound.js"
-
+import VerifyEmailPage from "./pages/VerifyEmailPage.js"
 import App from "./App"
 
 import "./styles/General.css"
@@ -28,6 +28,7 @@ root.render(
                     <Route path="/dashboard/billing" element={<Billing />}/>
                     <Route path="/pricing" element={<Pricing/>}/>
                     <Route path="/contact" element={<Contact/>}/>
+                    <Route path="/verifyEmail/:uuid" element={<VerifyEmailPage/>}/>
                     <Route path="/reset/:uuid" element={<ResetPage/>}/>
                 </Routes>                
             </BrowserRouter>

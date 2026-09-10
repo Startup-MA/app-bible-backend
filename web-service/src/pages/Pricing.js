@@ -134,7 +134,7 @@ function Pricing() {
 
             if (error.response) {
                 if (process.env.REACT_APP_NODE_ENV === "development" || error.response.status === 429) {
-                    setError(`Server error: ${error.response.status} ${error.response.statusText}`)
+                    setError(`Error response: ${error.response.status} ${error.response.statusText}`)
                     setIsError(true)
                 }
             } else if (error.request) {
@@ -167,7 +167,7 @@ function Pricing() {
 
             if (error.response) {
                 if (process.env.REACT_APP_NODE_ENV === "development" || error.response.status === 429) {
-                    setError(`Server error: ${error.response.status} ${error.response.statusText}`)
+                    setError(`Error response: ${error.response.status} ${error.response.statusText}`)
                     setIsError(true)
                 }
             } else if (error.request) {
@@ -210,7 +210,7 @@ function Pricing() {
 
             if (error.response) {
                 if (process.env.REACT_APP_NODE_ENV === "development" || error.response.status === 429) {
-                    setError(`Server error: ${error.response.status} ${error.response.statusText}`)
+                    setError(`Error response: ${error.response.status} ${error.response.statusText}`)
                     setIsError(true)
                 }
             } else if (error.request) {
@@ -259,7 +259,7 @@ function Pricing() {
 
             if (error.response) {
                 if (process.env.REACT_APP_NODE_ENV === "development" || error.response.status === 429) {
-                    setError(`Server error: ${error.response.status} ${error.response.statusText}`)
+                    setError(`Error response: ${error.response.status} ${error.response.statusText}`)
                     setIsError(true)
                 }
             } else if (error.request) {

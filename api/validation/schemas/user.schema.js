@@ -89,3 +89,12 @@ export const verifyUserCodeSchema = Joi.object({
     code: code,
     device: device
 }).and("code", "device")
+
+export const userHiddenEmailVerifySchema = Joi.object({
+    email: emailSchema
+})
+
+export const userHiddenEmailVerifyCodeSchema = Joi.object({
+    email: emailSchema,
+    verCode: code
+})

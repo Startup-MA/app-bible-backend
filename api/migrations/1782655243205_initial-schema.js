@@ -80,6 +80,14 @@ export const up = (pgm) => {
             id_user INT UNIQUE REFERENCES users(id_user)
         );
 
+        CREATE TABLE hidden_email_verification_codes (
+            id_verification_code INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            code VARCHAR(6) NOT NULL,
+            email VARCHAR(255) UNIQUE NOT NULL,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            expires_at TIMESTAMPTZ NOT NULL DEFAULT NOW() + INTERVAL '30 minutes'
+        );
+
         CREATE TABLE reset_passwords (
             id_reset_password INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
             uuid UUID NOT NULL,
@@ -239,6 +247,11 @@ export const up = (pgm) => {
         FOR EACH ROW
         EXECUTE FUNCTION refresh_timestamps();
 
+        CREATE OR REPLACE TRIGGER trg_manage_hidden_email_verification_codes_times
+        BEFORE INSERT OR UPDATE ON hidden_email_verification_codes
+        FOR EACH ROW
+        EXECUTE FUNCTION refresh_timestamps();
+
         -- User Reset Password always set time
 
         CREATE OR REPLACE TRIGGER trg_manage_reset_password_times
@@ -258,6 +271,7 @@ export const down = (pgm) => {
 
         DROP TRIGGER IF EXISTS update_customers_updated_at ON customers;
         DROP TRIGGER IF EXISTS trg_manage_verification_codes_times ON verification_codes;
+        DROP TRIGGER IF EXISTS trg_manage_hidden_email_verification_codes_times ON hidden_email_verification_codes;
         DROP TRIGGER IF EXISTS trg_manage_reset_password_times ON reset_passwords;
 
         DROP FUNCTION IF EXISTS update_timestamp_column();
@@ -269,6 +283,7 @@ export const down = (pgm) => {
         DROP TABLE personal_infos;
         DROP TABLE customers;
         DROP TABLE verification_codes;
+        DROP TABLE hidden_email_verification_codes;
         DROP TABLE reset_passwords;
         DROP TABLE bookmarks;
         DROP TABLE notes;
@@ -276,6 +291,10 @@ export const down = (pgm) => {
         DROP TABLE users_reading_history;
         DROP TABLE prayers;
         DROP TABLE users_tickets;
+        DROP TABLE daily_prayers;
+        DROP TABLE daily_verses;
+        DROP TABLE users_apple_auth_info;
+        DROP TABLE users_google_auth_info;
 
         DROP TABLE bible_text_versions;
         DROP TABLE languages;

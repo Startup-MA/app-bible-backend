@@ -185,7 +185,7 @@ async function verifyUserByAppleSubOrEmail(decodedToken, code, platform) {
             data: userData
         }
     }
-    
+
     const result = await ApiGateway.appleAuth.exchangeAppleCode(code, platform)
     const refresh_token = result.refresh_token
 
@@ -217,6 +217,98 @@ async function verifyUserByAppleSubOrEmail(decodedToken, code, platform) {
     return {
         message: "Logged in successfully",
         data: userData
+    }
+}
+
+async function verifyUserByAppleSub(decodedToken, email) {
+    let userData = await userDAO.findUserByAppleSub(decodedToken.data.sub)
+
+    if (userData.length) {
+        return {
+            message: "Logged in successfully",
+            data: userData
+        }
+    }
+
+    await taskQueue.publish(
+        TasksQueue,
+        process.env.TASKS_STREAM_NAME,
+        {
+            processingFlowType: "sendHiddenEmailVerificationCode",
+            email: email
+        }  
+    ).catch(err => {
+        logger.error("[Redis taskQueue] Error during publishing task to the queue")
+        throw err
+    })
+
+    return {
+        message: "Verification code sent",
+        data: userData
+    }
+
+}
+
+async function verifyUserByEmailAndCode(email, verCode, decodedToken, code, platform) {
+    let userData = []
+
+    userData = await userDAO.findUserByEmailAndCode(email, verCode)
+
+    if (!userData.length) {
+        throw AppError.conflict("Verification code has expired or it's invalid.")
+    }
+
+    const result = await ApiGateway.appleAuth.exchangeAppleCode(code, platform)
+    const refresh_token = result.refresh_token
+
+    userData = await userDAO.findUserByEmail(email)
+
+    if (userData.length) {
+        await taskQueue.publish(
+            TasksQueue,
+            process.env.TASKS_STREAM_NAME,
+            {
+                processingFlowType: "setAppleSub",
+                apple_sub: decodedToken.data.sub,
+                refresh_token: refresh_token,
+                email: email,
+                delete_ver_code: String(true),
+                id_user: String(userData[0].id_user)
+            }  
+        ).catch(err => {
+            logger.error("[Redis taskQueue] Error during publishing task to the queue")
+            throw err
+        })
+
+        return {
+            message: "Logged in successfully",
+            data: userData
+        }
+    }
+
+    userData = await userDAO.registerNewUser(email, "apple", decodedToken.data.sub, refresh_token, true)
+
+    return {
+        message: "Logged in successfully",
+        data: userData
+    }
+}
+
+async function resetCodeForHiddenEmail(email) {
+    await taskQueue.publish(
+        TasksQueue,
+        process.env.TASKS_STREAM_NAME,
+        {
+            processingFlowType: "sendHiddenEmailVerificationCode",
+            email: email
+        }  
+    ).catch(err => {
+        logger.error("[Redis taskQueue] Error during publishing task to the queue")
+        throw err
+    })
+
+    return {
+        message: "Verification code sent again",
     }
 }
 
@@ -263,7 +355,7 @@ async function verifyUserByCode(code) {
     userData = await userDAO.findUserByCode(code)
 
     if (!userData.length) {
-        throw AppError.conflict("Verification code has expired or it's broken")
+        throw AppError.conflict("Verification code has expired or it's invalid")
     }
 
     await taskQueue.publish(
@@ -292,7 +384,10 @@ export default {
     extractUserInfoFromGoogleToken: extractUserInfoFromGoogleToken,
     verifyUserByGoogleSubOrEmail: verifyUserByGoogleSubOrEmail,
     verifyUserByAppleSubOrEmail: verifyUserByAppleSubOrEmail,
+    verifyUserByAppleSub: verifyUserByAppleSub,
+    resetCodeForHiddenEmail: resetCodeForHiddenEmail,
     extractUserInfoFromAppleToken: extractUserInfoFromAppleToken,
     resetCode: resetCode,
-    verifyUserByCode: verifyUserByCode
+    verifyUserByCode: verifyUserByCode,
+    verifyUserByEmailAndCode: verifyUserByEmailAndCode
 }

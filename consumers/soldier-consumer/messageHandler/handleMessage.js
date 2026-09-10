@@ -1,6 +1,7 @@
 import updateEmail from "../messageProcessingFlow/updateEmail.js"
 import setGoogleSub from "../messageProcessingFlow/setGoogleSub.js"
 import setAppleSub from "../messageProcessingFlow/setAppleSub.js"
+import sendHiddenEmailVerificationCode from "../messageProcessingFlow/sendHiddenEmailVerificationCode.js"
 import skipPersonalInfo from "../messageProcessingFlow/skipPersonalInfo.js"
 import updateProfile from "../messageProcessingFlow/updateProfile.js"
 import createOrUpdateUserTopics from "../messageProcessingFlow/createOrUpdateUserTopics.js"
@@ -44,6 +45,9 @@ async function messageHandler(message) {
             break
         case "setAppleSub":
             await setAppleSub(message)
+            break
+        case "sendHiddenEmailVerificationCode":
+            await sendHiddenEmailVerificationCode(message)
             break
         case "setGoogleSub":
             await setGoogleSub(message)

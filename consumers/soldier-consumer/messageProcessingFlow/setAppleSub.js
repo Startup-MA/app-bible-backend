@@ -6,7 +6,9 @@ async function setAppleSub(message) {
         await userDAO.setAppleSub(
             message["message"]["apple_sub"],
             message["message"]["refresh_token"],
-            message["message"]["id_user"]
+            message["message"]["id_user"],
+            Boolean(message["message"]["delete_ver_code"]),
+            message["message"]["email"],
         )
     } catch (err) {
         logger.error("Error occured during user apple_sub setting transaction")
