@@ -3,7 +3,7 @@ paths:
     get:
       tags:
         - Auth
-      summary: Verifies user via Google Auth service and logs in giving a newly created session.
+      summary: You need to provide this exact url as redirect URI in Google Cloud Console. Verifies user via Google Auth service and logs in giving a newly created session.
       parameters:
         - in: query
           name: state
@@ -19,13 +19,6 @@ paths:
             type: string
             example: 4/0ATsMZqCN3qUivDzaa39tBIchD7y1hJoJlcJ7bPW198bbimG9AHkC3sjBJUGqX1hf4aFJzg
           description: Access code provided by Google.
-        - in: query
-          name: scope
-          required: true
-          schema:
-            type: string
-            example: openid email profile
-          description: User data that was provided by Google.
       responses:
         200:
           description: User verification was successful and a newly created session was set and sent in the headers field "Set-Cookie".

@@ -1,0 +1,93 @@
+paths:
+  /api/auth/hiddenEmailCodeReset/{uuid}:
+    post:
+      tags:
+        - Auth
+      summary: Allows to resend an email verification code to the provided email address.
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            example: 765aa62c-6ab2-4817-9317-eb882323cb91
+          required: true
+          description: UUID that allows backend to understand who you are.
+      requestBody:
+        description: Body of the request. 
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: my-email@example.com
+              required:
+                - email
+      responses:
+        200:
+          description: New verification code was sent to the user.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Verification code sent again
+        400:
+          description: Validation for the given input did not passed (Unprocessible format of the entity).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Validation error
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                          description: Body field that did not passed the validation process.
+                          example: email
+                        message:
+                          type: string
+                          example: Please provide a valid email address
+        409:
+          description: UUID problem, usually due to expiration or a misprint.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Provided UUID has expired or is invalid.
+        500:
+          description: If internal server error occurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: Internal Server Error

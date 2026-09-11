@@ -224,6 +224,21 @@ async function verifyUserByAppleSub(decodedToken, email) {
     let userData = await userDAO.findUserByAppleSub(decodedToken.data.sub)
 
     if (userData.length) {
+        if (!decodedToken.data.email.endsWith("@privaterelay.appleid.com") && userData[0].email !== decodedToken.data.email) {
+            await taskQueue.publish(
+                TasksQueue,
+                process.env.TASKS_STREAM_NAME,
+                {
+                    processingFlowType: "updateEmail",
+                    email: decodedToken.data.email,
+                    id_user: String(userData[0].id_user)
+                }  
+            ).catch(err => {
+                logger.error("[Redis taskQueue] Error during publishing task to the queue")
+                throw err
+            })
+        }
+
         return {
             message: "Logged in successfully",
             data: userData

@@ -1,0 +1,101 @@
+paths:
+  /api/auth/apple:
+    post:
+      tags:
+        - Auth
+      summary: You need to provided this exact url as a redirect URI in the configuration of Apple Developer Console. Verifies user via Apple Auth service and logs in giving a newly created session (if public email). Otherwise "Hidden Email Apple Auth Flow".
+      requestBody:
+        description: Body of the request. 
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                state:
+                  type: object
+                  properties:
+                    device:
+                      type: string
+                      example: mobile
+                      description: Type of a session (Only two are allowed "mobile" and "browser")
+                    platform:
+                      type: string
+                      example: ios or web
+                      description: Where authentication is performed (like in web for Android or Browser. Or it's in the app, which is native for ios).
+                  required:
+                    - device
+                    - platform
+                code:
+                  type: string
+                  example: 4/0ATsMZqCN3qUivDzaa39tBIchD7y1hJoJlcJ7bPW198bbimG9AHkC3sjBJUGqX1hf4aFJzg
+                  description: Access code provided by Apple.
+                id_token:
+                  type: string
+                  example: Bearer token
+                  description: JWT token provided by Apple.
+              required:
+                - state
+                - code
+                - id_token
+      responses:
+        200:
+          description: Two answers are possible. New session in Set-Cookie (if user has public access email). Or an answer with a message "Email verification required" with uuid param (Interface flow for this case is neccessery).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Email verification required
+                  data:
+                    type: object
+                    properties:
+                      uuid: 
+                        type: string
+                        format: uuid
+                        example: 89392837-edf0-4683-ab2b-87861220a366
+                        description: It allows backend to understand who you are (so you don't need to provide "code", "id_token" and "state" every time). Save it you will use during the "Hidden Email Apple Auth Flow".
+        409:
+          description: Problems with id_token, usually with it's headers or public keys that were used.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Invalid Apple id_token header
+        500:
+          description: If internal server error occurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: Internal Server Error
+        502:
+          description: If something happens during a talk to Apple API service.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: API Service Error

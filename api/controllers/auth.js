@@ -263,13 +263,13 @@ async function hiddenEmailVerify(req, res, next) {
         throw err
     })
 
-    if (!rawData) throw AppError.conflict("Provided UUID is expired or invalid.")
+    if (!rawData) throw AppError.conflict("Provided UUID has expired or it's invalid.")
 
     const pendingUserData = JSON.parse(rawData) 
     
     const { code, decodedToken, device, platform } = pendingUserData
     
-    logger.info(`Verifying user email hidden in Apple Auth Service`)
+    logger.info(`Verifying user email hidden in Apple Auth Service from device: ${device} platform: ${platform}`)
 
     const userData = await authService.verifyUserByAppleSub(decodedToken, email)
 
@@ -372,13 +372,13 @@ async function hiddenEmailCodeVerify(req, res, next) {
         throw err
     })
 
-    if (!rawData) throw AppError.conflict("Provided UUID is expired or invalid.")
+    if (!rawData) throw AppError.conflict("Provided UUID has expired or it's invalid.")
     
     const pendingUserData = JSON.parse(rawData)
 
     const { code, decodedToken, device, platform } = pendingUserData
 
-    logger.info(`Verifying user code for hidden email in Apple Auth Service`)
+    logger.info(`Verifying user code for hidden email in Apple Auth Service from device: ${device} platform: ${platform}`)
 
     const userData = await authService.verifyUserByEmailAndCode(email, verCode, decodedToken, code, platform)
     
@@ -473,13 +473,13 @@ async function hiddenEmailCodeReset(req, res, next) {
         throw err
     })
 
-    if (!rawData) throw AppError.conflict("Provided UUID is expired or invalid.")
+    if (!rawData) throw AppError.conflict("Provided UUID has expired or it's invalid.")
     
     const pendingUserData = JSON.parse(rawData)
 
     const { device, platform } = pendingUserData
 
-    logger.info(`Resetting user code for hidden email in Apple Auth Service`)
+    logger.info(`Resetting user code for hidden email in Apple Auth Service from device: ${device} platform: ${platform}`)
     
     const result = await authService.resetCodeForHiddenEmail(email)
 

@@ -1,0 +1,110 @@
+paths:
+  /api/auth/hiddenEmailCodeVerify/{uuid}:
+    post:
+      tags:
+        - Auth
+      summary: This method registers a new user or updates the existing one depending on whether he already has an account or not. It sends back a session via "Set-Cookie" header.
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            example: 765aa62c-6ab2-4817-9317-eb882323cb91
+          required: true
+          description: UUID that allows backend to understand who you are.
+      requestBody:
+        description: Body of the request. 
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: my-email@example.com
+                code:
+                  type: string
+                  example: "123654"
+              required:
+                - email
+                - code
+      responses:
+        200:
+          description: New session in Set-Cookie if email is verified.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Logged in successfully
+        400:
+          description: Validation for the given input did not passed (Unprocessible format of the entity).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Validation error
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                          description: Body field that did not passed the validation process.
+                          example: code
+                        message:
+                          type: string
+                          example: code must be minimum 100000
+        409:
+          description: User tries to use a broken or expired code.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Verification code has expired or it's invalid
+        500:
+          description: If internal server error occurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: Internal Server Error
+        502:
+          description: If something happens during a talk to Apple API service.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: API Service Error

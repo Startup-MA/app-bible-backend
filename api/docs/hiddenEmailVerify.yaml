@@ -1,0 +1,93 @@
+paths:
+  /api/auth/hiddenEmailVerify/{uuid}:
+    post:
+      tags:
+        - Auth
+      summary: Neccessery Step for Hidden Email Apple Auth Flow. This method verifies if the user has Apple ID bound to his account and sends back a session via "Set-Cookie" header if he does. And if he doesn't it starts the "Hidden Email Apple Auth Flow" by verifying user email authenticity.
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+            example: 765aa62c-6ab2-4817-9317-eb882323cb91
+          required: true
+          description: UUID that allows backend to understand who you are.
+      requestBody:
+        description: Body of the request. 
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: my-email@example.com
+              required:
+                - email
+      responses:
+        200:
+          description: Two answers are possible. New session in Set-Cookie (if a user has already bound his Apple ID to the account). Or an answer with a message "Verification code sent".
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Verification code sent
+        400:
+          description: Validation for the given input did not passed (Unprocessible format of the entity).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Validation error
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                          description: Body field that did not passed the validation process.
+                          example: email
+                        message:
+                          type: string
+                          example: Please provide a valid email address
+        409:
+          description: UUID problem, usually due to expiration or a misprint.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Provided UUID has expired or it's invalid.
+        500:
+          description: If internal server error occurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: Internal Server Error
