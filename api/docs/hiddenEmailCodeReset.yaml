@@ -77,7 +77,7 @@ paths:
                     example: error
                   message:
                     type: string
-                    example: Provided UUID has expired or is invalid.
+                    example: Provided UUID has expired or it's invalid.
         500:
           description: If internal server error occurs.
           content:

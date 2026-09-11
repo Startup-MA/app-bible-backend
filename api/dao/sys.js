@@ -92,6 +92,7 @@ async function getTicketsPerPage(page) {
 
 async function getTicketsCount() {
         const result = await pg.query(
+        "r",
         `
             SELECT count(*) FROM users_tickets
         `
