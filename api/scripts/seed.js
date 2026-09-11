@@ -101,8 +101,8 @@ async function seedAdmins() {
             await pg.query(
                 "rw",
                 `
-                    INSERT INTO users (email, password, is_admin) 
-                    VALUES ($1, $2, 'true')
+                    INSERT INTO users (email, password, auth_provider, is_admin) 
+                    VALUES ($1, $2, 'email_password', 'true')
                     ON CONFLICT (email) DO NOTHING;
                 `, 
                 [
