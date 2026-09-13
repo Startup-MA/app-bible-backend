@@ -31,7 +31,8 @@ async function getAllCustomerInfoById(id_user) {
             email, is_free_trial_used,
             subscription_id,
             customer_id, subscription_tier,
-            subscription_status, interval
+            subscription_status, interval,
+            entity_uuid
             FROM users 
             LEFT JOIN
             customers 

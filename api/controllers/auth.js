@@ -1,6 +1,6 @@
 import authService from "../service/auth.js"
 import encryptor from "../utils/encryptor.js"
-import { randomUUID, randomInt } from "crypto"
+import { randomUUID } from "crypto"
 import { StatusCodes } from "http-status-codes"
 import redisClient from "../connections/redis.js"
 import { logger } from "../utils/logger.js"

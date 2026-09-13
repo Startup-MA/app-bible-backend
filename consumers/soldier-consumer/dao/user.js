@@ -183,19 +183,20 @@ async function createOrUpdateUserVersePrayer(id_user, userLanguage, generatedCon
     })
 }
 
-async function registerNewUser(email, password, auth_provider) {
+async function registerNewUser(email, password, auth_provider, entity_uuid) {
     const result = await pg.queryTransaction(async (client) => {
         const id = await client.query(
             `
                 INSERT INTO
-                users(email, password, auth_provider)
-                VALUES($1, $2, $3)
+                users(email, password, auth_provider, entity_uuid)
+                VALUES($1, $2, $3, $4)
                 RETURNING id_user
             `,
             [
                 email,
                 password,
-                auth_provider
+                auth_provider,
+                entity_uuid
             ]
         )
 

@@ -4,6 +4,7 @@ import redisClient from "../connections/redis.js"
 import encryptor from "../utils/encryptor.js"
 import AppError from "../errors/AppError.js"
 import ApiGateway from "../outboundAPI/ApiGateway.js"
+import { randomUUID } from "crypto"
 import { decodeIdToken } from "../utils/decodeIdToken.js"
 import { verifyAppleIdToken } from "../utils/verifyAppleIdToken.js"
 import { logger } from "../utils/logger.js"
@@ -24,7 +25,8 @@ async function register(email, password) {
             processingFlowType: "registerNewUser",
             email: email,
             password: password,
-            auth_provider: "email_password"
+            auth_provider: "email_password",
+            entity_uuid: randomUUID()
         }  
     ).catch(err => {
         logger.error("[Redis taskQueue] Error during publishing task to the queue")

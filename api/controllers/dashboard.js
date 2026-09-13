@@ -17,7 +17,8 @@ async function dashboard(req, res, next) {
             email: customerInfo.data[0]["email"],
             subscription_tier: customerInfo.data[0]["subscription_tier"],
             subscription_status: customerInfo.data[0]["subscription_status"],
-            is_free_trial_used: customerInfo.data[0]["is_free_trial_used"]
+            is_free_trial_used: customerInfo.data[0]["is_free_trial_used"],
+            uuid: customerInfo.data[0]["entity_uuid"]
         }]
     })
 }

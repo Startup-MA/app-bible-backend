@@ -48,6 +48,10 @@ paths:
                         - true
                         - false
                         example: true
+                      uuid:
+                        type: string
+                        format: uuid
+                        example: 89392837-edf0-4683-ab2b-87861220a366
         401:
           description: Authentication error (Session has expired or there is no such session).
           content:

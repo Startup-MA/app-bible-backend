@@ -1,17 +1,19 @@
 import pg from "../utils/pgQueryEngine.js"
+import { randomUUID } from "crypto"
 
 async function registerNewUser(email, auth_provider, client_id, refresh_token = null, delete_ver_code = false) {
     const result = await pg.queryTransaction("rw", async (client) => {
         const user = await client.query(
             `
                 INSERT INTO
-                users(email, auth_provider)
-                VALUES($1, $2)
+                users(email, auth_provider, entity_uuid)
+                VALUES($1, $2, $3)
                 RETURNING id_user, is_admin
             `,
             [
                 email,
-                auth_provider
+                auth_provider,
+                randomUUID()
             ]
         )
 
@@ -79,6 +81,27 @@ async function findUserByEmail(email) {
         `,
         [
             email
+        ]
+    )
+
+    return result["rows"]
+}
+
+async function findUserByUUID(uuid) {
+    const result = await pg.query(
+        "r",
+        `
+            SELECT
+            id_user,
+            email,
+            password,
+            auth_provider,
+            is_admin
+            FROM users
+            WHERE entity_uuid = $1
+        `,
+        [
+            uuid
         ]
     )
 
@@ -213,6 +236,7 @@ export default {
     registerNewUser: registerNewUser,
     findUserByEmail: findUserByEmail,
     findUserById: findUserById,
+    findUserByUUID: findUserByUUID,
     findUserByToken: findUserByToken,
     findUserByCode: findUserByCode,
     findUserByGoogleSub: findUserByGoogleSub,

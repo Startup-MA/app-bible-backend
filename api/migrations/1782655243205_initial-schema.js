@@ -16,6 +16,7 @@ export const up = (pgm) => {
             password TEXT,
             auth_provider VARCHAR(14),
             is_admin BOOLEAN NOT NULL DEFAULT FALSE,
+            entity_uuid UUID UNIQUE,
             created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
         );

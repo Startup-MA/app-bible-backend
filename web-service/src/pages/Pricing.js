@@ -63,7 +63,8 @@ function Pricing() {
     }
 
     let customerInfo = {
-        email: userData.email
+        email: userData.email,
+        uuid: userData.uuid
     }
 
     let thematical = "pro_01kkyrw1pbs6hqkasknt9p91tf"
@@ -351,8 +352,8 @@ function Pricing() {
                     allowLogout: false
                 },
                 items: [monthItems[index]],
-                customer: customerInfo,
-                customData: {email: customerInfo.email}
+                customer: {email: customerInfo.email},
+                customData: {uuid: customerInfo.uuid}
             })
 
         } else if (!monthlyChecked) {
@@ -361,8 +362,8 @@ function Pricing() {
                     allowLogout: false
                 },
                 items: [yearItems[index]],
-                customer: customerInfo,
-                customData: {email: customerInfo.email}
+                customer: {email: customerInfo.email},
+                customData: {uuid: customerInfo.uuid}
             })
 
         }

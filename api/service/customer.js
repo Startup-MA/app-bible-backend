@@ -9,14 +9,14 @@ import { logger } from "../utils/logger.js"
 const { TasksQueue } = redisClient
 
 async function customerUpdate(data) {
-    if (!data.data.customData || !data.data.customData.email) {
+    if (!data.data.customData || !data.data.customData.uuid) {
         throw AppError.bad_request("Custom data absence")
     }
 
-    const user = await userDAO.findUserByEmail(data.data.customData.email)
+    const user = await userDAO.findUserByUUID(data.data.customData.uuid)
 
     if (!user.length) {
-        throw AppError.conflict("There is no user with such email")
+        throw AppError.conflict("There is no user with such uuid")
     }
     
     const customer = await customerDAO.findCustomerById(data.data.customerId)
