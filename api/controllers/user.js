@@ -2,7 +2,27 @@ import userService from "../service/user.js"
 import { StatusCodes } from "http-status-codes"
 import { logger } from "../utils/logger.js"
 import AppError from "../errors/AppError.js"
-import { create } from "domain"
+import redisClient from "../connections/redis.js"
+import { clearUserSession } from "../utils/clearUserSession.js"
+
+const { Cache } = redisClient
+
+async function deleteAccount(req, res, next) {
+    const { id, device } = req.session.user
+
+    logger.info(`Deleting account for user: ${id}`)
+
+    await clearUserSession(id)
+
+    await userService.deleteAccount(id)
+
+    await clearUserSession(id)
+
+    return res.status(StatusCodes.OK).json({
+        status: "success",
+        message: "User successfully logged out"
+    })
+}
 
 async function skipPersonalInfo(req, res, next) {
     const { id, device } = req.session.user
@@ -294,6 +314,7 @@ async function getUserPrayers(req, res, next) {
 }
 
 export default {
+    deleteAccount: deleteAccount,
     skipPersonalInfo: skipPersonalInfo,
     updateProfile: updateProfile,
     createOrUpdateUserTopics: createOrUpdateUserTopics,

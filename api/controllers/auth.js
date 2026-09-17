@@ -85,7 +85,12 @@ async function googleAuth(req, res, next) {
     }
 
     req.session.regenerate(async err => {
-        if (err) throw err
+        if (err) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                status: "success",
+                message: "Something went wrong"
+            })
+        }
 
         req.session.user = {
             id: userData.data[0]["id_user"],
@@ -101,7 +106,7 @@ async function googleAuth(req, res, next) {
                 JSON.stringify(existingSession)
             ).catch(err => {
                 logger.error(`[Redis Cache] Error setting existing session: ${existingSession[device]} device: ${device}`)
-                throw err
+                logger.error("", { stack: err.stack })
             })
         } else {
             existingSession[device] = "sess:" + req.sessionID
@@ -111,12 +116,17 @@ async function googleAuth(req, res, next) {
                 JSON.stringify(existingSession)
             ).catch(err => {
                 logger.error(`[Redis Cache] Error setting existing session: ${existingSession[device]} device: ${device}`)
-                throw err
+                logger.error("", { stack: err.stack })
             })
         }
 
         req.session.save(err => {
-            if (err) throw err
+            if (err) {
+                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                    status: "success",
+                    message: "Something went wrong"
+                })
+            }
             
             if (device === "browser") {
                 return res.redirect(`${process.env.FRONT_URL}/dashboard/profile`)
@@ -206,7 +216,13 @@ async function appleAuth(req, res, next) {
     }
 
     req.session.regenerate(async err => {
-        if (err) throw err
+        if (err) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                status: "success",
+                message: "Something went wrong"
+            })
+        }
+
 
         req.session.user = {
             id: userData.data[0]["id_user"],
@@ -222,7 +238,7 @@ async function appleAuth(req, res, next) {
                 JSON.stringify(existingSession)
             ).catch(err => {
                 logger.error(`[Redis Cache] Error setting existing session: ${existingSession[device]} device: ${device}`)
-                throw err
+                logger.error("", { stack: err.stack })
             })
         } else {
             existingSession[device] = "sess:" + req.sessionID
@@ -232,12 +248,17 @@ async function appleAuth(req, res, next) {
                 JSON.stringify(existingSession)
             ).catch(err => {
                 logger.error(`[Redis Cache] Error setting existing session: ${existingSession[device]} device: ${device}`)
-                throw err
+                logger.error("", { stack: err.stack })
             })
         }
 
         req.session.save(err => {
-            if (err) throw err
+            if (err) {
+                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                    status: "success",
+                    message: "Something went wrong"
+                })
+            }
             
             if (device === "browser") {
                 return res.redirect(`${process.env.FRONT_URL}/dashboard/profile`)
@@ -319,7 +340,12 @@ async function hiddenEmailVerify(req, res, next) {
     }
 
     req.session.regenerate(async err => {
-        if (err) throw err
+        if (err) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                status: "success",
+                message: "Something went wrong"
+            })
+        }
 
         req.session.user = {
             id: userData.data[0]["id_user"],
@@ -335,7 +361,7 @@ async function hiddenEmailVerify(req, res, next) {
                 JSON.stringify(existingSession)
             ).catch(err => {
                 logger.error(`[Redis Cache] Error setting existing session: ${existingSession[device]} device: ${device}`)
-                throw err
+                logger.error("", { stack: err.stack })
             })
         } else {
             existingSession[device] = "sess:" + req.sessionID
@@ -345,13 +371,18 @@ async function hiddenEmailVerify(req, res, next) {
                 JSON.stringify(existingSession)
             ).catch(err => {
                 logger.error(`[Redis Cache] Error setting existing session: ${existingSession[device]} device: ${device}`)
-                throw err
+                logger.error("", { stack: err.stack })
             })
         }
 
         req.session.save(err => {
-            if (err) throw err
-            
+            if (err) {
+                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                    status: "success",
+                    message: "Something went wrong"
+                })
+            }
+
             return res
                 .status(StatusCodes.OK)
                 .header("sess", JSON.stringify(returnedObject))
@@ -420,7 +451,12 @@ async function hiddenEmailCodeVerify(req, res, next) {
     }
 
     req.session.regenerate(async err => {
-        if (err) throw err
+        if (err) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                status: "success",
+                message: "Something went wrong"
+            })
+        }
 
         req.session.user = {
             id: userData.data[0]["id_user"],
@@ -436,7 +472,7 @@ async function hiddenEmailCodeVerify(req, res, next) {
                 JSON.stringify(existingSession)
             ).catch(err => {
                 logger.error(`[Redis Cache] Error setting existing session: ${existingSession[device]} device: ${device}`)
-                throw err
+                logger.error("", { stack: err.stack })
             })
         } else {
             existingSession[device] = "sess:" + req.sessionID
@@ -446,12 +482,17 @@ async function hiddenEmailCodeVerify(req, res, next) {
                 JSON.stringify(existingSession)
             ).catch(err => {
                 logger.error(`[Redis Cache] Error setting existing session: ${existingSession[device]} device: ${device}`)
-                throw err
+                logger.error("", { stack: err.stack })
             })
         }
 
         req.session.save(err => {
-            if (err) throw err
+            if (err) {
+                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                    status: "success",
+                    message: "Something went wrong"
+                })
+            }
             
             return res
                 .status(StatusCodes.OK)
@@ -495,7 +536,12 @@ async function logout(req, res, next) {
     logger.info(`Logging out a user: ${id} from device: ${device}`)
 
     req.session.destroy(err => {
-        if (err) throw err
+        if (err) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                status: "success",
+                message: "Something went wrong"
+            })
+        }
 
         return res.status(StatusCodes.OK).json({
             status: "success",
@@ -560,7 +606,12 @@ async function verifyCode(req, res, next) {
     }
 
     req.session.regenerate(async err => {
-        if (err) throw err
+        if (err) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                status: "success",
+                message: "Something went wrong"
+            })
+        }
 
         req.session.user = {
             id: result.data[0]["id_user"],
@@ -576,7 +627,7 @@ async function verifyCode(req, res, next) {
                 JSON.stringify(existingSession)
             ).catch(err => {
                 logger.error(`[Redis Cache] Error setting existing session: ${existingSession[device]} device: ${device}`)
-                throw err
+                logger.error("", { stack: err.stack })
             })
         } else {
             existingSession[device] = "sess:" + req.sessionID
@@ -586,12 +637,17 @@ async function verifyCode(req, res, next) {
                 JSON.stringify(existingSession)
             ).catch(err => {
                 logger.error(`[Redis Cache] Error setting existing session: ${existingSession[device]} device: ${device}`)
-                throw err
+                logger.error("", { stack: err.stack })
             })
         }
 
         req.session.save(err => {
-            if (err) throw err
+            if (err) {
+                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                    status: "success",
+                    message: "Something went wrong"
+                })
+            }
 
             return res
                 .status(StatusCodes.OK)

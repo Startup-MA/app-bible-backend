@@ -8,6 +8,7 @@ import Error from "../components/Error.js"
 import Loader from "../components/Loader.js"
 import SignUp from "../components/SignUp.js"
 import Login from "../components/Login.js"
+import PopUp from "../components/PopUp.js"
 import Reset from "../components/Reset.js"
 import PersonalInfo from "../components/PersonalInfo.js"
 
@@ -38,6 +39,7 @@ function Profile() {
     const [sexInvalid, setSexInvalid] = useState(false)
     const [countryInvalid, setCountryInvalid] = useState(false)
     const [updateRequired, setUpdateRequired] = useState(true)
+    const [isPopUp, setIsPopUp] = useState(false)
 
     const [name, setName] = useState("")
     const [surname, setSurname] = useState("")
@@ -132,6 +134,19 @@ function Profile() {
 
     const handleLogin = () => {
         setIsLogin(true)
+    }
+
+    const askPopUp = () => {
+        setIsPopUp(true)
+    }
+
+    const handlePopUpAction = (event) => {
+        if (event.target.innerText === "Cancel") {
+            setIsPopUp(false)
+        } else {
+            setIsPopUp(false)
+            deleteUserAccount()
+        }
     }
 
     const navigate = useNavigate();
@@ -251,6 +266,38 @@ function Profile() {
         })
     }
 
+    const deleteUserAccount = () => {
+        setIsLoaded(false)
+
+        axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/user/deleteAccount`, 
+            {
+                withCredentials: true
+            }
+        ).then(data => {
+            setIsLoaded(true)
+            return navigate("/")
+        }).catch(error => {
+            setIsLoaded(true)
+
+            if (axios.isCancel?.(error) || error.name === "CanceledError") return
+
+            if (error.response) {
+                if (process.env.REACT_APP_NODE_ENV === "development" || error.response.status === 429) {
+                    setError(`Error response: ${error.response.status} ${error.response.statusText}`)
+                    setIsError(true)
+                }
+            } else if (error.request) {
+                setError("Network error: no response from server")
+                setIsError(true)
+            } else {
+                if (process.env.REACT_APP_NODE_ENV === "development") {
+                    setError(`Request error: ${error.message}`)
+                    setIsError(true)
+                }
+            }
+        })
+    }
+
     const authMe = async (controller = {}) => {
         axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/authMe`, {
                 signal: controller.signal,
@@ -339,6 +386,7 @@ function Profile() {
             <Reset isOpen={isReset} onClose={() => setIsReset(false)}/>
             <SignUp isOpen={isSignUp} setIsSignUp={setIsSignUp} setIsLogin={setIsLogin} onClose={() => setIsSignUp(false)}/>
             <Login isOpen={isLogin} setIsLogin={setIsLogin} setIsSignUp={setIsSignUp} setIsReset={setIsReset} onClose={() => setIsLogin(false)}/>
+            <PopUp isOpen={isPopUp} onClose={() => setIsPopUp(false)} actionHandler={handlePopUpAction} title={"Delete Account"} content={`Deleting your account will cancel all active subscriptions and permanently erase your data. This action cannot be undone. \n\n Are you sure you want to proceed?`}/>
             <Header isAdmin={isAdmin} isUserLoggedIn={isUserLoggedIn} hideElement={"signin"} setIsSignUp={setIsSignUp} setIsLogin={setIsLogin}/>
             {isError ? (
                 <Error message={error} cancelMessage={setIsError}/>
@@ -411,8 +459,9 @@ function Profile() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="logout">
-                                <button onClick={handleLogout}>Logout</button>
+                            <div className="profile-controlls">
+                                <button className="logout" onClick={handleLogout}>Logout</button>
+                                <button className="delete" onClick={askPopUp}>Delete</button>
                             </div>
                         </div>
                     </div>

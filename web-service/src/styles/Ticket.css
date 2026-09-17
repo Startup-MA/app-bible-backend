@@ -18,6 +18,7 @@
 
 .ticket-subject-container img {
     width: 20px;
+    cursor: pointer;
 }
 
 .ticket-content-container {

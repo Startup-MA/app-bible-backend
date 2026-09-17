@@ -43,6 +43,7 @@
     padding-bottom: 0.5em;
     background-color: transparent;
     margin-bottom: 2rem;
+    cursor: pointer;
 }
 
 .plan-buy:hover {

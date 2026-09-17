@@ -19,6 +19,8 @@ const userRouter = express.Router()
 userRouter.patch("/skipPersonalInfo", authenticate.session, userController.skipPersonalInfo)
 userRouter.patch("/updateProfile", authenticate.session, validate(updateProfileSchema, "body"), userController.updateProfile)
 
+userRouter.delete("/deleteAccount", authenticate.session, userController.deleteAccount)
+
 userRouter.use(authenticate.session)
 userRouter.use(authenticate.userMobile)
 

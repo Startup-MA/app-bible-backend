@@ -1,0 +1,59 @@
+paths:
+  /api/user/deleteAccount:
+    delete:
+      tags:
+        - User (Requires "Mobile" authentication)
+      summary: Cancels opened subscriptions, Revokes Apple refresh token, Deletes user account permanently and all the data connected with it. And logs the user out. (Requires authentication - "Cookie" headers field to be filled with active session).
+      responses:
+        200:
+          description: Everything went fine. User logged out.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: User successfully logged out
+        401:
+          description: Authentication error (Session has expired or there is no such session).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Access forbidden
+        500:
+          description: If internal server error occurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: Internal Server Error
+        502:
+          description: If something happens during a talk to Apple API service or Paddle API service.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: API Service Error

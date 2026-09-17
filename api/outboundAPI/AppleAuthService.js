@@ -23,6 +23,21 @@ class AppleAuthService extends BaseApiClient {
         })
     }
 
+    revokeAppleRefreshToken(refresh_token, platform) {
+        const { clientSecret, clientId } = generateAppleClientSecret(platform)
+
+        return this.request({
+            method: "POST",
+            url: "/auth/revoke",
+            data: {
+                client_id: clientId,         
+                client_secret: clientSecret,
+                token: refresh_token,
+                token_type_hint: "refresh_token"
+            }
+        })
+    }
+
     exchangeAppleCode(code, platform) {
         const { clientSecret, clientId } = generateAppleClientSecret(platform)
 

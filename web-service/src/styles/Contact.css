@@ -139,6 +139,7 @@ input:focus, select:focus, textarea:focus {
     padding-bottom: 1em;
     text-align: center;
     border: 1px solid transparent;
+    cursor: pointer;
 }
 
 .buttons button:first-child {

@@ -120,7 +120,12 @@
     margin-top: 0!important;
 }
 
-.logout button {
+.profile-controlls {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-controlls button {
     all: unset;
     font-size: 1.25em;
     color: #868686;
@@ -129,11 +134,24 @@
     border-radius: 10px;
     padding: 1em 3.5em 1em 3.5em;
     box-sizing: border-box;
+    text-align: center;
+    cursor: pointer;
 }
 
-.logout button:active {
+.profile-controlls button:last-child {
+    margin-top: 1em;
+    background-color: #E04343;
+    border: transparent;
+    color: white;
+}
+
+.profile-controlls button:active {
     background-color: #F4F4F4;
     transition: 0s;
+}
+
+.profile-controlls button:last-child:active {
+    background-color: #868686;
 }
 
 .form-container {
@@ -213,10 +231,9 @@
 }
 
 @media screen and (max-width: 1050px) {
-    .logout button {
+    .profile-controlls button {
         font-size: 1em;
         padding: 1em 1em 1em 1em;
-        /* margin-left: -5em; */
     }
 
     .profile-content {
@@ -266,7 +283,7 @@
         width: 100%;
     }
 
-    .logout {
+    .profile-controlls {
         width: 100%;
         margin-top: 5em;
     }

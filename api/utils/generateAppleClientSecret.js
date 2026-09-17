@@ -15,7 +15,7 @@ export function generateAppleClientSecret(platform) {
     const claims = {
         iss: teamId,
         iat: timeNow,
-        exp: timeNow + (86400 * 30), // Valid for 30 days
+        exp: timeNow + 300,
         aud: "https://appleid.apple.com",
         sub: clientId,
     };

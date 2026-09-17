@@ -33,7 +33,6 @@ function PersonalInfo({isOpen, setIsSignUp, setIsLogin, onClose}) {
     const navigate = useNavigate()
 
     const handleClose = () => {
-        skipPersonalInfo()
         onClose()
         setName("")
         setSurname("")
@@ -104,6 +103,7 @@ function PersonalInfo({isOpen, setIsSignUp, setIsLogin, onClose}) {
                 withCredentials: true
             }
         ).then(data => {
+            handleClose()
             setIsLoaded(true)
         }).catch(error => {
             setIsLoaded(true)
@@ -274,7 +274,7 @@ function PersonalInfo({isOpen, setIsSignUp, setIsLogin, onClose}) {
                                 <button onClick={updateProfile}>
                                     Send
                                 </button>
-                                <button onClick={handleClose}>
+                                <button onClick={skipPersonalInfo}>
                                     I skip it for now
                                 </button>
                             </div>

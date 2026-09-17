@@ -33,6 +33,7 @@
 .pop-up-content {
     display: flex;
     justify-content: center;
+    white-space: pre-line;
 }
 
 .pop-up p {

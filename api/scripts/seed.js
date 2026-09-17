@@ -1,6 +1,7 @@
 import pg from "../utils/pgQueryEngine.js"
 import { logger } from "../utils/logger.js"
 import dotenv from "dotenv"
+import { randomUUID } from "crypto"
 
 dotenv.config()
 
@@ -101,13 +102,14 @@ async function seedAdmins() {
             await pg.query(
                 "rw",
                 `
-                    INSERT INTO users (email, password, auth_provider, is_admin) 
-                    VALUES ($1, $2, 'email_password', 'true')
+                    INSERT INTO users (email, password, auth_provider, is_admin, entity_uuid) 
+                    VALUES ($1, $2, 'email_password', 'true', $3)
                     ON CONFLICT (email) DO NOTHING;
                 `, 
                 [
                     adminEmails[i],
-                    adminPasswordHashes[i]
+                    adminPasswordHashes[i],
+                    randomUUID()
                 ]
             )
 

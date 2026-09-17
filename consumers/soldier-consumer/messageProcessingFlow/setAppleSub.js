@@ -7,6 +7,7 @@ async function setAppleSub(message) {
             message["message"]["apple_sub"],
             message["message"]["refresh_token"],
             message["message"]["id_user"],
+            message["message"]["platform"],
             Boolean(message["message"]["delete_ver_code"]),
             message["message"]["email"],
         )

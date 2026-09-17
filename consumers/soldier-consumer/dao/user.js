@@ -30,17 +30,18 @@ async function setGoogleSub(google_sub, id_user) {
     )
 }
 
-async function setAppleSub(apple_sub, refresh_token, id_user, delete_ver_code=false, email=null) {
+async function setAppleSub(apple_sub, refresh_token, id_user, platform, delete_ver_code=false, email=null) {
     await pg.queryTransaction(async (client) => {
         await client.query(
             `
                 INSERT INTO 
-                users_apple_auth_info(apple_sub, refresh_token, id_user)
+                users_apple_auth_info(apple_sub, refresh_token, login_platform, id_user)
                 VALUES ($1, $2, $3)
             `,
             [
                 apple_sub,
                 refresh_token,
+                platform,
                 id_user
             ]
         )
@@ -68,6 +69,7 @@ async function skipPersonalInfo(id_user) {
             INSERT INTO 
             personal_infos (personal_info, id_user)
             VALUES (TRUE, $1)
+            ON CONFLICT (id_user) DO NOTHING;
         `,
         [
             id_user

@@ -91,6 +91,7 @@
     font-family: 'Inria Serif', serif;
     font-size: 1em;
     width: max-content;
+    cursor: pointer;
 }
 
 .control-button button:active {

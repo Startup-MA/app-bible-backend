@@ -24,7 +24,9 @@ async function sendResetPasswordLink(message) {
             process.env.MAILER_STREAM_NAME,
             {
                 reason: "Password Reset",
-                to: message["message"]["email"],
+                to: process.env.NODE_ENV === "development" ? 
+                message["message"]["email"].split(/\+test\d+/).join("") : 
+                message["message"]["email"],
                 subject: "Reset your Password",
                 html: `
                     <h3>Here is your password reset link. It expires within 30 minutes</h3>

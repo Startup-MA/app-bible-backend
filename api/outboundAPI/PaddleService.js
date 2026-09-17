@@ -17,9 +17,15 @@ class PaddleService extends BaseApiClient {
         })
     }
 
+    getCustomerByEmail(email) {
+        return this.request(
+            { method: "GET", url: `/customers?${new URLSearchParams({email: email})}` }
+        )
+    }
+
     getSubscription(subscription_id) {
         return this.request(
-            { method: "GET", url: `/subscriptions/${subscription_id}` },
+            { method: "GET", url: `/subscriptions/${subscription_id}` }
         )
     }
 
@@ -116,6 +122,109 @@ class PaddleService extends BaseApiClient {
         }
             
         throw AppError.bad_gateway("Empty transactions list")
+    }
+
+    async cancelCustomerActiveSubscriptions(customer_id) {
+        const params = {
+            customer_id: customer_id,
+            status: [
+                "active",
+                "paused",
+                "past_due",
+                "trialing"
+            ].join(","),
+            per_page: 30
+        }
+
+        let has_more = true
+
+        let options = {
+            method: "GET",
+            url: `/subscriptions`,
+            params: params
+        }
+
+        const subscriptions = []
+
+        while(has_more) {
+
+            const result = await this.request(options)
+
+            for (let i = 0; i < result.data.length; i++) {
+                subscriptions.push(result.data[i].id)
+            }
+
+            options = {
+                method: "GET",
+                url: "/subscriptions" + result.meta.pagination.next.split("/subscriptions")[1],
+            }
+
+            has_more = result.meta.pagination.has_more
+        }
+
+        for (let i = 0; i < subscriptions.length; i++) {
+            await this.request({
+                method: "POST",
+                url: `/subscriptions/${subscriptions[i]}/cancel`,
+                data: {
+                    effective_from: "immediately"
+                }
+            })
+        }
+    }
+
+    async archiveCustomerAddresses(customer_id) {
+        const params = {
+            per_page: 30
+        }
+
+        let has_more = true
+
+        let options = {
+            method: "GET",
+            url: `/customers/${customer_id}/addresses`,
+            params: params
+        }
+
+        const addresses = []
+
+        while(has_more) {
+
+            const result = await this.request(options)
+
+            for (let i = 0; i < result.data.length; i++) {
+                addresses.push(result.data[i].id)
+            }
+
+            options = {
+                method: "GET",
+                url: `/customers/${customer_id}/addresses` + result.meta.pagination.next.split("/addresses")[1],
+            }
+
+            has_more = result.meta.pagination.has_more
+        }
+
+        for (let i = 0; i < addresses.length; i++) {
+            await this.request({
+                method: "PATCH",
+                url: `/customers/${customer_id}/addresses/${addresses[i]}`,
+                data: {
+                    status: "archived"
+                }
+            })
+        }
+    }
+
+    archiveCustomer(customer_id, uuid) {
+        return this.request({
+            method: "PATCH",
+            url: `/customers/${customer_id}`,
+            data: {
+                email: `deleted-${uuid}@domain.invalid`,
+                name: "Deleted User",
+                status: "archived"
+            }
+        })
     }
 
     cancelSubscription(subscription_id) {

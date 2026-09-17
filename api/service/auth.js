@@ -201,6 +201,7 @@ async function verifyUserByAppleSubOrEmail(decodedToken, code, platform) {
                 processingFlowType: "setAppleSub",
                 apple_sub: decodedToken.data.sub,
                 refresh_token: refresh_token,
+                platform: platform,
                 id_user: String(userData[0].id_user)
             }  
         ).catch(err => {
@@ -214,7 +215,7 @@ async function verifyUserByAppleSubOrEmail(decodedToken, code, platform) {
         }
     }
     
-    userData = await userDAO.registerNewUser(decodedToken.data.email, "apple", decodedToken.data.sub, refresh_token)
+    userData = await userDAO.registerNewUser(decodedToken.data.email, "apple", decodedToken.data.sub, refresh_token, false, platform)
 
     return {
         message: "Logged in successfully",
@@ -281,6 +282,7 @@ async function verifyUserByEmailAndCode(email, verCode, decodedToken, code, plat
                 refresh_token: refresh_token,
                 email: email,
                 delete_ver_code: String(true),
+                platform: platform,
                 id_user: String(userData[0].id_user)
             }  
         ).catch(err => {
@@ -294,7 +296,7 @@ async function verifyUserByEmailAndCode(email, verCode, decodedToken, code, plat
         }
     }
 
-    userData = await userDAO.registerNewUser(email, "apple", decodedToken.data.sub, refresh_token, true)
+    userData = await userDAO.registerNewUser(email, "apple", decodedToken.data.sub, refresh_token, true, platform)
 
     return {
         message: "Logged in successfully",

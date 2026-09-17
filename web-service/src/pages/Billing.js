@@ -374,7 +374,7 @@ function Billing() {
             <Reset isOpen={isReset} onClose={() => setIsReset(false)}/>
             <SignUp isOpen={isSignUp} setIsSignUp={setIsSignUp} setIsLogin={setIsLogin} onClose={() => setIsSignUp(false)}/>
             <Login isOpen={isLogin} setIsLogin={setIsLogin} setIsSignUp={setIsSignUp} setIsReset={setIsReset} onClose={() => setIsLogin(false)}/>
-            <PopUp isOpen={isPopUp} onClose={() => setIsPopUp(false)} actionHandler={handlePopUpAction} title={"Cancellation"} content={"Your subscription will be scheduled to cancel at the end of the billing period. Are you sure?"}/>
+            <PopUp isOpen={isPopUp} onClose={() => setIsPopUp(false)} actionHandler={handlePopUpAction} title={"Cancellation"} content={"Your subscription will be scheduled to cancel at the end of the billing period. \n\n Are you sure you want to proceed?"}/>
             <Header isAdmin={isAdmin} isUserLoggedIn={isUserLoggedIn} hideElement={"signin"} setIsSignUp={setIsSignUp} setIsLogin={setIsLogin}/>
             {isError ? (
                 <Error message={error} cancelMessage={setIsError}/>

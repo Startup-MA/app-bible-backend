@@ -26,16 +26,17 @@ export const up = (pgm) => {
             google_sub VARCHAR(255) NOT NULL,
             created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-            id_user INT UNIQUE REFERENCES users(id_user)
+            id_user INT UNIQUE REFERENCES users(id_user) ON DELETE CASCADE
         );
 
         CREATE TABLE users_apple_auth_info (
             id_info INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
             apple_sub VARCHAR(255) UNIQUE NOT NULL,
+            login_platform VARCHAR(3) NOT NULL,
             refresh_token TEXT NOT NULL,
             created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-            id_user INT UNIQUE REFERENCES users(id_user)
+            id_user INT UNIQUE REFERENCES users(id_user) ON DELETE CASCADE
         );
 
         CREATE TABLE personal_infos (
@@ -48,7 +49,7 @@ export const up = (pgm) => {
             personal_info BOOLEAN NOT NULL DEFAULT FALSE,
             created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-            id_user INT UNIQUE REFERENCES users(id_user)
+            id_user INT UNIQUE REFERENCES users(id_user) ON DELETE CASCADE
         );
 
         CREATE TABLE users_topics (
@@ -56,7 +57,7 @@ export const up = (pgm) => {
             topics VARCHAR(250),
             created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-            id_user INT UNIQUE REFERENCES users(id_user)
+            id_user INT UNIQUE REFERENCES users(id_user) ON DELETE CASCADE
         );
 
         CREATE TABLE customers (
@@ -70,7 +71,7 @@ export const up = (pgm) => {
             created_at TIMESTAMPTZ DEFAULT NOW(),
             updated_at TIMESTAMPTZ DEFAULT NOW(),
             occurred_at TIMESTAMPTZ,
-            id_user INT UNIQUE REFERENCES users(id_user)
+            id_user INT UNIQUE REFERENCES users(id_user) ON DELETE CASCADE
         );
 
         CREATE TABLE verification_codes (
@@ -78,7 +79,7 @@ export const up = (pgm) => {
             code VARCHAR(6) UNIQUE NOT NULL,
             created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             expires_at TIMESTAMPTZ NOT NULL DEFAULT NOW() + INTERVAL '30 minutes',
-            id_user INT UNIQUE REFERENCES users(id_user)
+            id_user INT UNIQUE REFERENCES users(id_user) ON DELETE CASCADE
         );
 
         CREATE TABLE hidden_email_verification_codes (
@@ -94,7 +95,7 @@ export const up = (pgm) => {
             uuid UUID NOT NULL,
             created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             expires_at TIMESTAMPTZ NOT NULL DEFAULT NOW() + INTERVAL '30 minutes',
-            id_user INT UNIQUE REFERENCES users(id_user)
+            id_user INT UNIQUE REFERENCES users(id_user) ON DELETE CASCADE
         );
 
         CREATE TABLE languages (
@@ -110,7 +111,7 @@ export const up = (pgm) => {
             verse INT NOT NULL,
             created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-            id_user INT UNIQUE REFERENCES users(id_user)
+            id_user INT UNIQUE REFERENCES users(id_user) ON DELETE CASCADE
         );
 
         CREATE TABLE daily_prayers (
@@ -119,9 +120,11 @@ export const up = (pgm) => {
             prayer_content VARCHAR(1000),
             created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-            id_user INT UNIQUE REFERENCES users(id_user),
+            id_user INT UNIQUE REFERENCES users(id_user) ON DELETE CASCADE,
             id_lang INT REFERENCES languages(id_lang)
         );
+
+        CREATE INDEX idx_daily_prayers_id_lang ON daily_prayers(id_lang);
 
         CREATE TABLE bible_text_versions (
             id_bible_text_version INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -130,6 +133,8 @@ export const up = (pgm) => {
             is_audio_available BOOLEAN,
             id_lang INT REFERENCES languages(id_lang)
         );
+
+        CREATE INDEX idx_bible_text_versions_id_lang ON bible_text_versions(id_lang);
 
         CREATE TABLE bookmarks (
             id_bookmark INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -140,9 +145,12 @@ export const up = (pgm) => {
             entity_uuid UUID UNIQUE,
             created_at TIMESTAMPTZ DEFAULT NOW(),
             updated_at TIMESTAMPTZ DEFAULT NOW(),
-            id_user INT REFERENCES users(id_user),
+            id_user INT REFERENCES users(id_user) ON DELETE CASCADE,
             id_bible_text_version INT REFERENCES bible_text_versions(id_bible_text_version)
         );
+
+        CREATE INDEX idx_bookmarks_id_user ON bookmarks(id_user);
+        CREATE INDEX idx_bookmarks_id_bible_text_version ON bookmarks(id_bible_text_version);
 
         CREATE TABLE notes (
             id_note INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -154,9 +162,12 @@ export const up = (pgm) => {
             entity_uuid UUID UNIQUE,
             created_at TIMESTAMPTZ DEFAULT NOW(),
             updated_at TIMESTAMPTZ DEFAULT NOW(),
-            id_user INT REFERENCES users(id_user),
+            id_user INT REFERENCES users(id_user) ON DELETE CASCADE,
             id_bible_text_version INT REFERENCES bible_text_versions(id_bible_text_version)
         );
+
+        CREATE INDEX idx_notes_id_user ON notes(id_user);
+        CREATE INDEX idx_notes_id_bible_text_version ON notes(id_bible_text_version);
 
         CREATE TABLE highlights (
             id_highlight INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -166,9 +177,12 @@ export const up = (pgm) => {
             entity_uuid UUID UNIQUE,
             created_at TIMESTAMPTZ DEFAULT NOW(),
             updated_at TIMESTAMPTZ DEFAULT NOW(),
-            id_user INT REFERENCES users(id_user),
+            id_user INT REFERENCES users(id_user) ON DELETE CASCADE,
             id_bible_text_version INT REFERENCES bible_text_versions(id_bible_text_version)
         );
+
+        CREATE INDEX idx_highlights_id_user ON highlights(id_user);
+        CREATE INDEX idx_highlights_id_bible_text_version ON highlights(id_bible_text_version);
 
         CREATE TABLE users_reading_history (
             id_user_reading_history INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -176,8 +190,10 @@ export const up = (pgm) => {
             entity_uuid UUID UNIQUE,
             created_at TIMESTAMPTZ DEFAULT NOW(),
             updated_at TIMESTAMPTZ DEFAULT NOW(),
-            id_user INT REFERENCES users(id_user)
+            id_user INT REFERENCES users(id_user) ON DELETE CASCADE
         );
+
+        CREATE INDEX idx_users_reading_history_id_user ON users_reading_history(id_user);
 
         CREATE TABLE prayers (
             id_prayer INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -186,8 +202,10 @@ export const up = (pgm) => {
             entity_uuid UUID UNIQUE,
             created_at TIMESTAMPTZ DEFAULT NOW(),
             updated_at TIMESTAMPTZ DEFAULT NOW(),
-            id_user INT REFERENCES users(id_user)
+            id_user INT REFERENCES users(id_user) ON DELETE CASCADE
         );
+
+        CREATE INDEX idx_prayers_id_user ON prayers(id_user);
 
         CREATE TABLE users_tickets (
             id_ticket INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -269,7 +287,6 @@ export const up = (pgm) => {
  */
 export const down = (pgm) => {
     pgm.sql(`
-
         DROP TRIGGER IF EXISTS update_customers_updated_at ON customers;
         DROP TRIGGER IF EXISTS trg_manage_verification_codes_times ON verification_codes;
         DROP TRIGGER IF EXISTS trg_manage_hidden_email_verification_codes_times ON hidden_email_verification_codes;

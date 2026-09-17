@@ -376,7 +376,7 @@ function Pricing() {
             <Reset isOpen={isReset} onClose={() => setIsReset(false)}/>
             <SignUp isOpen={isSignUp} setIsSignUp={setIsSignUp} setIsLogin={setIsLogin} onClose={() => setIsSignUp(false)}/>
             <Login isOpen={isLogin} setIsLogin={setIsLogin} setIsSignUp={setIsSignUp} setIsReset={setIsReset} onClose={() => setIsLogin(false)}/>
-            <PopUp isOpen={isPopUp} onClose={() => setIsPopUp(false)} actionHandler={handlePopUpAction} title={"Update"} content={"Your subscription will be updated and your account will be charged/credited immediately. These changes are irreversible. Are you sure?"}/>
+            <PopUp isOpen={isPopUp} onClose={() => setIsPopUp(false)} actionHandler={handlePopUpAction} title={"Update"} content={"Your subscription will be updated and your account will be charged/credited immediately. These changes are irreversible. \n\n Are you sure you want to proceed?"}/>
             <Header isAdmin={isAdmin} isUserLoggedIn={isUserLoggedIn} currentPage={"pricing"} hideElement={"signup"} setIsSignUp={setIsSignUp} setIsLogin={setIsLogin}/>
             {isError ? (
                 <Error message={error} cancelMessage={setIsError}/>

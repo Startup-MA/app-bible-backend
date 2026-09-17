@@ -12,8 +12,56 @@ import prayerDAO from "../dao/prayer.js"
 import AppError from "../errors/AppError.js"
 import ApiGateway from "../outboundAPI/ApiGateway.js"
 import { logger } from "../utils/logger.js"
+import { clearUserSession } from "../utils/clearUserSession.js"
 
 const { TasksQueue } = redisClient
+
+async function deleteAccount(id_user) {
+    const userAppleInfo = await userDAO.verifyUserAppleSub(id_user)
+
+    if (userAppleInfo.length) {
+        const result = await ApiGateway.appleAuth.revokeAppleRefreshToken(
+            userAppleInfo[0].refresh_token,
+            userAppleInfo[0].login_platform
+        )
+    }
+
+    const customerInfo = await customerDAO.getAllCustomerInfoById(id_user)
+    let paddleUserInfo = null
+
+    if (!customerInfo[0].customer_id) {
+        paddleUserInfo = await ApiGateway.paddle.getCustomerByEmail(customerInfo[0].email)
+    }
+
+    if (customerInfo[0].customer_id || paddleUserInfo.data.length) {
+        await ApiGateway.paddle.cancelCustomerActiveSubscriptions(
+            customerInfo[0].customer_id ? 
+            customerInfo[0].customer_id :
+            paddleUserInfo.data[0].id
+        )
+
+        await ApiGateway.paddle.archiveCustomerAddresses(
+            customerInfo[0].customer_id ?
+            customerInfo[0].customer_id :
+            paddleUserInfo.data[0].id
+        )
+
+        await ApiGateway.paddle.archiveCustomer(
+            customerInfo[0].customer_id ?
+            customerInfo[0].customer_id :
+            paddleUserInfo.data[0].id,
+            customerInfo[0].entity_uuid
+        )
+    }
+
+    await clearUserSession(id_user)
+
+    await userDAO.deleteAllUserData(id_user, customerInfo[0].email)
+
+    return {
+        message: "User account successfully deleted"
+    }
+}
 
 async function getProfile(id_user) {
     const userProfile = await userDAO.findUserById(id_user)
@@ -305,6 +353,7 @@ async function getUserPrayers(id_user, start_id, number) {
 }
 
 export default {
+    deleteAccount: deleteAccount,
     skipPersonalInfo: skipPersonalInfo,
     getProfile: getProfile,
     updateProfile: updateProfile,

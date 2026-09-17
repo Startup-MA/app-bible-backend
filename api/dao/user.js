@@ -1,7 +1,7 @@
 import pg from "../utils/pgQueryEngine.js"
 import { randomUUID } from "crypto"
 
-async function registerNewUser(email, auth_provider, client_id, refresh_token = null, delete_ver_code = false) {
+async function registerNewUser(email, auth_provider, client_id, refresh_token = null, delete_ver_code = false, platform = null) {
     const result = await pg.queryTransaction("rw", async (client) => {
         const user = await client.query(
             `
@@ -33,12 +33,13 @@ async function registerNewUser(email, auth_provider, client_id, refresh_token = 
             await client.query(
                 `    
                     INSERT INTO
-                    users_apple_auth_info(apple_sub, refresh_token, id_user)
-                    VALUES($1, $2, $3)
+                    users_apple_auth_info(apple_sub, refresh_token, login_platform, id_user)
+                    VALUES($1, $2, $3, $4)
                 `,
                 [
                     client_id,
                     refresh_token,
+                    platform,
                     user["rows"][0]["id_user"]
                 ]
             )
@@ -232,6 +233,49 @@ async function findUserByAppleSub(apple_sub) {
     return result["rows"]
 }
 
+async function verifyUserAppleSub(id_user) {
+    const result = await pg.query(
+        "r",
+        `
+            SELECT
+            apple_sub, refresh_token, login_platform 
+            FROM users_apple_auth_info 
+            WHERE id_user = $1;
+        `,
+        [
+            id_user
+        ]
+    )
+
+    return result["rows"]
+}
+
+async function deleteAllUserData(id_user, email) {
+    await pg.queryTransaction("rw", async (client) => {
+        await client.query(
+            `
+                DELETE FROM
+                users
+                WHERE id_user = $1
+            `,
+            [
+                id_user
+            ]
+        )
+
+        await client.query(
+            `    
+                DELETE FROM
+                hidden_email_verification_codes
+                WHERE email = $1
+            `,
+            [
+                email
+            ]
+        )
+    })
+}
+
 export default {
     registerNewUser: registerNewUser,
     findUserByEmail: findUserByEmail,
@@ -241,5 +285,7 @@ export default {
     findUserByCode: findUserByCode,
     findUserByGoogleSub: findUserByGoogleSub,
     findUserByAppleSub: findUserByAppleSub,
-    findUserByEmailAndCode: findUserByEmailAndCode
+    findUserByEmailAndCode: findUserByEmailAndCode,
+    verifyUserAppleSub: verifyUserAppleSub,
+    deleteAllUserData: deleteAllUserData
 }
