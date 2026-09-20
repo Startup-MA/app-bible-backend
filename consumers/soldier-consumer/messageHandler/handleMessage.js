@@ -20,6 +20,7 @@ import syncNotes from "../messageProcessingFlow/syncNotes.js"
 import syncUserReadingHistory from "../messageProcessingFlow/syncUserReadingHistory.js"
 import syncHighlights from "../messageProcessingFlow/syncHighlights.js"
 import syncPrayers from "../messageProcessingFlow/syncPrayers.js"
+import updateAppVersion from "../messageProcessingFlow/updateAppVersion.js"
 
 import redisClient from "../connections/redis.js"
 import dotenv from "dotenv"
@@ -40,6 +41,9 @@ async function messageHandler(message) {
     logger.info(JSON.stringify(message))
 
     switch(message["message"]["processingFlowType"]) {
+        case "updateAppVersion":
+            await updateAppVersion(message)
+            break
         case "updateEmail":
             await updateEmail(message)
             break

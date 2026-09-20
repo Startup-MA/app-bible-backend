@@ -2,6 +2,44 @@ import sysService from "../service/sys.js"
 import { StatusCodes } from "http-status-codes"
 import { logger } from "../utils/logger.js"
 
+async function needToUpate(req, res, next) {
+    const { os, version } = req.body
+
+    logger.info("Verifying user app version")
+
+    const result = await sysService.needToUpdate(os, version)
+
+    return res.status(StatusCodes.OK).json({
+        status: "success",
+        message: result.message
+    })
+}
+
+async function updateAppVersion(req, res, next) {
+    const versions = req.body
+
+    logger.info("Updating App version")
+    
+    const result = await sysService.updateAppVersion(versions)
+
+    return res.status(StatusCodes.OK).json({
+        status: "success",
+        message: result.message
+    })
+}
+
+async function getCurrentAppVersion(req, res, next) {
+    logger.info("Retrieving App version")
+
+    const appVersion = await sysService.getCurrentAppVersion()
+
+    return res.status(StatusCodes.OK).json({
+        status: "success",
+        message: appVersion.message,
+        data: appVersion.data
+    })
+}
+
 async function getAllBibleTextVersions(req, res, next) {
     logger.info("Extracting all bible text versions")
 
@@ -96,6 +134,9 @@ async function getTicketsCount(req, res, next) {
 }
 
 export default {
+    needToUpate: needToUpate,
+    updateAppVersion: updateAppVersion,
+    getCurrentAppVersion: getCurrentAppVersion,
     getTicketsPerPage: getTicketsPerPage,
     getTicketsCount: getTicketsCount,
     createTicket: createTicket,

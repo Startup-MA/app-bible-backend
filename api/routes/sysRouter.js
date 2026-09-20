@@ -7,8 +7,24 @@ import { deleteTicketsSchema } from "../validation/schemas/deleteTickets.schema.
 import { getTicketsPerPageSchema } from "../validation/schemas/getTicketsPerPage.schema.js"
 import { getBibleTextVersionsSchema } from "../validation/schemas/getBibleTextVersions.schema.js"
 import { getAllBibleTextVersionsSchema } from "../validation/schemas/getAllBibleTextVersions.schema.js"
+import { updateAppVersionSchema } from "../validation/schemas/updateAppVersion.schema.js"
+import { needToUpdateSchema } from "../validation/schemas/needToUpdate.schema.js"
 
 const sysRouter = express.Router()
+
+sysRouter.post("/needToUpdate", 
+    validate(needToUpdateSchema, "body"),
+    sysController.needToUpate
+)
+
+sysRouter.post("/updateAppVersion",
+    authenticate.session,
+    authenticate.isAdmin,
+    validate(updateAppVersionSchema, "body"),
+    sysController.updateAppVersion
+)
+
+sysRouter.get("/getCurrentAppVersion", sysController.getCurrentAppVersion)
 
 sysRouter.get("/getAllBibleTextVersions",
     validate(getAllBibleTextVersionsSchema, "query"),

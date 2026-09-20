@@ -54,9 +54,14 @@ function Header({isAdmin, isUserLoggedIn, currentPage, hideElement, setIsSignUp,
             <nav className="menu" >
                 <ul>
                     { isAdmin ? (
-                        <li>
-                            <Link  to={{pathname: "/tickets", search: "?page=1"}} currentpage={currentPage === "tickets" ? "true" : "false"}>Tickets</Link>
-                        </li >
+                        <>
+                            <li>
+                                <Link  to="/version" currentpage={currentPage === "version" ? "true" : "false"}>Version</Link>
+                            </li>
+                            <li>
+                                <Link  to={{pathname: "/tickets", search: "?page=1"}} currentpage={currentPage === "tickets" ? "true" : "false"}>Tickets</Link>
+                            </li>
+                        </>
                     ) : (
                         <></>
                     )}

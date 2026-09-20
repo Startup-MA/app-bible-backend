@@ -218,6 +218,11 @@ export const up = (pgm) => {
             updated_at TIMESTAMPTZ DEFAULT NOW()
         );
 
+        CREATE TABLE app_version (
+            id_version INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            versions JSONB,
+            created_at TIMESTAMPTZ DEFAULT NOW()
+        );
 
         -- ========================
         --         FUNCTIONS
@@ -309,6 +314,7 @@ export const down = (pgm) => {
         DROP TABLE users_reading_history;
         DROP TABLE prayers;
         DROP TABLE users_tickets;
+        DROP TABLE app_version;
         DROP TABLE daily_prayers;
         DROP TABLE daily_verses;
         DROP TABLE users_apple_auth_info;

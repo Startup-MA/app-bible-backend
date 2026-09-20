@@ -1,5 +1,22 @@
 import pg from "../utils/pgQueryEngine.js"
 
+async function getCurrentAppVersion() {
+    const result = await pg.query(
+        "r",
+        `
+            SELECT
+            id_version AS id,
+            versions,
+            created_at
+            FROM app_version
+            ORDER BY id_version DESC
+            LIMIT 1
+        `
+    )
+
+    return result["rows"]
+}
+
 async function getAllBibleTextVersions(start_id, number) {
     const result = await pg.query(
         "r",
@@ -102,6 +119,7 @@ async function getTicketsCount() {
 }
 
 export default {
+    getCurrentAppVersion: getCurrentAppVersion,
     getTicketsPerPage: getTicketsPerPage,
     getTicketsCount: getTicketsCount,
     getAllBibleTextVersions: getAllBibleTextVersions,

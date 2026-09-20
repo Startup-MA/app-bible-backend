@@ -2,8 +2,57 @@ import sysDAO from "../dao/sys.js"
 import taskQueue from "../utils/redisQueryEngine.js"
 import redisClient from "../connections/redis.js"
 import { logger } from "../utils/logger.js"
+import AppError from "../errors/AppError.js"
+import { compareAppVersions } from "../utils/compareAppVersions.js"
 
 const { TasksQueue } = redisClient
+
+async function needToUpdate(os, userVersion) {
+    const currentAppVersion = await sysDAO.getCurrentAppVersion()
+
+    if (!currentAppVersion.length) throw AppError.conflict("No app version available")
+
+    const mxavCompRes = compareAppVersions(currentAppVersion[0]["versions"][os].mxav, userVersion)
+    
+    if (mxavCompRes === -1) throw AppError.conflict("Provided app version is bigger than system mxav version")
+
+    if (mxavCompRes === 0) return { message: "No updates" }
+
+    const mrvCompRes = compareAppVersions(currentAppVersion[0]["versions"][os].mrv, userVersion)
+
+    if (mrvCompRes === -1 || mrvCompRes === 0) return { message: "Update available" }
+
+    return {
+        message: "Update required"
+    }
+}
+
+async function updateAppVersion(versions) {
+    await taskQueue.publish(
+        TasksQueue,
+        process.env.TASKS_STREAM_NAME,
+        {
+            processingFlowType: "updateAppVersion",
+            versions: JSON.stringify(versions)
+        }
+    ).catch(err => {
+        logger.error("[Redis taskQueue] Error publishing a ticket to the task queue")
+        throw err
+    })
+
+    return {
+        message: "App version sent for update"
+    }
+}
+
+async function getCurrentAppVersion() {
+    const currentAppVersion = await sysDAO.getCurrentAppVersion()
+
+    return {
+        message: "Current app version",
+        data: currentAppVersion
+    }
+}
 
 async function getAllBibleTextVersions(start_id, number) {
     const allBibleVersions = await sysDAO.getAllBibleTextVersions(start_id, number)
@@ -76,6 +125,9 @@ async function getTicketsCount() {
 }   
 
 export default {
+    needToUpdate: needToUpdate, 
+    updateAppVersion: updateAppVersion,
+    getCurrentAppVersion: getCurrentAppVersion,
     getTicketsPerPage: getTicketsPerPage,
     getTicketsCount: getTicketsCount,
     createTicket: createTicket,

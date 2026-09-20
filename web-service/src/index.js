@@ -10,6 +10,8 @@ import Billing from "./pages/Billing.js"
 import Tickets from "./pages/Tickets.js"
 import NotFound from "./pages/NotFound.js"
 import VerifyEmailPage from "./pages/VerifyEmailPage.js"
+import Versions from "./pages/Versions.js"
+
 import App from "./App"
 
 import "./styles/General.css"
@@ -23,6 +25,7 @@ root.render(
                 <Routes>
                     <Route path="*" element={<NotFound />} />
                     <Route path="/" element={<App />}/>
+                    <Route path="/version" element={<Versions />}/>
                     <Route path="/tickets" element={<Tickets />}/>
                     <Route path="/dashboard/profile" element={<Profile />}/>
                     <Route path="/dashboard/billing" element={<Billing />}/>

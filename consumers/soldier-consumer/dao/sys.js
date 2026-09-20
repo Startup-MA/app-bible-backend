@@ -1,5 +1,18 @@
 import pg from "../utils/pgQueryEngine.js"
 
+async function updateAppVersion(versions) {
+    await pg.query(
+        `
+            INSERT INTO 
+            app_version(versions)
+            VALUES($1)
+        `,
+        [
+            versions
+        ]
+    )
+}
+
 async function createTicket(ticket) {
     await pg.query(
         `
@@ -38,6 +51,7 @@ async function deleteTickets(from, to) {
 }
 
 export default { 
+    updateAppVersion: updateAppVersion,
     createTicket: createTicket,
     deleteTickets: deleteTickets
 }

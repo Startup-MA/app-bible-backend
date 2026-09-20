@@ -1,0 +1,99 @@
+paths:
+  /api/sys/needToUpdate:
+    post:
+      tags:
+        - System
+      summary: Verifies user app version.
+      requestBody:
+        description: Provide os (android or ios) and version for comparison.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                os:
+                  type: string
+                  enum:
+                  - android
+                  - ios
+                  example: android 
+                version:
+                  type: string
+                  example: 101.23.25
+                  description: User app version (must be in a proper format (X.X.X))
+              required:
+              - os
+              - version
+      responses:
+        200:
+          description: Version was verified recomendation are sent.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    enum:
+                    - No updates
+                    - Update available
+                    - Update required
+                    example: No updates
+        400:
+          description: Validation for the given input did not passed (Unprocessible format of the entity).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Validation error
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                          description: Body field that did not passed the validation process.
+                          example: topics
+                        message:
+                          type: string
+                          example: App version must correspond to a proper format e.g. (1.0.0)
+        409:
+          description: There is no active app version available in the system or user app version is higher than available system version.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    enum:
+                    - No app version available
+                    - Provided app version is bigger than system mxav version
+                    example: No app version available
+        500:
+          description: If internal server error occurs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message: 
+                    type: string
+                    example: Internal Server Error
