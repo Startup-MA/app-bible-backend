@@ -5,7 +5,7 @@ import { forgotSchema, verifyUserUUIDSchema, setNewPassSchema } from "../validat
 
 const passRouter = express.Router()
 
-passRouter.post('/forgot', validate(forgotSchema, "body"), passController.forgot)
+passRouter.post("/forgot", validate(forgotSchema, "body"), passController.forgot)
 
 passRouter.post("/reset/:uuid", 
     validate(verifyUserUUIDSchema, "params"),

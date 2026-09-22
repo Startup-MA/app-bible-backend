@@ -17,24 +17,22 @@ async function forgot(email) {
         throw AppError.forbidden("Forbidden. Use your authentication provider.")
     }
 
-    try {
-        await taskQueue.publish(
-            TasksQueue,
-            process.env.TASKS_STREAM_NAME,
-            {
-                processingFlowType: "sendResetPasswordLink",
-                email: email
-            }    
-        )
-
-        return {
-            message: `Reset link will be sent to ${email}. And will be active for 30 minutes!`,
-        }
-
-    } catch(err) {
+    await taskQueue.publish(
+        TasksQueue,
+        process.env.TASKS_STREAM_NAME,
+        {
+            processingFlowType: "sendResetPasswordLink",
+            email: email
+        }    
+    ).catch(err => {
         logger.error("[Redis taskQueue] Error during publishing task to the queue")
         throw err
+    })
+
+    return {
+        message: `Reset link will be sent to ${email}. And will be active for 30 minutes!`,
     }
+
 }
 
 async function reset(uuid, new_password) {
@@ -44,23 +42,22 @@ async function reset(uuid, new_password) {
         throw AppError.conflict("Reset link has expired or it's invalid.")
     }
 
-    try {
-        await taskQueue.publish(
-            TasksQueue,
-            process.env.TASKS_STREAM_NAME,
-            {
-                processingFlowType: "createNewPassword",
-                uuid: uuid,
-                new_password: new_password
-            }
-        )
-
-        return {
-            message: "New password setted successfully",
+    await taskQueue.publish(
+        TasksQueue,
+        process.env.TASKS_STREAM_NAME,
+        {
+            processingFlowType: "createNewPassword",
+            uuid: uuid,
+            new_password: new_password
         }
-    } catch(err) {
-        logger.error("[Redis taskQueue] Error during publishing reset password task to the queue")
+    ).catch(err => {
+        logger.error("[Redis taskQueue] Error during publishing task to the queue")
         throw err
+    })
+
+    return {
+        message: "New password setted successfully",
+        data: userData
     }
 }
 

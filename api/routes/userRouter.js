@@ -11,7 +11,7 @@ import { syncNotesSchema, getUserNotesSchema } from "../validation/schemas/note.
 import { syncUserReadingHistorySchema } from "../validation/schemas/user.reading.history.schema.js"
 import { syncHighlightsSchema } from "../validation/schemas/highlight.schema.js"
 import { syncPrayersSchema, getUserPrayersSchema } from "../validation/schemas/prayers.schema.js"
-import { generateDailyVersePrayerRateLimiter } from "../middleware/rateLimiter.js"
+import { publicGenerateDailyVersePrayerRateLimiter } from "../middleware/publicIPRateLimiter.js"
 import { getHighlightsSchema } from "../validation/schemas/getHighlights.schema.js"
 
 const userRouter = express.Router()

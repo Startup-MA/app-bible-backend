@@ -4,14 +4,14 @@ import customerController from "../controllers/customer.js"
 import authenticate from "../middleware/authenticate.js"
 import { cache } from "../middleware/cache.js"
 import { 
-    getSubscriptionRateLimiter, 
-    getCurrentPaymentMethodRateLimiter,
-    getLastYearTransactionsRateLimiter,
-    cancelSubscriptionRateLimiter,
-    cancelScheduledCancelRateLimiter,
-    getUpdatePaymentMethodTransactionRateLimiter,
-    upgradePlanRateLimiter
-} from "../middleware/rateLimiter.js"
+    publicGetSubscriptionRateLimiter, 
+    publicGetCurrentPaymentMethodRateLimiter,
+    publicGetLastYearTransactionsRateLimiter,
+    publicCancelSubscriptionRateLimiter,
+    publicCancelScheduledCancelRateLimiter,
+    publicGetUpdatePaymentMethodTransactionRateLimiter,
+    publicUpgradePlanRateLimiter
+} from "../middleware/publicIPRateLimiter.js"
 
 import { upgradePlanSchema } from "../validation/schemas/upgradePlan.schema.js"
 
@@ -21,40 +21,40 @@ customerRouter.use(authenticate.session)
 
 customerRouter.get("/getSubscription",
     cache(600, (req) => `paddle:${req.session.user.id}:${req.originalUrl}`),
-    getSubscriptionRateLimiter,
+    publicGetSubscriptionRateLimiter,
     customerController.getSubscription
 )
 
 customerRouter.get("/getCurrentPaymentMethod",
     cache(600, (req) => `paddle:${req.session.user.id}:${req.originalUrl}`),
-    getCurrentPaymentMethodRateLimiter,
+    publicGetCurrentPaymentMethodRateLimiter,
     customerController.getCurrentPaymentMethod
 )
 
 customerRouter.get("/getLastYearTransactions",
     cache(600, (req) => `paddle:${req.session.user.id}:${req.originalUrl}`),
-    getLastYearTransactionsRateLimiter,
+    publicGetLastYearTransactionsRateLimiter,
     customerController.getLastYearTransactions
 )
 
 customerRouter.post("/cancelSubscription",
-    cancelSubscriptionRateLimiter,
+    publicCancelSubscriptionRateLimiter,
     customerController.cancelSubscription
 )
 
 customerRouter.post("/cancelScheduledCancel",
-    cancelScheduledCancelRateLimiter,
+    publicCancelScheduledCancelRateLimiter,
     customerController.cancelScheduledCancel
 )
 
 customerRouter.get("/getUpdatePaymentMethodTransaction",
-    getUpdatePaymentMethodTransactionRateLimiter,
+    publicGetUpdatePaymentMethodTransactionRateLimiter,
     customerController.getUpdatePaymentMethodTransaction
 )
 
 customerRouter.patch("/upgradePlan",
     validate(upgradePlanSchema, "body"),
-    upgradePlanRateLimiter,
+    publicUpgradePlanRateLimiter,
     customerController.upgradePlan
 )
 

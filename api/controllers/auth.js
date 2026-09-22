@@ -567,7 +567,7 @@ async function resetCode(req, res, next) {
 }
 
 async function verifyCode(req, res, next) {
-    const {device, code} = req.body
+    const { device, code } = req.body
 
     logger.info(`Verifying a user code: ${code} for device: ${device}`)
 

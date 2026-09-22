@@ -2,6 +2,7 @@ import os from "os"
 import dotenv from "dotenv"
 import { logger } from "../logger.js"
 import { setupRedisStreams } from "../scripts/redisSetup.js"
+import { sleep } from "../utils/sleep.js"
 import redisClient from "../connections/redis.js"
 import { messageProcessing } from "../messageHandler/handleMessage.js"
 

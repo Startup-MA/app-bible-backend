@@ -19,7 +19,10 @@ import { swaggerSpec } from "./utils/swaggerSpec.js"
 import swaggerUi from "swagger-ui-express"
 
 const app = express()
-app.set("trust proxy", 1) // (Cloudflare) Inside Kubernetes Cluster when running behind nginx!!!
+
+if (process.env.NODE_ENV !== "development") {
+    app.set("trust proxy", 1) // (Cloudflare) Inside Kubernetes Cluster when running behind nginx!!!
+}
 
 app.use(cors({
     origin: process.env.FRONT_URL, // Specify the allowed origin
