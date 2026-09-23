@@ -34,6 +34,7 @@
 
 .tickets-title button {
     margin-left: 2em;
+    cursor: pointer;
 }
 
 .tickets thead {
@@ -142,6 +143,7 @@
     padding-right: 1.2rem;
     border-color: transparent;
     border-radius: 10px;
+    cursor: pointer;
 }
 
 @media screen and (max-width: 600px) {

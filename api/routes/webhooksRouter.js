@@ -7,9 +7,9 @@ import { paddleUnmarshal } from "../middleware/paddleUnmarshal.js"
 const webhooksRouter = express.Router()
 
 webhooksRouter.post("/",
+    publicWebhooksRateLimiter,
     express.raw({type: "application/json"}),
     allowIPWebhook,
-    publicWebhooksRateLimiter,
     paddleUnmarshal,
     webhooksController.handler
 )

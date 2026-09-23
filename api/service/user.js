@@ -106,9 +106,11 @@ async function createOrUpdateUserTopics(id_user, userTopics) {
     if (!((customerInfo[0].subscription_tier === "Advanced" &&
         customerInfo[0].subscription_status === "active") || 
         (customerInfo[0].subscription_tier === "Premium" &&
-        customerInfo[0].subscription_status === "active"))) {
+        customerInfo[0].subscription_status === "active") || 
+        (customerInfo[0].subscription_tier === "Premium" &&
+        customerInfo[0].subscription_status === "trialing"))) {
 
-        throw AppError.conflict("Not allowed to access. User doesn't have enough rights or an active susbscription.")
+        throw AppError.conflict("Not allowed to access. User doesn't have enough rights or an active subscription.")
     }
 
     await taskQueue.publish(
@@ -131,7 +133,9 @@ async function getUserTopics(id_user) {
     if (!((customerInfo[0].subscription_tier === "Advanced" &&
         customerInfo[0].subscription_status === "active") || 
         (customerInfo[0].subscription_tier === "Premium" &&
-        customerInfo[0].subscription_status === "active"))) {
+        customerInfo[0].subscription_status === "active") || 
+        (customerInfo[0].subscription_tier === "Premium" &&
+        customerInfo[0].subscription_status === "trialing"))) {
 
         throw AppError.conflict("Not allowed to access. User doesn't have enough rights or an active subscription.")
     }
@@ -149,7 +153,9 @@ async function generateDailyVersePrayer(id_user, userLanguage) {
     if (!((customerInfo[0].subscription_tier === "Advanced" &&
         customerInfo[0].subscription_status === "active") || 
         (customerInfo[0].subscription_tier === "Premium" &&
-        customerInfo[0].subscription_status === "active"))) {
+        customerInfo[0].subscription_status === "active") || 
+        (customerInfo[0].subscription_tier === "Premium" &&
+        customerInfo[0].subscription_status === "trialing"))) {
 
         throw AppError.conflict("Not allowed to access. User doesn't have enough rights or an active subscription.")
     }
@@ -207,7 +213,9 @@ async function getUserDailyVersePrayer(id_user) {
     if (!((customerInfo[0].subscription_tier === "Advanced" &&
         customerInfo[0].subscription_status === "active") || 
         (customerInfo[0].subscription_tier === "Premium" &&
-        customerInfo[0].subscription_status === "active"))) {
+        customerInfo[0].subscription_status === "active") || 
+        (customerInfo[0].subscription_tier === "Premium" &&
+        customerInfo[0].subscription_status === "trialing"))) {
 
         throw AppError.conflict("Not allowed to access. User doesn't have enough rights or an active subscription.")
     }
@@ -237,7 +245,9 @@ async function getUserDailyPrayerTranslation(id_user, language) {
     if (!((customerInfo[0].subscription_tier === "Advanced" &&
         customerInfo[0].subscription_status === "active") || 
         (customerInfo[0].subscription_tier === "Premium" &&
-        customerInfo[0].subscription_status === "active"))) {
+        customerInfo[0].subscription_status === "active") || 
+        (customerInfo[0].subscription_tier === "Premium" &&
+        customerInfo[0].subscription_status === "trialing"))) {
 
         throw AppError.conflict("Not allowed to access. User doesn't have enough rights or an active subscription.")
     }

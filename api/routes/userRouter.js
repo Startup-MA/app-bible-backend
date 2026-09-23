@@ -11,39 +11,196 @@ import { syncNotesSchema, getUserNotesSchema } from "../validation/schemas/note.
 import { syncUserReadingHistorySchema } from "../validation/schemas/user.reading.history.schema.js"
 import { syncHighlightsSchema } from "../validation/schemas/highlight.schema.js"
 import { syncPrayersSchema, getUserPrayersSchema } from "../validation/schemas/prayers.schema.js"
-import { publicGenerateDailyVersePrayerRateLimiter } from "../middleware/publicIPRateLimiter.js"
+import { 
+    publicSkipPersonalInfoRateLimiter,
+    publicUpdateProfileRateLimiter,
+    publicDeleteAccountRateLimiter,
+    publicCreateOrUpdateUserTopicsRateLimiter,
+    publicGetUserTopicsRateLimiter,
+    publicGenerateDailyVersePrayerRateLimiter,
+    publicGetUserDailyPrayerTranslationRateLimiter,
+    publicGetUserDailyVersePrayerRateLimiter,
+    publicSyncBookmarksRateLimiter,
+    publicGetUserBookmarksRateLimiter,
+    publicSyncNotesRateLimiter,
+    publicGetUserNotesRateLimiter,
+    publicSyncUserReadingHistoryRateLimiter,
+    publicGetUserReadingHistoryRateLimiter,
+    publicSyncHighlightsRateLimiter,
+    publicGetUserHighlightsRateLimiter,
+    publicSyncPrayersRateLimiter,
+    publicGetUserPrayersRateLimiter
+} from "../middleware/publicIPRateLimiter.js"
+import {
+    userSkipPersonalInfoRateLimiter,
+    userUpdateProfileRateLimiter,
+    userDeleteAccountRateLimiter,
+    userCreateOrUpdateUserTopicsRateLimiter,
+    userGetUserTopicsRateLimiter,
+    userGenerateDailyVersePrayerRateLimiter,
+    userGetUserDailyPrayerTranslationRateLimiter,
+    userGetUserDailyVersePrayerRateLimiter,
+    userSyncBookmarksRateLimiter,
+    userGetUserBookmarksRateLimiter,
+    userSyncNotesRateLimiter,
+    userGetUserNotesRateLimiter,
+    userSyncUserReadingHistoryRateLimiter,
+    userGetUserReadingHistoryRateLimiter,
+    userSyncHighlightsRateLimiter,
+    userGetUserHighlightsRateLimiter,
+    userSyncPrayersRateLimiter,
+    userGetUserPrayersRateLimiter
+} from "../middleware/userSpecificRateLimiter.js"
 import { getHighlightsSchema } from "../validation/schemas/getHighlights.schema.js"
 
 const userRouter = express.Router()
 
-userRouter.patch("/skipPersonalInfo", authenticate.session, userController.skipPersonalInfo)
-userRouter.patch("/updateProfile", authenticate.session, validate(updateProfileSchema, "body"), userController.updateProfile)
+userRouter.patch("/skipPersonalInfo", 
+    publicSkipPersonalInfoRateLimiter,
+    authenticate.session,
+    userSkipPersonalInfoRateLimiter,
+    userController.skipPersonalInfo
+)
 
-userRouter.delete("/deleteAccount", authenticate.session, userController.deleteAccount)
+userRouter.patch("/updateProfile",
+    publicUpdateProfileRateLimiter,
+    authenticate.session,
+    validate(updateProfileSchema, "body"),
+    userUpdateProfileRateLimiter,
+    userController.updateProfile
+)
 
-userRouter.use(authenticate.session)
-userRouter.use(authenticate.userMobile)
+userRouter.delete("/deleteAccount",
+    publicDeleteAccountRateLimiter,
+    authenticate.session,
+    userDeleteAccountRateLimiter,
+    userController.deleteAccount
+)
 
-userRouter.post("/createOrUpdateUserTopics", validate(createOrUpdateUserTopicsSchema, "body"), userController.createOrUpdateUserTopics)
-userRouter.get("/getUserTopics", userController.getUserTopics)
+//Verses and prayers
 
-userRouter.post("/generateDailyVersePrayer", validate(generateDailyVersePrayerSchema, "body"), userController.generateDailyVersePrayer)
-userRouter.post("/getUserDailyPrayerTranslation", validate(getUserDailyPrayerTranslationSchema, "body"), userController.getUserDailyPrayerTranslation)
-userRouter.get("/getUserDailyVersePrayer", userController.getUserDailyVersePrayer)
+userRouter.post("/createOrUpdateUserTopics",
+    publicCreateOrUpdateUserTopicsRateLimiter,
+    authenticate.session,
+    authenticate.userMobile,
+    validate(createOrUpdateUserTopicsSchema, "body"),
+    userCreateOrUpdateUserTopicsRateLimiter,
+    userController.createOrUpdateUserTopics
+)
+userRouter.get("/getUserTopics",
+    publicGetUserTopicsRateLimiter,
+    authenticate.session,
+    authenticate.userMobile,
+    userGetUserTopicsRateLimiter,
+    userController.getUserTopics
+)
 
-userRouter.post("/syncBookmarks", validate(syncBookmarksSchema, "body"), userController.syncBookmarks)
-userRouter.get("/getUserBookmarks", validate(getUserBookmarksSchema, "query"), userController.getUserBookmarks)
+userRouter.post("/generateDailyVersePrayer",
+    publicGenerateDailyVersePrayerRateLimiter,
+    authenticate.session,
+    authenticate.userMobile,
+    validate(generateDailyVersePrayerSchema, "body"),
+    userGenerateDailyVersePrayerRateLimiter,
+    userController.generateDailyVersePrayer
+)
+userRouter.post("/getUserDailyPrayerTranslation",
+    publicGetUserDailyPrayerTranslationRateLimiter,
+    authenticate.session,
+    authenticate.userMobile,
+    validate(getUserDailyPrayerTranslationSchema, "body"),
+    userGetUserDailyPrayerTranslationRateLimiter,
+    userController.getUserDailyPrayerTranslation
+)
+userRouter.get("/getUserDailyVersePrayer",
+    publicGetUserDailyVersePrayerRateLimiter,
+    authenticate.session,
+    authenticate.userMobile,
+    userGetUserDailyVersePrayerRateLimiter,
+    userController.getUserDailyVersePrayer
+)
 
-userRouter.post("/syncNotes", validate(syncNotesSchema, "body"), userController.syncNotes)
-userRouter.get("/getUserNotes", validate(getUserNotesSchema, "query"), userController.getUserNotes)
+userRouter.post("/syncBookmarks",
+    publicSyncBookmarksRateLimiter,
+    authenticate.session,
+    authenticate.userMobile,
+    validate(syncBookmarksSchema, "body"),
+    userSyncBookmarksRateLimiter,
+    userController.syncBookmarks
+)
+userRouter.get("/getUserBookmarks",
+    publicGetUserBookmarksRateLimiter,
+    authenticate.session,
+    authenticate.userMobile,
+    validate(getUserBookmarksSchema, "query"),
+    userGetUserBookmarksRateLimiter,
+    userController.getUserBookmarks
+)
 
-userRouter.post("/syncUserReadingHistory", validate(syncUserReadingHistorySchema, "body"), userController.syncUserReadingHistory)
-userRouter.get("/getUserReadingHistory", userController.getUserReadingHistory)
+userRouter.post("/syncNotes",
+    publicSyncNotesRateLimiter,
+    authenticate.session,
+    authenticate.userMobile,
+    validate(syncNotesSchema, "body"),
+    userSyncNotesRateLimiter,
+    userController.syncNotes
+)
+userRouter.get("/getUserNotes",
+    publicGetUserNotesRateLimiter,
+    authenticate.session,
+    authenticate.userMobile,
+    validate(getUserNotesSchema, "query"),
+    userGetUserNotesRateLimiter,
+    userController.getUserNotes
+)
 
-userRouter.post("/syncHighlights", validate(syncHighlightsSchema, "body"), userController.syncHighlights)
-userRouter.get("/getUserHighlights", validate(getHighlightsSchema, "query"), userController.getUserHighlights)
+userRouter.post("/syncUserReadingHistory",
+    publicSyncUserReadingHistoryRateLimiter,
+    authenticate.session,
+    authenticate.userMobile,
+    validate(syncUserReadingHistorySchema, "body"),
+    userSyncUserReadingHistoryRateLimiter,
+    userController.syncUserReadingHistory
+)
+userRouter.get("/getUserReadingHistory",
+    publicGetUserReadingHistoryRateLimiter,
+    authenticate.session,
+    authenticate.userMobile,
+    userGetUserReadingHistoryRateLimiter,
+    userController.getUserReadingHistory
+)
 
-userRouter.post("/syncPrayers", validate(syncPrayersSchema, "body"), userController.syncPrayers)
-userRouter.get("/getUserPrayers", validate(getUserPrayersSchema, "query"), userController.getUserPrayers)
+userRouter.post("/syncHighlights",
+    publicSyncHighlightsRateLimiter,
+    authenticate.session,
+    authenticate.userMobile,
+    validate(syncHighlightsSchema, "body"),
+    userSyncHighlightsRateLimiter,
+    userController.syncHighlights
+)
+userRouter.get("/getUserHighlights",
+    publicGetUserHighlightsRateLimiter,
+    authenticate.session,
+    authenticate.userMobile,
+    validate(getHighlightsSchema, "query"),
+    userGetUserHighlightsRateLimiter,
+    userController.getUserHighlights
+)
+
+userRouter.post("/syncPrayers",
+    publicSyncPrayersRateLimiter,
+    authenticate.session,
+    authenticate.userMobile,
+    validate(syncPrayersSchema, "body"),
+    userSyncPrayersRateLimiter,
+    userController.syncPrayers
+)
+userRouter.get("/getUserPrayers",
+    publicGetUserPrayersRateLimiter,
+    authenticate.session,
+    authenticate.userMobile,
+    validate(getUserPrayersSchema, "query"),
+    userGetUserPrayersRateLimiter,
+    userController.getUserPrayers
+)
 
 export default userRouter

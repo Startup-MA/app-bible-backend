@@ -210,7 +210,8 @@ function Version() {
         setIsLoaded(false)
         axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/sys/getCurrentAppVersion`, 
             {
-                signal: controller.signal
+                signal: controller.signal,
+                withCredentials: true
             }
         ).then(data => {
             console.log(data)
