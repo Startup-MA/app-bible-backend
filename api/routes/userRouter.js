@@ -52,6 +52,7 @@ import {
     userGetUserPrayersRateLimiter
 } from "../middleware/userSpecificRateLimiter.js"
 import { getHighlightsSchema } from "../validation/schemas/getHighlights.schema.js"
+import { cache } from "../middleware/cache.js"
 
 const userRouter = express.Router()
 
@@ -91,6 +92,7 @@ userRouter.get("/getUserTopics",
     publicGetUserTopicsRateLimiter,
     authenticate.session,
     authenticate.userMobile,
+    cache(600, (req) => `user:${req.session.user.id}:${req.originalUrl}`),
     userGetUserTopicsRateLimiter,
     userController.getUserTopics
 )
@@ -115,6 +117,7 @@ userRouter.get("/getUserDailyVersePrayer",
     publicGetUserDailyVersePrayerRateLimiter,
     authenticate.session,
     authenticate.userMobile,
+    cache(600, (req) => `user:${req.session.user.id}:${req.originalUrl}`),
     userGetUserDailyVersePrayerRateLimiter,
     userController.getUserDailyVersePrayer
 )
@@ -165,6 +168,7 @@ userRouter.get("/getUserReadingHistory",
     publicGetUserReadingHistoryRateLimiter,
     authenticate.session,
     authenticate.userMobile,
+    cache(600, (req) => `user:${req.session.user.id}:${req.originalUrl}`),
     userGetUserReadingHistoryRateLimiter,
     userController.getUserReadingHistory
 )

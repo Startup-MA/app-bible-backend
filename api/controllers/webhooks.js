@@ -21,7 +21,8 @@ async function handler(req, res, next) {
             clearCacheFields([
                 `paddle:${result.data[0]["id_user"]}:/api/customer/getLastYearTransactions`,
                 `paddle:${result.data[0]["id_user"]}:/api/customer/getCurrentPaymentMethod`,
-                `paddle:${result.data[0]["id_user"]}:/api/customer/getSubscription`
+                `paddle:${result.data[0]["id_user"]}:/api/customer/getSubscription`,
+                `dashboard:${result.data[0]["id_user"]}:/api/authMe`
             ])
 
             break
@@ -35,7 +36,8 @@ async function handler(req, res, next) {
             clearCacheFields([
                 `paddle:${result.data[0]["id_user"]}:/api/customer/getLastYearTransactions`,
                 `paddle:${result.data[0]["id_user"]}:/api/customer/getCurrentPaymentMethod`,
-                `paddle:${result.data[0]["id_user"]}:/api/customer/getSubscription`
+                `paddle:${result.data[0]["id_user"]}:/api/customer/getSubscription`,
+                `dashboard:${result.data[0]["id_user"]}:/api/authMe`
             ])
             
             break
@@ -49,7 +51,8 @@ async function handler(req, res, next) {
             clearCacheFields([
                 `paddle:${result.data[0]["id_user"]}:/api/customer/getLastYearTransactions`,
                 `paddle:${result.data[0]["id_user"]}:/api/customer/getCurrentPaymentMethod`,
-                `paddle:${result.data[0]["id_user"]}:/api/customer/getSubscription`
+                `paddle:${result.data[0]["id_user"]}:/api/customer/getSubscription`,
+                `dashboard:${result.data[0]["id_user"]}:/api/authMe`
             ])
 
             break

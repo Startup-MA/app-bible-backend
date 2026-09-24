@@ -29,6 +29,8 @@ import {
     userGetTicketsCountRateLimiter
 } from "../middleware/userSpecificRateLimiter.js"
 
+import { cache } from "../middleware/cache.js"
+
 const sysRouter = express.Router()
 
 sysRouter.post("/needToUpdate",
@@ -63,11 +65,13 @@ sysRouter.get("/getAllBibleTextVersions",
 sysRouter.get("/getBibleTextVersions",
     publicGetBibleTextVersionsRateLimiter,
     validate(getBibleTextVersionsSchema, "query"),
+    cache(600, (req) => `sys:${req.originalUrl}`),
     sysController.getBibleTextVersions
 )
 
 sysRouter.get("/getAllLangs",
     publicGetAllLangsRateLimiter,
+    cache(600, (req) => `sys:${req.originalUrl}`),
     sysController.getAllLangs
 )
 

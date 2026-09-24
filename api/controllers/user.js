@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes"
 import { logger } from "../utils/logger.js"
 import AppError from "../errors/AppError.js"
 import { clearUserSession } from "../utils/clearUserSession.js"
+import { clearCacheFields } from "../utils/clearCacheFields.js"
 
 async function deleteAccount(req, res, next) {
     const { id, device } = req.session.user
@@ -13,6 +14,17 @@ async function deleteAccount(req, res, next) {
 
     await userService.deleteAccount(id)
 
+    clearCacheFields([
+        `paddle:${id}:/api/customer/getLastYearTransactions`,
+        `paddle:${id}:/api/customer/getCurrentPaymentMethod`,
+        `paddle:${id}:/api/customer/getSubscription`,
+        `dashboard:${id}:/api/authMe`,
+        `dashboard:${id}:/api/profile`,
+        `user:${id}:/api/user/getUserTopics`,
+        `user:${id}:/api/user/getUserDailyVersePrayer`,
+        `user:${id}:/api/user/getUserReadingHistory`,
+    ])
+    
     await clearUserSession(id)
 
     return res.status(StatusCodes.OK).json({
@@ -43,6 +55,10 @@ async function updateProfile(req, res, next) {
 
     await userService.updateProfile(id, updatedProfileData)
 
+    clearCacheFields([
+        `dashboard:${id}:/api/profile`
+    ])
+
     return res.status(StatusCodes.OK).json({
         status: "success",
         message: "New profile data is accepted for update"
@@ -57,6 +73,10 @@ async function createOrUpdateUserTopics(req, res, next) {
     logger.info(`Creating or Updating topics for user: ${id} device: ${device}`)
 
     await userService.createOrUpdateUserTopics(id, userTopics)
+
+    clearCacheFields([
+        `user:${id}:/api/user/getUserTopics`
+    ])
 
     return res.status(StatusCodes.OK).json({
         status: "success",
@@ -86,6 +106,10 @@ async function generateDailyVersePrayer(req, res, next) {
     logger.info(`Preparing verse and prayer for user: ${id} device: ${device}`)
 
     const result = await userService.generateDailyVersePrayer(id, userLanguage)
+
+    clearCacheFields([
+        `user:${id}:/api/user/getUserDailyVersePrayer`,
+    ])
 
     return res.status(StatusCodes.OK).json({
         status: "success",
@@ -176,6 +200,10 @@ async function syncUserReadingHistory(req, res, next) {
         readingHistory: JSON.stringify(req.body),
         id_user: String(id)
     })
+
+    clearCacheFields([
+        `user:${id}:/api/user/getUserReadingHistory`,
+    ])
 
     return res.status(StatusCodes.OK).json({
         status: "success",

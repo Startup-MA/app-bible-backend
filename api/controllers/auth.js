@@ -5,6 +5,7 @@ import { StatusCodes } from "http-status-codes"
 import redisClient from "../connections/redis.js"
 import { logger } from "../utils/logger.js"
 import AppError from "../errors/AppError.js"
+import { clearCacheFields } from "../utils/clearCacheFields.js"
 
 const { Cache } = redisClient
 
@@ -54,6 +55,10 @@ async function googleAuth(req, res, next) {
 
     const trackerKey = `active_session:user_${userData.data[0]["id_user"]}`
     
+    clearCacheFields([
+        `dashboard:${userData.data[0]["id_user"]}:/api/authMe`
+    ])
+
     const existingSession = JSON.parse(await Cache.get(trackerKey).catch(err => {
         logger.error(`[Redis Cache] Error extracting existing session from cache by trackerKey ${trackerKey}`)
         throw err
@@ -182,6 +187,10 @@ async function appleAuth(req, res, next) {
                     }
                 })
     }
+
+    clearCacheFields([
+        `dashboard:${userData.data[0]["id_user"]}:/api/authMe`
+    ])
 
     const trackerKey = `active_session:user_${userData.data[0]["id_user"]}`
     

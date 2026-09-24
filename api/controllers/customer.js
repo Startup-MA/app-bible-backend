@@ -15,7 +15,6 @@ async function getSubscription(req, res, next) {
             message: "Subscription not found",
             data: 0
         })
-        // throw AppError.conflict("Subscription not found")
     }
   
     const clientSubscription = await customerService.getSubscription(customerInfo.data[0].subscription_id)
@@ -39,7 +38,6 @@ async function getCurrentPaymentMethod(req, res, next) {
             message: "Subscription not found",
             data: 0
         })
-        // throw AppError.conflict("Subscription not found")
     }
 
     const currentPaymentMethod = await customerService.getCurrentPaymentMethod(customerInfo.data[0].subscription_id, customerInfo.data[0].customer_id)
@@ -63,7 +61,6 @@ async function getLastYearTransactions(req, res, next) {
             message: "Subscription not found",
             data: 0
         })
-        // throw AppError.conflict("Subscription not found")
     }
 
     const lastYearTransactions = await customerService.getLastYearTransactions(customerInfo.data[0].subscription_id, customerInfo.data[0].customer_id)
@@ -87,7 +84,6 @@ async function cancelSubscription(req, res, next) {
             message: "Subscription not found",
             data: 0
         })
-        // throw AppError.conflict("Subscription not found")
     }
 
     const cancellationResult = await customerService.cancelSubscription(customerInfo.data[0].subscription_id)
@@ -115,7 +111,6 @@ async function cancelScheduledCancel(req, res, next) {
             message: "Subscription not found",
             data: 0
         })
-        // throw AppError.conflict("Subscription not found")
     }
 
     const cancellationResult = await customerService.cancelScheduledCancel(customerInfo.data[0].subscription_id)
@@ -143,7 +138,6 @@ async function getUpdatePaymentMethodTransaction(req, res, next) {
             message: "Subscription not found",
             data: 0
         })
-        // throw AppError.conflict("Subscription not found")
     }
 
     const updatePaymentMethodTransaction = await customerService.getUpdatePaymentMethodTransaction(customerInfo.data[0].subscription_id)
@@ -174,16 +168,15 @@ async function upgradePlan(req, res, next) {
             message: "Subscription not found",
             data: 0
         })
-        // throw AppError.conflict("Subscription not found")
     }
 
     const upgradePlanResult = await customerService.upgradePlan(customerInfo.data[0].subscription_id, body)
 
-    // clearCacheFields([
-    //     `paddle:${id}:/api/customer/getLastYearTransactions`,
-    //     `paddle:${id}:/api/customer/getCurrentPaymentMethod`,
-    //     `paddle:${id}:/api/customer/getSubscription`
-    // ])
+    clearCacheFields([
+        `paddle:${id}:/api/customer/getLastYearTransactions`,
+        `paddle:${id}:/api/customer/getCurrentPaymentMethod`,
+        `paddle:${id}:/api/customer/getSubscription`
+    ])
 
     return res.status(StatusCodes.OK).json({
         status: "success",
