@@ -211,7 +211,6 @@ jobs:
             APP_PORT=${{ secrets.API_PORT }}
             RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
             RESEND_FROM_ADDRESS=${{ secrets.RESEND_FROM_ADDRESS_DEV }}
-            SUPPORT_EMAIL=${{ secrets.SUPPORT_EMAIL }}
             EOF
             
             # SOLDIER-CONSUMER envs
@@ -239,6 +238,7 @@ jobs:
             CONNECTION_TIMEOUT_MILLIS=${{ secrets.CONNECTION_TIMEOUT_MILLIS }}
             IDLE_TIMEOUT_MILLIS=${{ secrets.IDLE_TIMEOUT_MILLIS }}
             FRONT_URL=${{ secrets.FRONTEND_URL_DEV }}
+            SUPPORT_EMAIL=${{ secrets.SUPPORT_EMAIL }}
             EOF
 
             docker compose down
