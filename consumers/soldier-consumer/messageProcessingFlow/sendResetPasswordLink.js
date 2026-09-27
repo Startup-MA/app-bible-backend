@@ -3,6 +3,7 @@ import taskQueue from "../utils/redisQueryEngine.js"
 import redisClient from "../connections/redis.js"
 import userDAO from "../dao/user.js"
 import { logger } from "../utils/logger.js"
+import { getResetPasswordEmail } from "../emailForms/getResetPasswordEmail.js"
 
 const { Mailer } = redisClient
 
@@ -27,12 +28,8 @@ async function sendResetPasswordLink(message) {
                 to: process.env.NODE_ENV === "development" ? 
                 message["message"]["email"].split(/\+test\d+/).join("") : 
                 message["message"]["email"],
-                subject: "Reset your Password",
-                html: `
-                    <h3>Here is your password reset link. It expires within 30 minutes</h3>
-                    <a href="${process.env.FRONT_URL + "/reset/" + uuid}">Reset Your Password</a>
-                    <p>If it wasn't you who tried to reset password, just ignore this email or contact us here: support@the.bible.com</p>
-                    `,
+                subject: "Reset your The Bible password",
+                html: getResetPasswordEmail(30, process.env.FRONT_URL, process.env.FRONT_URL + "/reset/" + uuid, "support@the.bible.com")
             },
         ) 
     } catch(err) {

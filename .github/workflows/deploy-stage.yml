@@ -75,6 +75,8 @@ jobs:
           REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID_STAGE }}
           REACT_APP_GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET_STAGE }}
           REACT_APP_APPLE_SERVICE_ID: ${{ secrets.APPLE_SERVICE_ID_STAGE }}
+          REACT_APP_SUPPORT_EMAIL: ${{ secrets.SUPPORT_EMAIL }}
+        
         run: |
           npm ci
           npm run build

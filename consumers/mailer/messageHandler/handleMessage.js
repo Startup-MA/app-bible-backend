@@ -52,7 +52,6 @@ export async function messageProcessing(message) {
 
     const mailOptions = {
         from: process.env.RESEND_FROM_ADDRESS,
-        reply_to: "support@app-bible.com",
         ...message["message"]
     }
 

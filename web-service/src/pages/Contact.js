@@ -201,6 +201,7 @@ function Contact() {
         return () => controller.abort()
     }, [])
 
+    console.log(process.env.REACT_APP_SUPPORT_EMAIL)
 
     return (
         <>
@@ -220,7 +221,7 @@ function Contact() {
                         <div className="support">
                             <div>
                                 <p>Prefer email?</p>
-                                <p>support@the.bible.com</p>
+                                <p>{process.env.REACT_APP_SUPPORT_EMAIL}</p>
                             </div>
                             <div>
                                 <p>Need a quick answer?</p>

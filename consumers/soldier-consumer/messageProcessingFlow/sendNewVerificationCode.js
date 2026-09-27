@@ -3,6 +3,7 @@ import taskQueue from "../utils/redisQueryEngine.js"
 import redisClient from "../connections/redis.js"
 import userDAO from "../dao/user.js"
 import { logger } from "../utils/logger.js"
+import { getVerificationCodeEmail } from  "../emailForms/getVerificationCodeEmail.js"
 
 const { Mailer } = redisClient
 
@@ -24,15 +25,12 @@ async function sendNewVerificationCode(message) {
         Mailer,
         process.env.MAILER_STREAM_NAME,
         {
-            reason: "Verification",
+            reason: "Authentication",
             to: process.env.NODE_ENV === "development" ? 
                 message["message"]["email"].split(/\+test\d+/).join("") : 
                 message["message"]["email"],
-            subject: "Verification code",
-            html: `
-                <p>Your verification code for ${message["message"]["email"]} <b>(Expires in 30 minutes)</b>: </p></br>
-                <h1><b>${newCode[0].code}</b></h1>
-            `,
+            subject: "The Bible Authentication",
+            html: getVerificationCodeEmail(newCode[0].code, 30, process.env.FRONT_URL, "support@the.bible.com")
         }
     ).catch(err => {
         logger.error("[Redis Mailer] Error sending verification code")

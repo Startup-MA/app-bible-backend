@@ -75,6 +75,8 @@ jobs:
             REACT_APP_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID_DEV }}
             REACT_APP_GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET_DEV }}
             REACT_APP_APPLE_SERVICE_ID=${{ secrets.APPLE_SERVICE_ID_DEV}}
+            REACT_APP_SUPPORT_EMAIL=${{ secrets.SUPPORT_EMAIL }}
+            
   # PHASE 2: Deploy to Droplet (Runs only after Phase 1 succeeds)
   deploy-to-droplet:
     needs: build-and-push

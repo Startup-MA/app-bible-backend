@@ -12,6 +12,17 @@ async function deleteAccount(req, res, next) {
 
     await clearUserSession(id)
 
+    await clearCacheFields([
+        `paddle:${id}:/api/customer/getLastYearTransactions`,
+        `paddle:${id}:/api/customer/getCurrentPaymentMethod`,
+        `paddle:${id}:/api/customer/getSubscription`,
+        `dashboard:${id}:/api/authMe`,
+        `dashboard:${id}:/api/profile`,
+        `user:${id}:/api/user/getUserTopics`,
+        `user:${id}:/api/user/getUserDailyVersePrayer`,
+        `user:${id}:/api/user/getUserReadingHistory`,
+    ])
+
     await userService.deleteAccount(id)
 
     clearCacheFields([
@@ -39,6 +50,10 @@ async function skipPersonalInfo(req, res, next) {
     logger.info(`Setting skipped profile info modal for user: ${id} device: ${device}`)
 
     await userService.skipPersonalInfo(id)
+
+    clearCacheFields([
+        `dashboard:${id}:/api/profile`
+    ])
 
     return res.status(StatusCodes.OK).json({
         status: "success",
