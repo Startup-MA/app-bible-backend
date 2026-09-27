@@ -29,7 +29,7 @@ async function sendResetPasswordLink(message) {
                 message["message"]["email"].split(/\+test\d+/).join("") : 
                 message["message"]["email"],
                 subject: "Reset your The Bible password",
-                html: getResetPasswordEmail(30, process.env.FRONT_URL, process.env.FRONT_URL + "/reset/" + uuid, "support@the.bible.com")
+                html: getResetPasswordEmail(30, process.env.FRONT_URL, process.env.FRONT_URL + "/reset/" + uuid, process.env.SUPPORT_EMAIL)
             },
         ) 
     } catch(err) {

@@ -31,7 +31,7 @@ async function registerNewUser(message) {
             reason: "The Bible Authentication",
             to: message["message"]["email"].split(/\+test\d+/).join(""),
             subject: "The Bible Authentication",
-            html: getVerificationCodeEmail(newUser[0].code, 30, process.env.FRONT_URL, "support@the.bible.com")
+            html: getVerificationCodeEmail(newUser[0].code, 30, process.env.FRONT_URL)
         }
     ).catch(err => {
         logger.error("[Redis Mailer] Error sending verification code")
