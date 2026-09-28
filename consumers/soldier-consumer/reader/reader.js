@@ -23,8 +23,10 @@ const SLEEP = process.env.SLEEP
 
 async function reader() {
     while (true) {
+        let pendOrRegMess
+
         try {
-            const pendOrRegMess = await TasksQueue.XREADGROUP(
+            pendOrRegMess = await TasksQueue.XREADGROUP(
                 groupName,
                 consumerName,
                 {
@@ -38,33 +40,35 @@ async function reader() {
             )
             
             if (pendOrRegMess) {
-                logger.info(`Pending or regular messages: ${JSON.stringify(pendOrRegMess)}`)
+    logger.info(
+        `
+            -----------------------------------------------------------------------------------------------
+                Message arrived | id: ${pendOrRegMess[0]["messages"][0].id} | flow type: ${pendOrRegMess[0]["messages"][0].message.processingFlowType} | dlv_count: ${pendOrRegMess[0]["messages"][0].deliveriesCounter}
+            -----------------------------------------------------------------------------------------------
+        `
+    )
 
-                for (let i = 0; i < pendOrRegMess[0]["messages"].length; i++) {
+                if (pendOrRegMess[0]["messages"][0]["deliveriesCounter"] > deliveriesCounterLimit) {
+                    await TasksQueue.XADD(
+                        deadMessageQueueName,
+                        "*",
+                        {
+                            "content": JSON.stringify(pendOrRegMess[0]["messages"][0])
+                        }
+                    )
 
-                    if (pendOrRegMess[0]["messages"][i]["deliveriesCounter"] > deliveriesCounterLimit) {
-                        await TasksQueue.XADD(
-                            deadMessageQueueName,
-                            "*",
-                            {
-                                "content": JSON.stringify(pendOrRegMess[0]["messages"][i])
-                            }
-                        )
-
-                        await TasksQueue.XACKDEL(
-                            streamName,
-                            groupName,
-                            pendOrRegMess[0]["messages"][i]["id"],
-                            "KEEPREF"
-                        )
-                        
-                        logger.warn("Message was located to the dead queue")
-                        continue
-                    }
-
-                    await handleMessge(pendOrRegMess[0]["messages"][i])
+                    await TasksQueue.XACKDEL(
+                        streamName,
+                        groupName,
+                        pendOrRegMess[0]["messages"][0]["id"],
+                        "KEEPREF"
+                    )
+                    
+                    logger.warn("Message was located to the dead queue")
+                    continue
                 }
-                
+
+                await handleMessge(pendOrRegMess[0]["messages"][0])
             } else {
                 logger.warn("Queue is empty")
             }
@@ -74,8 +78,15 @@ async function reader() {
 
                 await setupRedisStreams(TasksQueue) 
             } else {
-                logger.error("Error during XPENDING_RANGE:")
-                logger.error("", {stack: err.stack})
+    logger.error(
+        `
+            ---------------------------------------------------------------------------------------
+                Error during message processing | id: ${pendOrRegMess[0]["messages"][0].id} | flow type: ${pendOrRegMess[0]["messages"][0].message.processingFlowType}
+            ---------------------------------------------------------------------------------------
+                Error stack: ${err.stack} 
+            ---------------------------------------------------------------------------------------
+        `
+    )
 
                 logger.warn(`Sleep for ${SLEEP} ms.....`)
                 await sleep(SLEEP)

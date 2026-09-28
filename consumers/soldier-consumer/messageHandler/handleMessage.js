@@ -35,10 +35,7 @@ const streamName = process.env.TASKS_STREAM_NAME
 const groupName = process.env.GROUP_NAME
 
 async function messageHandler(message) {
-    logger.info("------------------------------")
-    logger.info("Message is being processed..........")
-
-    logger.info(JSON.stringify(message))
+    const start = Date.now()
 
     switch(message["message"]["processingFlowType"]) {
         case "updateAppVersion":
@@ -121,9 +118,15 @@ async function messageHandler(message) {
         "KEEPREF"
     )
 
-    logger.info("Message processed successfuly!")
+    const end = Date.now()
 
-    logger.info("------------------------------")
+    logger.info(
+        `
+            ----------------------------------------------------------------------------------
+                Success | id: ${message.id} | flow type: ${message.message.processingFlowType} | time: ${end - start}ms
+            ----------------------------------------------------------------------------------
+        `
+    )
 }
 
 export default messageHandler

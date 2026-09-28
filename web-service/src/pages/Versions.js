@@ -214,7 +214,6 @@ function Version() {
                 withCredentials: true
             }
         ).then(data => {
-            console.log(data)
             setCurrentAppVersion(data.data.data.length ? data.data.data[0].versions : defaultCurrentAppVersion)
             setAmrv(data.data.data[0]?.versions.android.mrv ? data.data.data[0].versions.android.mrv : "")
             setImrv(data.data.data[0]?.versions.ios.mrv ? data.data.data[0].versions.ios.mrv : "")

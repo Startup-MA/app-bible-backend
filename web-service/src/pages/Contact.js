@@ -201,8 +201,6 @@ function Contact() {
         return () => controller.abort()
     }, [])
 
-    console.log(process.env.REACT_APP_SUPPORT_EMAIL)
-
     return (
         <>
             <PersonalInfo isOpen={isPersonalInfo} onClose={() => setIsPersonalInfo(false)} />

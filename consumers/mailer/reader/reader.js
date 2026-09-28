@@ -23,8 +23,9 @@ const { redisClientMAILER, Cache } = redisClient
 
 export async function readPendings() {
     while (true) {
+        let pendOrRegMess
         try {
-            const pendOrRegMess = await redisClientMAILER.XREADGROUP(
+            pendOrRegMess = await redisClientMAILER.XREADGROUP(
                 groupName,
                 consumerName,
                 {
@@ -38,33 +39,36 @@ export async function readPendings() {
             )
             
             if (pendOrRegMess) {
-                logger.info(`Pending or regular messages: ${JSON.stringify(pendOrRegMess)}`)
+    logger.info(
+        `
+            ---------------------------------------------------------------------------------
+                Message arrived | id: ${pendOrRegMess[0]["messages"][0].id} | reason: ${pendOrRegMess[0]["messages"][0].message.reason} | dlv_count: ${pendOrRegMess[0]["messages"][0].deliveriesCounter}
+            ---------------------------------------------------------------------------------
+        `
+    )
 
-                for (let i = 0; i < pendOrRegMess[0]["messages"].length; i++) {
+                if (pendOrRegMess[0]["messages"][0]["deliveriesCounter"] > deliveriesCounterLimit) {
+                    await redisClientMAILER.XADD(
+                        deadMessageQueueName,
+                        "*",
+                        {
+                            "content": JSON.stringify(pendOrRegMess[0]["messages"][0])
+                        }
+                    )
 
-                    if (pendOrRegMess[0]["messages"][i]["deliveriesCounter"] > deliveriesCounterLimit) {
-                        await redisClientMAILER.XADD(
-                            deadMessageQueueName,
-                            "*",
-                            {
-                                "content": JSON.stringify(pendOrRegMess[0]["messages"][i])
-                            }
-                        )
-
-                        await redisClientMAILER.XACKDEL(
-                            streamName,
-                            groupName,
-                            pendOrRegMess[0]["messages"][i]["id"],
-                            "KEEPREF"
-                        )
-                        
-                        logger.warn("Message was located to the dead queue")
-                        continue
-                    }
-
-                    await messageProcessing(pendOrRegMess[0]["messages"][i])
+                    await redisClientMAILER.XACKDEL(
+                        streamName,
+                        groupName,
+                        pendOrRegMess[0]["messages"][0]["id"],
+                        "KEEPREF"
+                    )
+                    
+                    logger.warn("Message was located to the dead queue")
+                    continue
                 }
-                
+
+                await messageProcessing(pendOrRegMess[0]["messages"][0])
+            
             } else {
                 logger.warn("Queue is empty")
             }
@@ -74,8 +78,15 @@ export async function readPendings() {
 
                 await setupRedisStreams(redisClientMAILER) 
             } else {
-                logger.error("Error during XPENDING_RANGE:")
-                logger.error("", {stack: err.stack})
+    logger.error(
+        `
+            ---------------------------------------------------------------------------------------
+                Error during message processing | id: ${pendOrRegMess[0]["messages"][0].id} | reason: ${pendOrRegMess[0]["messages"][0].message.reason}
+            ---------------------------------------------------------------------------------------
+                Error stack: ${err.stack} 
+            ---------------------------------------------------------------------------------------
+        `
+    )
 
                 logger.warn(`Sleep for ${SLEEP} ms.....`)
                 await sleep(SLEEP)

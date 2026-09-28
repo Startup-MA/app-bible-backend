@@ -13,7 +13,7 @@ const groupName = process.env.GROUP_NAME
 
 export async function messageProcessing(message) {
     const { keyPrefix, points, duration } = rateLimit
-    
+
     while (true) {
         try {
             const currentRequests = await Cache.incr(keyPrefix)
@@ -43,20 +43,20 @@ export async function messageProcessing(message) {
         }
     }
 
-
-    logger.info("------------------------------")
-    logger.info("Message is being processed..........")
-
-    logger.info(JSON.stringify(message))
-
+    const start = Date.now()
 
     const mailOptions = {
         from: process.env.RESEND_FROM_ADDRESS,
         ...message["message"]
     }
 
+    let data, error
+
     try {
-        const { data, error, headers } = await resend.emails.send(mailOptions)
+        const result = await resend.emails.send(mailOptions)
+
+        data = result.data
+        error = result.error
 
         if (error) {
             if (parseInt(error.statusCode, 10) === 429) {
@@ -77,9 +77,6 @@ export async function messageProcessing(message) {
             throw new Error(error.message)
         }
 
-        logger.info(`Mail sent ID: ${data ? data.id : null}`, )
-        logger.info(`Sending result: ${JSON.stringify(data)}`, )
-
     } catch(error) {
         throw error        
     }
@@ -91,7 +88,13 @@ export async function messageProcessing(message) {
         "KEEPREF"
     )
 
-    logger.info("Message processed successfuly!")
+    const end = Date.now()
 
-    logger.info("------------------------------")
+    logger.info(
+        `
+            -------------------------------------------------------------------------------------------------------------------------------------
+                Email sent | id: ${message.id} | reason: ${message.message.reason} | eid: ${data ? data.id : null} | time: ${end - start}ms
+            -------------------------------------------------------------------------------------------------------------------------------------
+        `
+    )
 }
