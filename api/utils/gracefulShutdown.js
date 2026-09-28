@@ -1,8 +1,8 @@
 import dotenv from "dotenv"
 import { logger } from "../utils/logger.js"
-import pool from "../connections/pg-r.js"
+import poolR from "../connections/pg-r.js"
+import poolRW from "../connections/pg-rw.js"
 import redisClient from "../connections/redis.js"
-import redis from "../connections/redis.js"
 import { server } from "../server.js"
 
 dotenv.config()
@@ -24,8 +24,15 @@ export const gracefulShutdown = async (signal) => {
         logger.info("Server is no longer accepting new connections.")
 
         // 3. Clean up external resources (e.g., databases)
-        await pool.end().catch(err => {
-            logger.error("Error during database cleanup")
+        await poolR.end().catch(err => {
+            logger.error("Error during database cleanup (pool-r)")
+            logger.error("", {stack: err.stack})
+
+            process.exit(1)
+        })
+
+        await poolRW.end().catch(err => {
+            logger.error("Error during database cleanup (pool-rw)")
             logger.error("", {stack: err.stack})
 
             process.exit(1)

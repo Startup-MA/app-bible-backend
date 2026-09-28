@@ -94,7 +94,7 @@ async function deleteTickets(req, res, next) {
     const { id, device, is_admin } = req.session.user
     const { from, to } = req.body
 
-    logger.info(`Deleting tickets from: ${from} to:${to} user: ${id} device: ${device} isAdmin: ${is_admin}`)
+    logger.info(`Deleting tickets from: ${from} to: ${to} user: ${id} device: ${device} isAdmin: ${is_admin}`)
 
     await sysService.deleteTickets(from, to)
     
