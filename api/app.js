@@ -14,6 +14,7 @@ import livenessRouter from "./routes/livenessRouter.js"
 
 import { errorHandler } from "./middleware/errorHandler.js"
 import { morganMiddleware } from "./middleware/morgan.js"
+import authenticate from "./middleware/authenticate.js"
 
 import { swaggerSpec } from "./utils/swaggerSpec.js"
 import swaggerUi from "swagger-ui-express"
@@ -44,7 +45,12 @@ app.use("/api/pass", passRouter)
 app.use("/api/user", userRouter)
 app.use("/api/customer", customerRouter)
 app.use("/api/sys", sysRouter)
-app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+app.use("/api/docs",
+    authenticate.session,
+    authenticate.isAdmin,
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec)
+)
 app.use("/api", dashboardRouter)
 
 app.use("/liveness", livenessRouter)
