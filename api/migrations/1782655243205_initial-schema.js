@@ -101,7 +101,7 @@ export const up = (pgm) => {
         CREATE TABLE languages (
             id_lang INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
             lang_name VARCHAR(50),
-            country_code VARCHAR(2) UNIQUE
+            lang_code VARCHAR(3) UNIQUE
         );
 
         CREATE TABLE daily_verses (

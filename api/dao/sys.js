@@ -76,7 +76,7 @@ async function getAllLangs() {
             SELECT
             id_lang AS id,
             lang_name,
-            country_code
+            lang_code
             FROM languages
         `
     )

@@ -6,27 +6,27 @@ import { randomUUID } from "crypto"
 dotenv.config()
 
 const LANGUAGES = [
-    { name: "Albanian", code: "AL" },
-    { name: "Armenian", code: "AM" },
-    { name: "Bosnian", code: "BA" },
+    { name: "Albanian", code: "SQ" },
+    { name: "Armenian", code: "HY" },
+    { name: "Bosnian", code: "BS" },
     { name: "Bulgarian", code: "BG" },
-    { name: "Chinese", code: "CN" },
+    { name: "Chinese", code: "ZH" },
     { name: "Croatian", code: "HR" },
-    { name: "Estonian", code: "EE" },
+    { name: "Estonian", code: "ET" },
     { name: "Finnish", code: "FI" },
     { name: "French", code: "FR" },
-    { name: "Georgian", code: "GE" },
+    { name: "Georgian", code: "KA" },
     { name: "German", code: "DE" },
-    { name: "Greek", code: "GR" },
-    { name: "Hindi", code: "IN" },
+    { name: "Greek", code: "EL" },
+    { name: "Hindi", code: "HI" },
     { name: "Hungarian", code: "HU" },
     { name: "Indonesian", code: "ID" },
     { name: "Italian", code: "IT" },
-    { name: "Korean", code: "KR" },
+    { name: "Korean", code: "KO" },
     { name: "Latvian", code: "LV" },
     { name: "Lithuanian", code: "LT" },
     { name: "Malagasy", code: "MG" },
-    { name: "Montenegrin", code: "ME" },
+    { name: "Montenegrin", code: "CNR" },
     { name: "Macedonian", code: "MK" },
     { name: "Norwegian", code: "NO" },
     { name: "Polish", code: "PL" },
@@ -34,13 +34,13 @@ const LANGUAGES = [
     { name: "Romanian", code: "RO" },
     { name: "Russian", code: "RU" },
     { name: "English", code: "EN" },
-    { name: "Serbian", code: "RS" },
+    { name: "Serbian", code: "SR" },
     { name: "Slovak", code: "SK" },
-    { name: "Slovenian", code: "SI" },
+    { name: "Slovenian", code: "SL" },
     { name: "Spanish", code: "ES" },
-    { name: "Swedish", code: "SE" },
-    { name: "Tok Pisin", code: "PG" },
-    { name: "Vietnamese", code: "VN" }
+    { name: "Swedish", code: "SV" },
+    { name: "Tok Pisin", code: "TPI" },
+    { name: "Vietnamese", code: "VI" }
 ]
 
 const BIBLE_VERSIONS = [
@@ -54,9 +54,9 @@ async function seedLanguages() {
         await pg.query(
             "rw",
             `
-                INSERT INTO languages (lang_name, country_code) 
+                INSERT INTO languages (lang_name, lang_code) 
                 VALUES ($1, $2)
-                ON CONFLICT (country_code) DO NOTHING;
+                ON CONFLICT (lang_code) DO NOTHING;
             `, 
             [
                 lang.name,

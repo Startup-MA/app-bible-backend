@@ -23,14 +23,14 @@ paths:
                         id:
                           type: integer
                           example: 1
-                        name:
+                        lang_name:
                           type: string
                           enum:
                             - English
                             - French
                             - Russian
                           example: English
-                        country_code:
+                        lang_code:
                           type: string
                           example: EN
         500:
