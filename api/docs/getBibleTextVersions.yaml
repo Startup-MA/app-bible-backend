@@ -34,18 +34,22 @@ paths:
                         code:
                           type: string
                           enum:
-                            - KJV
-                            - NIV
-                          example: KJV
+                            - kjv
+                            - niv
+                          example: kjv
                         name:
                           type: string
                           enum:
                             - KJV
-                            - NIV
-                          example: KJV
+                            - НРП
+                          example: НРП
                         full_name: 
                           type: string
                           example: King James Version
+                        license:
+                          type: string
+                          nullable: true
+                          example: Public domain
                         is_audio:
                           type: boolean
                           example: true

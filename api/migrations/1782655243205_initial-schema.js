@@ -132,6 +132,7 @@ export const up = (pgm) => {
             abb_bible_name VARCHAR(200),
             full_bible_name VARCHAR(200),
             is_audio_available BOOLEAN,
+            license TEXT,
             id_lang INT REFERENCES languages(id_lang)
         );
 

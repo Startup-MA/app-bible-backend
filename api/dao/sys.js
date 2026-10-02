@@ -26,6 +26,7 @@ async function getAllBibleTextVersions(start_id, number) {
             bible_code AS code,
             abb_bible_name AS name,
             full_bible_name AS full_name,
+            license,
             is_audio_available AS is_audio,
             lang_name,
             languages.id_lang AS lang_id
@@ -54,6 +55,7 @@ async function getBibleTextVersions(language) {
             bible_code AS code,
             abb_bible_name AS name,
             full_bible_name AS full_name,
+            license,
             is_audio_available AS is_audio,
             lang_name,
             languages.id_lang AS lang_id

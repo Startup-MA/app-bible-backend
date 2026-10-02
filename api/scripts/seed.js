@@ -44,7 +44,75 @@ const LANGUAGES = [
 ]
 
 const BIBLE_VERSIONS = [
-    {bible_code: "KJV", abb_bible_name: "KJV", full_bible_name: "King James Version", is_audio_available: true, id_lang: 28 }
+    { bible_code: "bibla", abb_bible_name: "Bibla", full_bible_name: "Bibla e Shenjtë", lang_code: "SQ" },
+    { bible_code: "hyw", abb_bible_name: "W. Armenian", full_bible_name: "Western Armenian Bible", lang_code: "HY" },
+    { bible_code: "bbg", abb_bible_name: "Българска", full_bible_name: "Българска Библия", lang_code: "BG" },
+    { bible_code: "cuvt", abb_bible_name: "CUVT", full_bible_name: "Chinese Union Version (Traditional)", lang_code: "ZH" },
+    { bible_code: "cuvs", abb_bible_name: "CUVS", full_bible_name: "Chinese Union Version (Simplified)", lang_code: "ZH" },
+    { bible_code: "sigaot", abb_bible_name: "思高繁", full_bible_name: "思高繁體聖經", lang_code: "ZH" },
+    { bible_code: "sigaos", abb_bible_name: "思高简", full_bible_name: "思高聖經", lang_code: "ZH" },
+    { bible_code: "pinyin", abb_bible_name: "Pinyin", full_bible_name: "Chinese Pinyin Bible", lang_code: "ZH" },
+    { bible_code: "pinyuhan", abb_bible_name: "拼音汉字", full_bible_name: "Chinese Pinyin and Characters", lang_code: "ZH" },
+    { bible_code: "saric", abb_bible_name: "Šarić", full_bible_name: "Ivan Šarić", lang_code: "HR" },
+    { bible_code: "eepiibel", abb_bible_name: "EP1997", full_bible_name: "Eestikeelne Piibel 1997", lang_code: "ET" },
+    { bible_code: "raamattu", abb_bible_name: "Raamattu", full_bible_name: "Raamattu", lang_code: "FI" },
+    { bible_code: "lsg", abb_bible_name: "LSG", full_bible_name: "Louis Segond 1910", lang_code: "FR" },
+    { bible_code: "luther", abb_bible_name: "LUT1912", full_bible_name: "Luther 1912", lang_code: "DE" },
+    { bible_code: "mgtr", abb_bible_name: "MG/TR", full_bible_name: "Modern Greek Old Testament, Textus Receptus 1894 New Testament", lang_code: "EL" },
+    { bible_code: "mgreek", abb_bible_name: "MG", full_bible_name: "Modern Greek", lang_code: "EL" },
+    { bible_code: "hhbd", abb_bible_name: "HHBD", full_bible_name: "Hindi Holy Bible (Dharmasastra)", lang_code: "HI" },
+    { bible_code: "pavitr", abb_bible_name: "Pavitra", full_bible_name: "Hindi Transliterated Bible", lang_code: "HI" },
+    { bible_code: "kar", abb_bible_name: "KAR", full_bible_name: "Károli", lang_code: "HU" },
+    { bible_code: "tb", abb_bible_name: "TB", full_bible_name: "Terjemahan Baru", lang_code: "ID" },
+    { bible_code: "riv", abb_bible_name: "RIV", full_bible_name: "Riveduta", lang_code: "IT" },
+    { bible_code: "krv", abb_bible_name: "KRV", full_bible_name: "Korean Revised Version", lang_code: "KO" },
+    { bible_code: "nbs", abb_bible_name: "NO1930", full_bible_name: "Det Norsk Bibelselskap 1930", lang_code: "NO" },
+    { bible_code: "pbg", abb_bible_name: "PBG", full_bible_name: "Biblia Gdańska", lang_code: "PL" },
+    { bible_code: "almeida", abb_bible_name: "Almeida", full_bible_name: "Almeida (1628-1691)", lang_code: "PT" },
+    { bible_code: "acf", abb_bible_name: "ACF", full_bible_name: "Almeida Corrigida Fiel", lang_code: "PT" },
+    { bible_code: "corn", abb_bible_name: "Cornilescu", full_bible_name: "Cornilescu 1924", lang_code: "RO" },
+    { bible_code: "rusv", abb_bible_name: "RUSV", full_bible_name: "Synodal Version", lang_code: "RU" },
+    { bible_code: "kjv", abb_bible_name: "KJV", full_bible_name: "King James Version", lang_code: "EN" },
+    { bible_code: "drc", abb_bible_name: "DRC", full_bible_name: "Douay-Rheims Version", lang_code: "EN" },
+    { bible_code: "cuvstudy", abb_bible_name: "CUV Study", full_bible_name: "English, Pinyin and Chinese Study", lang_code: "EN" },
+    { bible_code: "vuk", abb_bible_name: "ДК", full_bible_name: "Даничић-Караџић", lang_code: "SR" },
+    { bible_code: "dk", abb_bible_name: "ДК", full_bible_name: "Даничић-Караџић", lang_code: "CNR", license: "Public domain" },
+    { bible_code: "dkb", abb_bible_name: "ДК", full_bible_name: "Даничић-Караџић", lang_code: "BS", license: "Public domain" },
+    { bible_code: "rva", abb_bible_name: "RV1909", full_bible_name: "Reina Valera 1909 Antigua", lang_code: "ES" },
+    { bible_code: "bibeln", abb_bible_name: "Bibeln", full_bible_name: "Bibeln", lang_code: "SV" },
+    { bible_code: "kinhthanh", abb_bible_name: "Kinh Thánh", full_bible_name: "Kinh Thánh", lang_code: "VI" },
+    { bible_code: "web", abb_bible_name: "WEB", full_bible_name: "World English Bible", lang_code: "EN", license: "Public domain" },
+    { bible_code: "asv", abb_bible_name: "ASV", full_bible_name: "American Standard Version", lang_code: "EN", license: "Public domain" },
+    { bible_code: "ylt", abb_bible_name: "YLT", full_bible_name: "Young's Literal Translation", lang_code: "EN", license: "Public domain" },
+    { bible_code: "webster", abb_bible_name: "Webster", full_bible_name: "Webster's Bible", lang_code: "EN", license: "Public domain" },
+    { bible_code: "lut1545", abb_bible_name: "LUT1545", full_bible_name: "Luther 1545", lang_code: "DE", license: "Public domain" },
+    { bible_code: "elb1871", abb_bible_name: "ELB1871", full_bible_name: "Elberfelder 1871", lang_code: "DE", license: "Public domain" },
+    { bible_code: "elb1905", abb_bible_name: "ELB1905", full_bible_name: "Elberfelder 1905", lang_code: "DE", license: "Public domain" },
+    { bible_code: "martin", abb_bible_name: "MARTIN", full_bible_name: "Martin 1744", lang_code: "FR", license: "Public domain" },
+    { bible_code: "darby", abb_bible_name: "DARBY", full_bible_name: "Bible Darby", lang_code: "FR", license: "Public domain" },
+    { bible_code: "sse", abb_bible_name: "SSE", full_bible_name: "Sagradas Escrituras (1569)", lang_code: "ES", license: "Public domain" },
+    { bible_code: "diodati", abb_bible_name: "Diodati", full_bible_name: "Giovanni Diodati 1649", lang_code: "IT", license: "Public domain" },
+    { bible_code: "biblia1776", abb_bible_name: "Biblia", full_bible_name: "Biblia (1776)", lang_code: "FI", license: "Public domain" },
+    { bible_code: "karl1873", abb_bible_name: "Karl XII", full_bible_name: "Karl XII:s Bibel (1873)", lang_code: "SV", license: "Public domain" },
+    { bible_code: "sv1917", abb_bible_name: "SV1917", full_bible_name: "Svenska 1917", lang_code: "SV", license: "Public domain" },
+    { bible_code: "smb", abb_bible_name: "SMB", full_bible_name: "Studentmållagsbibelen 1921", lang_code: "NO", license: "Public domain" },
+    { bible_code: "baiboly", abb_bible_name: "Baiboly", full_bible_name: "Baiboly Malagasy (1865)", lang_code: "MG", license: "Public domain" },
+    { bible_code: "wenli", abb_bible_name: "文理和合", full_bible_name: "文理和合本", lang_code: "ZH", license: "Public domain" },
+    { bible_code: "blivre", abb_bible_name: "BLIVRE", full_bible_name: "Bíblia Livre", lang_code: "PT", license: "CC BY 4.0" },
+    { bible_code: "blivretr", abb_bible_name: "BLIVRE TR", full_bible_name: "Bíblia Livre (Textus Receptus)", lang_code: "PT", license: "CC BY 4.0" },
+    { bible_code: "vamvas", abb_bible_name: "Vamvas", full_bible_name: "Vamvas", lang_code: "EL", license: "Public domain" },
+    { bible_code: "gluck", abb_bible_name: "Glück", full_bible_name: "Glika Bībele", lang_code: "LV", license: "Public domain" },
+    { bible_code: "akjv", abb_bible_name: "AKJV", full_bible_name: "American King James Version", lang_code: "EN", license: "Copyright status unclear" },
+    { bible_code: "bbe", abb_bible_name: "BBE", full_bible_name: "Bible in Basic English", lang_code: "EN", license: "Copyright status unclear" },
+    { bible_code: "pr1933", abb_bible_name: "1933/38", full_bible_name: "Pyhä Raamattu (1933/1938)", lang_code: "FI", license: "Copyright status unclear" },
+    { bible_code: "eesti", abb_bible_name: "Eesti", full_bible_name: "Estonian", lang_code: "ET", license: "Copyright status unknown" },
+    { bible_code: "lvnt", abb_bible_name: "NT", full_bible_name: "Latvian New Testament", lang_code: "LV", license: "No license stated" },
+    { bible_code: "krv1961", abb_bible_name: "개역한글", full_bible_name: "개역한글판 (1952/1961)", lang_code: "KO", license: "Copyright status unclear" },
+    { bible_code: "almeida1911", abb_bible_name: "Almeida 1911", full_bible_name: "Almeida (1911)", lang_code: "PT", license: "Copyright status unclear" },
+    { bible_code: "synodal", abb_bible_name: "СП", full_bible_name: "Синодальный перевод", lang_code: "RU", license: "Public domain" },
+    { bible_code: "stritar", abb_bible_name: "Stritar", full_bible_name: "Novi testament in Psalmi Davidovi Josipa Stritarja (1882)", lang_code: "SL", license: "Public domain" },
+    { bible_code: "tpv", abb_bible_name: "TPV", full_bible_name: "Tikinčiųjų paveldo vertimas", lang_code: "LT", license: "CC BY-SA 4.0. © 2022–2024 Believers' Bible Society, Inc. https://creativecommons.org/licenses/by-sa/4.0/" },
+    { bible_code: "onpk", abb_bible_name: "ONPK", full_bible_name: "Biblica® Nádej pre každého, verejne dostupné", lang_code: "SK", license: "CC BY-SA 4.0. © 1993, 2023 Biblica, Inc. https://creativecommons.org/licenses/by-sa/4.0/" }
 ]
 
 async function seedLanguages() {
@@ -71,20 +139,41 @@ async function seedLanguages() {
 async function seedBibleVersions() {
     logger.warn(`Seeding bible versions...`)
 
-    for (const bible_version of BIBLE_VERSIONS ) {
+    for (const bible_version of BIBLE_VERSIONS) {
+        const langResult = await pg.query(
+            "rw",
+            `
+                SELECT id_lang
+                FROM languages 
+                WHERE lang_code = $1
+            `,
+            [
+                bible_version.lang_code
+            ]
+        )
+
+        const idLang = langResult.rows[0]?.id_lang
+
+        if (!idLang) {
+            logger.warn(`No language row for ${bible_version.lang_code}`)
+            continue
+        }
+
         await pg.query(
             "rw",
             `
-                INSERT INTO bible_text_versions (bible_code, abb_bible_name, full_bible_name, is_audio_available, id_lang) 
-                VALUES ($1, $2, $3, $4, $5)
-                ON CONFLICT (bible_code) DO NOTHING;
-            `, 
+                INSERT INTO bible_text_versions (bible_code, abb_bible_name, full_bible_name, is_audio_available, license, id_lang)
+                VALUES ($1, $2, $3, $4, $5, $6)
+                ON CONFLICT (bible_code) DO UPDATE
+                SET license = COALESCE(EXCLUDED.license, bible_text_versions.license);
+            `,
             [
                 bible_version.bible_code,
                 bible_version.abb_bible_name,
                 bible_version.full_bible_name,
-                bible_version.is_audio_available,
-                bible_version.id_lang
+                null,
+                bible_version.license || null,
+                idLang
             ]
         )
     }

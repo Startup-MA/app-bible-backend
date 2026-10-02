@@ -4,7 +4,6 @@ import {
 } from "./bookmark.schema.js"
 
 import { bibleBooksNames } from "../assets/bibleBooksNames.js"
-import { bibleVersions } from "../assets/bibleVersions.js"
 
 const updated_at = Joi.date()
     .iso()
