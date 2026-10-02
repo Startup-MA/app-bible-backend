@@ -17,9 +17,9 @@ paths:
                   properties: 
                     user_reading_history_json:
                       type: object
-                      description: All books reading history KJV, NIV.... (pay your attention that you must use version abbreviation + bible_id in the system like "KJV_1" or "NIV_2") 
+                      description: All books reading history KJV, NIV.... (pay your attention that you must use 'bible_code' of the version returned from the system "/sys/getAllBibleTextVersions") 
                       properties:
-                        KJV_1: 
+                        KJV: 
                           type: object
                           description: Book name (Genesis, Exodus, ....)
                           properties:
@@ -31,7 +31,7 @@ paths:
                                   type: string
                                   description: Verse
                                   example: 1
-                        NIV_2:
+                        NIV:
                           type: object
                           description: Book name (Genesis, Exodus, ....)
                           properties:
@@ -56,9 +56,9 @@ paths:
                   properties: 
                     new_user_reading_history_json:
                       type: object
-                      description: Update in reading history KJV, NIV.... (pay your attention that you must use version abbreviation + bible_id in the system like "KJV_1" or "NIV_2") 
+                      description: Update in reading history KJV, NIV.... (pay your attention that you must use 'bible_code' of the version returned from the system "/sys/getAllBibleTextVersions") 
                       properties:
-                        KJV_1: 
+                        KJV: 
                           type: object
                           description: Book name (Genesis, Exodus, ....)
                           properties:
@@ -70,7 +70,7 @@ paths:
                                   type: string
                                   description: Verse
                                   example: 30
-                        NIV_2:
+                        NIV:
                           type: object
                           description: Book name (Genesis, Exodus, ....)
                           properties:

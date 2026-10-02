@@ -44,7 +44,7 @@ const LANGUAGES = [
 ]
 
 const BIBLE_VERSIONS = [
-    {abb_bible_name: "KJV", full_bible_name: "King James Version", is_audio_available: true, id_lang: 28 }
+    {bible_code: "KJV", abb_bible_name: "KJV", full_bible_name: "King James Version", is_audio_available: true, id_lang: 28 }
 ]
 
 async function seedLanguages() {
@@ -75,11 +75,12 @@ async function seedBibleVersions() {
         await pg.query(
             "rw",
             `
-                INSERT INTO bible_text_versions (abb_bible_name, full_bible_name, is_audio_available, id_lang) 
-                VALUES ($1, $2, $3, $4)
-                ON CONFLICT (full_bible_name) DO NOTHING;
+                INSERT INTO bible_text_versions (bible_code, abb_bible_name, full_bible_name, is_audio_available, id_lang) 
+                VALUES ($1, $2, $3, $4, $5)
+                ON CONFLICT (bible_code) DO NOTHING;
             `, 
             [
+                bible_version.bible_code,
                 bible_version.abb_bible_name,
                 bible_version.full_bible_name,
                 bible_version.is_audio_available,

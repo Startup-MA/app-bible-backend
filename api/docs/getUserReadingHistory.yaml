@@ -29,7 +29,7 @@ paths:
                             history_json:
                               type: object
                               properties:
-                                KJV_1: 
+                                KJV: 
                                   type: object
                                   properties:
                                     Genesis:
@@ -38,7 +38,7 @@ paths:
                                         "1":
                                           type: string
                                           example: 1
-                                NIV_2:
+                                NIV:
                                   type: object
                                   properties:
                                     Exodus:

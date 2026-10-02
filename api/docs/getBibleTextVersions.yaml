@@ -31,6 +31,12 @@ paths:
                         id:
                           type: integer
                           example: 1
+                        code:
+                          type: string
+                          enum:
+                            - KJV
+                            - NIV
+                          example: KJV
                         name:
                           type: string
                           enum:

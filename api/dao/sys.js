@@ -23,6 +23,7 @@ async function getAllBibleTextVersions(start_id, number) {
         `
             SELECT
             id_bible_text_version AS id,
+            bible_code AS code,
             abb_bible_name AS name,
             full_bible_name AS full_name,
             is_audio_available AS is_audio,
@@ -50,6 +51,7 @@ async function getBibleTextVersions(language) {
         `
             SELECT
             id_bible_text_version AS id,
+            bible_code AS code,
             abb_bible_name AS name,
             full_bible_name AS full_name,
             is_audio_available AS is_audio,
