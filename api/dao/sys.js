@@ -29,6 +29,7 @@ async function getAllBibleTextVersions(start_id, number) {
             license,
             is_audio_available AS is_audio,
             lang_name,
+            lang_code,
             languages.id_lang AS lang_id
             FROM bible_text_versions
             LEFT JOIN
@@ -58,6 +59,7 @@ async function getBibleTextVersions(language) {
             license,
             is_audio_available AS is_audio,
             lang_name,
+            lang_code,
             languages.id_lang AS lang_id
             FROM bible_text_versions
             LEFT JOIN

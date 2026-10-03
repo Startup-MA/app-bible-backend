@@ -66,6 +66,9 @@ paths:
                         lang_name:
                           type: string
                           example: English
+                        lang_code:
+                          type: string
+                          example: EN
                         lang_id:
                           type: integer
                           description: Id of the bible language available in the system
