@@ -105,7 +105,7 @@ const BIBLE_VERSIONS = [
     { bible_code: "akjv", abb_bible_name: "AKJV", full_bible_name: "American King James Version", lang_code: "EN", license: "Copyright status unclear" },
     { bible_code: "bbe", abb_bible_name: "BBE", full_bible_name: "Bible in Basic English", lang_code: "EN", license: "Copyright status unclear" },
     { bible_code: "pr1933", abb_bible_name: "1933/38", full_bible_name: "Pyhä Raamattu (1933/1938)", lang_code: "FI", license: "Copyright status unclear" },
-    { bible_code: "eesti", abb_bible_name: "Eesti", full_bible_name: "Estonian", lang_code: "ET", license: "Copyright status unknown" },
+    { bible_code: "eesti", abb_bible_name: "Eesti", full_bible_name: "Estonian", lang_code: "ET", license: "Copyright status unclear" },
     { bible_code: "lvnt", abb_bible_name: "NT", full_bible_name: "Latvian New Testament", lang_code: "LV", license: "No license stated" },
     { bible_code: "krv1961", abb_bible_name: "개역한글", full_bible_name: "개역한글판 (1952/1961)", lang_code: "KO", license: "Copyright status unclear" },
     { bible_code: "almeida1911", abb_bible_name: "Almeida 1911", full_bible_name: "Almeida (1911)", lang_code: "PT", license: "Copyright status unclear" },

@@ -49,7 +49,26 @@ paths:
                         license:
                           type: string
                           nullable: true
-                          example: Public domain
+                          description: |
+                            License notice for this Bible text. Show it on a copyright screen for the version.
+                            `null` means no license was recorded for this edition.
+                            Served values fall into these types:
+                            - **Public domain.** No notice is required.
+                            - **CC BY 4.0.** Credit the copyright holder named in the string and link to the license. The wording may be changed.
+                            - **CC BY-SA 4.0.** Credit the copyright holder and link to the license. A changed text must stay under CC BY-SA 4.0. Biblica editions keep "Biblica" in the title while the text is unchanged, and that name must be removed if the wording is changed.
+                            - **CC BY-SA 3.0.** Same attribution and share-alike terms as CC BY-SA 4.0, under the 3.0 license.
+                            - **Copyright status unclear** or **No license stated.** The notice is incomplete, so the text is not marked as free to reuse.
+                            The enum shows one example of each form. A response may name a different copyright holder or year.
+                          enum:
+                            - null
+                            - Public domain
+                            - "CC BY 4.0. © 2018, 2019 AudioBiblia.org /Irma Flores https://creativecommons.org/licenses/by/4.0/"
+                            - "CC BY-SA 4.0. © 2018 Dr. Jonathan Gallagher https://creativecommons.org/licenses/by-sa/4.0/"
+                            - "CC BY-SA 4.0. © 1993, 2023 Biblica, Inc. https://creativecommons.org/licenses/by-sa/4.0/"
+                            - "CC BY-SA 3.0. https://creativecommons.org/licenses/by-sa/3.0/"
+                            - Copyright status unclear
+                            - No license stated
+                          example: "CC BY-SA 4.0. © 2018 Dr. Jonathan Gallagher https://creativecommons.org/licenses/by-sa/4.0/"
                         is_audio:
                           type: boolean
                           example: true
