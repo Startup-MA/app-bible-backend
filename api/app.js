@@ -21,9 +21,10 @@ import swaggerUi from "swagger-ui-express"
 
 const app = express()
 
-if (process.env.NODE_ENV !== "development") {
-    app.set("trust proxy", 1) // (Cloudflare) Inside Kubernetes Cluster when running behind nginx!!!
-}
+// One hop: nginx in front of the process. Deployed dev keeps NODE_ENV=development,
+// so this cannot follow NODE_ENV. Without it, express-rate-limit throws
+// ERR_ERL_UNEXPECTED_X_FORWARDED_FOR on every proxied request.
+app.set("trust proxy", 1)
 
 app.use(cors({
     origin: process.env.FRONT_URL, // Specify the allowed origin
