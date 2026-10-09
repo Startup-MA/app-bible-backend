@@ -10,18 +10,26 @@ paths:
           required: true
           schema:
             type: string
-            example: mobile
-          description: Type of a session (Only two are allowed "mobile" and "browser")
+            example: '{"device":"browser","returnTo":"/pricing"}'
+          description: Mobile sends the plain value "mobile" or "browser". The website sends a JSON string with device "browser" and returnTo, the page path the user came from, including query and hash. returnTo must start with a single "/". A browser session is sent back to that path after sign-in succeeds or the user cancels. Success falls back to /dashboard/profile. Cancellation falls back to /.
+        - in: query
+          name: error
+          required: false
+          schema:
+            type: string
+            example: access_denied
+          description: Set by Google when the user cancels or authorization fails. A browser session is redirected to returnTo. A mobile session receives JSON instead.
         - in: query
           name: code
-          required: true
+          required: false
           schema:
             type: string
             example: 4/0ATsMZqCN3qUivDzaa39tBIchD7y1hJoJlcJ7bPW198bbimG9AHkC3sjBJUGqX1hf4aFJzg
           description: Access code provided by Google.
       responses:
+
         200:
-          description: User verification was successful and a newly created session was set and sent in the headers field "Set-Cookie".
+          description: Mobile session. User verification was successful and a newly created session was set and sent in the headers field "Set-Cookie". A cancelled mobile authorization returns message "User cancelled authorization".
           content:
             application/json:
               schema:
@@ -33,6 +41,14 @@ paths:
                   message:
                     type: string
                     example: Logged in successfully
+        302:
+          description: Browser session only. The Location path is returnTo from state. Sign-in success falls back to /dashboard/profile. Cancellation falls back to /. A mobile session receives 200 instead.
+          headers:
+            Location:
+              schema:
+                type: string
+                example: https://app-bible.com/pricing
+              description: "{FRONT_URL}{returnTo}"
         400:
           description: Validation for the given input did not passed (Unprocessible format of the entity).
           content:

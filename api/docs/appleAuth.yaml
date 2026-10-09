@@ -23,6 +23,10 @@ paths:
                       type: string
                       example: ios or web
                       description: Where authentication is performed (like in web for Android or Browser. Or it's in the app, which is native for ios).
+                    returnTo:
+                      type: string
+                      example: /pricing
+                      description: Optional path on the website, including query and hash. A browser session is sent back to this path after sign-in succeeds, the user cancels, or Apple did not share an email. It must start with a single "/" and stay on this site. Hidden email verification ignores it and still redirects to /verifyEmail/{uuid}. Mobile sessions ignore it.
                   required:
                     - device
                     - platform
@@ -33,14 +37,16 @@ paths:
                 id_token:
                   type: string
                   example: Bearer token
-                  description: JWT token provided by Apple.
+                  description: JWT token provided by Apple. Omitted when Apple sends error.
+                error:
+                  type: string
+                  example: user_cancelled_authorize
+                  description: Set by Apple when the user cancels the authorization. code and id_token are then omitted.
               required:
                 - state
-                - code
-                - id_token
       responses:
         200:
-          description: Two answers are possible. New session in Set-Cookie (if user has public access email). Or an answer with a message "Email verification required" with uuid param (Interface flow for this case is neccessery).
+          description: Mobile session. A new session is returned in Set-Cookie when the email is public. A hidden email returns "Email verification required" and a uuid. If the user cancels (error is user_cancelled_authorize), the message is "User cancelled authorization" and no session is created. A browser session is redirected instead of receiving this body.
           content:
             application/json:
               schema:
@@ -60,8 +66,16 @@ paths:
                         format: uuid
                         example: 89392837-edf0-4683-ab2b-87861220a366
                         description: It allows backend to understand who you are (so you don't need to provide "code", "id_token" and "state" every time). Save it you will use during the "Hidden Email Apple Auth Flow".
+        302:
+          description: Browser session only. The Location path is returnTo from state. Sign-in success falls back to /dashboard/profile. Cancellation (error is user_cancelled_authorize) falls back to /. A missing Apple email also falls back to /. Hidden email verification does not use returnTo and redirects to /verifyEmail/{uuid}. Mobile sessions are not redirected.
+          headers:
+            Location:
+              schema:
+                type: string
+                example: https://app-bible.com/pricing
+              description: "{FRONT_URL}{returnTo}"
         409:
-          description: Problems with id_token, usually with it's headers or public keys that were used.
+          description: Problems with id_token, usually with its headers or public keys. A mobile session also gets this status when Apple did not send an email and none was saved. The message is then "Apple email is unavailable". Apple sends that email only on the first authorization for this client, and there is no API that asks Apple to send it again. The user must open https://appleid.apple.com, go to Sign in with Apple, stop using Apple ID for this app, and sign in again. A browser session is redirected (302) instead of receiving this body.
           content:
             application/json:
               schema:
@@ -72,7 +86,8 @@ paths:
                     example: error
                   message:
                     type: string
-                    example: Invalid Apple id_token header
+                    example: Apple email is unavailable
+                    description: Returned for a mobile session when Apple sent no email and none was saved. Token verification still returns "Invalid Apple id_token header".
         500:
           description: If internal server error occurs.
           content:

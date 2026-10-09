@@ -6,6 +6,10 @@ import redisClient from "../connections/redis.js"
 import { logger } from "../utils/logger.js"
 import AppError from "../errors/AppError.js"
 import { clearCacheFields } from "../utils/clearCacheFields.js"
+import { redirectToAndroidApple } from "../utils/redirectToAndroidApple.js"
+import { rememberAppleEmail } from "../utils/rememberAppleEmail.js"
+import { browserAppleReturnPath } from "../utils/browserAppleReturnPath.js"
+import { readGoogleAuthState } from "../utils/readGoogleAuthState.js"
 
 const { Cache } = redisClient
 
@@ -42,10 +46,21 @@ async function login(req, res, next) {
 }
 
 async function googleAuth(req, res, next) {
-    const { code } = req.query
-    const device = req.query.state
+    const { code, error } = req.query
+    const { device, returnTo } = readGoogleAuthState(req.query.state)
 
     logger.info(`Logging a user using Google Auth Service from device: ${device}`)
+
+    if (error) {
+        if (device === "browser") {
+            return res.redirect(`${process.env.FRONT_URL}${browserAppleReturnPath(returnTo, "/")}`)
+        }
+
+        return res.status(StatusCodes.OK).json({
+            status: "success",
+            message: "User cancelled authorization"
+        })
+    }
 
     const userTokens = await authService.exchangeCodeForTokens(code)
 
@@ -134,7 +149,7 @@ async function googleAuth(req, res, next) {
             }
             
             if (device === "browser") {
-                return res.redirect(`${process.env.FRONT_URL}/dashboard/profile`)
+                return res.redirect(`${process.env.FRONT_URL}${browserAppleReturnPath(returnTo, "/dashboard/profile")}`)
             }
             
             return res
@@ -149,10 +164,21 @@ async function googleAuth(req, res, next) {
 }
 
 async function appleAuth(req, res, next) {
-    const { code, id_token } = req.body
-    const { device, platform } = JSON.parse(req.body.state)
+    const { code, id_token, error } = req.body
+    const { device, platform, returnTo } = JSON.parse(req.body.state)
 
     logger.info(`Logging a user using Apple Auth Service from device: ${device} platform: ${platform}`)
+
+    if (error) {
+        if (error === "user_cancelled_authorize") {
+            return device === "browser" ?
+                res.redirect(`${process.env.FRONT_URL}${browserAppleReturnPath(returnTo, "/")}`) :
+                res.status(StatusCodes.OK).json({
+                    status: "success",
+                    message: "User cancelled authorization"
+                })
+        }
+    }
 
     const decodedToken = await authService.extractUserInfoFromAppleToken(
         id_token,
@@ -160,6 +186,15 @@ async function appleAuth(req, res, next) {
     )
     
     const userData = await authService.verifyUserByAppleSubOrEmail(decodedToken, code, platform)
+    
+    if (userData === "Apple email is unavailable") {
+        return device === "browser" ? 
+        res.redirect(`${process.env.FRONT_URL}${browserAppleReturnPath(returnTo, "/")}`) : 
+        res.status(StatusCodes.CONFLICT).json({
+            status: "error",
+            message: "Apple email is unavailable"
+        })
+    }
 
     if (!userData.data.length) {
         const pendingId = randomUUID()
@@ -232,7 +267,6 @@ async function appleAuth(req, res, next) {
             })
         }
 
-
         req.session.user = {
             id: userData.data[0]["id_user"],
             device: device,
@@ -270,7 +304,7 @@ async function appleAuth(req, res, next) {
             }
             
             if (device === "browser") {
-                return res.redirect(`${process.env.FRONT_URL}/dashboard/profile`)
+                return res.redirect(`${process.env.FRONT_URL}${browserAppleReturnPath(returnTo, "/dashboard/profile")}`)
             }
             
             return res
@@ -281,6 +315,48 @@ async function appleAuth(req, res, next) {
                     message: userData.message
                 })
         })
+    })
+}
+
+async function appleCallback(req, res) {
+    const { code, id_token, state, error } = req.body
+
+    logger.info("Apple Android callback")
+
+    if (error) {
+        return redirectToAndroidApple(res, {
+            error: error === "user_cancelled_authorize" ? "cancelled" : "access_denied"
+        })
+    }
+
+    if (!code || !id_token) {
+        return redirectToAndroidApple(res, { error: "missing_token" })
+    }
+
+    const decodedToken = await authService.extractUserInfoFromAppleToken(
+        id_token,
+        process.env.APPLE_SERVICE_ID
+    ).catch(err => {
+        logger.error("Apple Android callback rejected the id_token")
+        logger.error("", { stack: err.stack })
+        if (err instanceof AppError) throw err
+        return null
+    })
+
+    if (!decodedToken) {
+        return redirectToAndroidApple(res, { error: "invalid_token" })
+    }
+
+    const email = decodedToken.data.email
+
+    if (typeof email === "string" && email.includes("@")) {
+        await rememberAppleEmail(decodedToken.data.sub, email)
+    }
+
+    return redirectToAndroidApple(res, {
+        code: code,
+        id_token: id_token,
+        state: state
     })
 }
 
@@ -674,6 +750,7 @@ export default {
     login: login,
     googleAuth: googleAuth,
     appleAuth: appleAuth,
+    appleCallback: appleCallback,
     hiddenEmailVerify: hiddenEmailVerify,
     hiddenEmailCodeVerify: hiddenEmailCodeVerify,
     hiddenEmailCodeReset: hiddenEmailCodeReset,

@@ -1,0 +1,62 @@
+.apple-email-unavailable {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 80vh;
+    padding-left: 4em;
+    padding-right: 4em;
+    text-align: center;
+    background-color: white;
+    color: #868686;
+}
+
+.apple-email-unavailable h1 {
+    font-weight: 400;
+    color: black;
+}
+
+.apple-email-unavailable p,
+.apple-email-unavailable ol {
+    max-width: 520px;
+    line-height: 1.5;
+}
+
+.apple-email-unavailable ol {
+    text-align: left;
+    padding-left: 1.2em;
+}
+
+.apple-email-unavailable-account,
+.apple-email-unavailable-home {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 400px;
+    height: 55px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background-color: black;
+    color: white;
+    font-size: 1.1em;
+    font-family: "Inria Serif", serif;
+    text-decoration: none;
+    box-sizing: border-box;
+    margin-bottom: 1em;
+}
+
+.apple-email-unavailable-home {
+    background-color: transparent;
+    border-color: black;
+    color: black;
+}
+
+@media screen and (max-width: 600px) {
+    .apple-email-unavailable {
+        padding-left: 2em;
+        padding-right: 2em;
+    }
+}

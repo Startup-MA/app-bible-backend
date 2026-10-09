@@ -1,8 +1,12 @@
+import { useLocation } from "react-router"
 import Apple from "../assets/Apple.svg"
 
 function AppleButton() {
+    const location = useLocation()
+
     const handleAppleLogin = () => {
         const appleAuthUrl = "https://appleid.apple.com/auth/authorize"
+        const returnTo = `${location.pathname}${location.search}${location.hash}`
 
         const options = {
             client_id: process.env.REACT_APP_APPLE_SERVICE_ID,
@@ -12,7 +16,8 @@ function AppleButton() {
             response_mode: "form_post",
             state: JSON.stringify({
                 device: "browser",
-                platform: "web"
+                platform: "web",
+                returnTo: returnTo
             })
         }
 

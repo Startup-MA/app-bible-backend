@@ -1,0 +1,66 @@
+paths:
+  /api/auth/apple/callback:
+    post:
+      tags:
+        - Auth
+      summary: Android Sign in with Apple return address. Apple posts the browser here. The response is a 303 to an Android intent, which opens the app. The app then calls /api/auth/apple.
+      description: |
+        Register this URL as the redirect URI for the Apple Services ID used by Android.
+        Set ANDROID_PACKAGE_NAME to the application id, for example com.scripture.reader.dev.
+        A successful redirect is:
+        `intent://callback?code=...&id_token=...&state=...#Intent;package=com.scripture.reader.dev;scheme=signinwithapple;end`
+        A failed redirect uses the same intent with `error` set to `invalid_token`, `missing_token`, `cancelled`, `access_denied`. Example: `intent://callback?error=invalid_token#Intent;package=com.scripture.reader.dev;scheme=signinwithapple;end`.
+        The email Apple sends only on the first authorization is stored for 30 days under the Apple user id, so a later call to /api/auth/apple can still create the account.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: Authorization code from Apple.
+                id_token:
+                  type: string
+                  description: Identity token from Apple.
+                state:
+                  type: string
+                  description: The state value the app sent to Apple. Passed back unchanged.
+                error:
+                  type: string
+                  description: Set by Apple when the user cancels or the authorization fails.
+      responses:
+        303:
+          description: Open the Android app. `error` is present when sign-in did not succeed. Otherwise `code`, `id_token`, and `state` are present.
+          headers:
+            Location:
+              schema:
+                type: string
+              description: Android intent URL with scheme signinwithapple.
+        409:
+          description: The id_token could not be verified. The header is invalid, or Apple's public keys do not contain a matching key.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Invalid Apple id_token header
+        500:
+          description: ANDROID_PACKAGE_NAME is missing, so the app cannot be opened.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Something went wrong!

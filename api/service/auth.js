@@ -8,8 +8,9 @@ import { randomUUID } from "crypto"
 import { decodeIdToken } from "../utils/decodeIdToken.js"
 import { verifyAppleIdToken } from "../utils/verifyAppleIdToken.js"
 import { logger } from "../utils/logger.js"
+import { forgetAppleEmail } from "../utils/forgetAppleEmail.js"
 
-const { TasksQueue } = redisClient
+const { TasksQueue, Cache } = redisClient
 
 async function register(email, password) {
     const userData = await userDAO.findUserByEmail(email)
@@ -161,8 +162,17 @@ async function extractUserInfoFromAppleToken(id_token, client_id) {
 async function verifyUserByAppleSubOrEmail(decodedToken, code, platform) {
     let userData = await userDAO.findUserByAppleSub(decodedToken.data.sub)
 
+    if (!decodedToken.data.email) {
+        const savedEmail = await Cache.get(`apple_email:${decodedToken.data.sub}`).catch(err => {
+            logger.error("[Redis Cache] Error reading saved Apple email")
+            throw err
+        })
+
+        if (savedEmail) decodedToken.data.email = savedEmail
+    }
+
     if (userData.length) {
-        if (!decodedToken.data.email.endsWith("@privaterelay.appleid.com") && userData[0].email !== decodedToken.data.email) {
+        if (decodedToken.data.email && !decodedToken.data.email.endsWith("@privaterelay.appleid.com") && userData[0].email !== decodedToken.data.email) {
             await taskQueue.publish(
                 TasksQueue,
                 process.env.TASKS_STREAM_NAME,
@@ -175,12 +185,16 @@ async function verifyUserByAppleSubOrEmail(decodedToken, code, platform) {
                 logger.error("[Redis taskQueue] Error during publishing task to the queue")
                 throw err
             })
+
+            await forgetAppleEmail(decodedToken.data.sub)
         }
 
         return {
             message: "Logged in successfully",
             data: userData
         }
+    } else if (!decodedToken.data.email) {
+        return "Apple email is unavailable"
     } else if (decodedToken.data.email.endsWith("@privaterelay.appleid.com")) {
         return {
             message: "Email verification required",
@@ -209,6 +223,8 @@ async function verifyUserByAppleSubOrEmail(decodedToken, code, platform) {
             throw err
         })
 
+        await forgetAppleEmail(decodedToken.data.sub)
+
         return {
             message: "Logged in successfully",
             data: userData
@@ -216,6 +232,8 @@ async function verifyUserByAppleSubOrEmail(decodedToken, code, platform) {
     }
     
     userData = await userDAO.registerNewUser(decodedToken.data.email, "apple", decodedToken.data.sub, refresh_token, false, platform)
+
+    await forgetAppleEmail(decodedToken.data.sub)
 
     return {
         message: "Logged in successfully",
@@ -290,6 +308,8 @@ async function verifyUserByEmailAndCode(email, verCode, decodedToken, code, plat
             throw err
         })
 
+        await forgetAppleEmail(decodedToken.data.sub)
+
         return {
             message: "Logged in successfully",
             data: userData
@@ -297,6 +317,8 @@ async function verifyUserByEmailAndCode(email, verCode, decodedToken, code, plat
     }
 
     userData = await userDAO.registerNewUser(email, "apple", decodedToken.data.sub, refresh_token, true, platform)
+
+    await forgetAppleEmail(decodedToken.data.sub)
 
     return {
         message: "Logged in successfully",

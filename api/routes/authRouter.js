@@ -51,6 +51,11 @@ authRouter.post("/apple",
     authController.appleAuth
 )
 
+authRouter.post("/apple/callback",
+    publicAppleAuthRateLimiter,
+    authController.appleCallback
+)
+
 authRouter.post("/hiddenEmailVerify/:uuid",
     publicHiddenEmailVerifyRateLimiter,
     validate(verifyUserUUIDSchema, "params"),

@@ -10,6 +10,7 @@ import Billing from "./pages/Billing.js"
 import Tickets from "./pages/Tickets.js"
 import NotFound from "./pages/NotFound.js"
 import VerifyEmailPage from "./pages/VerifyEmailPage.js"
+import AppleEmailUnavailable from "./pages/AppleEmailUnavailable.js"
 import Versions from "./pages/Versions.js"
 
 import App from "./App"
@@ -32,6 +33,7 @@ root.render(
                     <Route path="/pricing" element={<Pricing/>}/>
                     <Route path="/contact" element={<Contact/>}/>
                     <Route path="/verifyEmail/:uuid" element={<VerifyEmailPage/>}/>
+                    <Route path="/apple-email-unavailable" element={<AppleEmailUnavailable/>}/>
                     <Route path="/reset/:uuid" element={<ResetPage/>}/>
                 </Routes>                
             </BrowserRouter>

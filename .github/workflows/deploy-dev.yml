@@ -167,6 +167,7 @@ jobs:
             APPLE_SERVICE_ID=${{ secrets.APPLE_SERVICE_ID_DEV }}
             APPLE_PRIVATE_KEY="${{ secrets.APPLE_PRIVATE_KEY_DEV }}"
             APPLE_APP_ID=${{ secrets.APPLE_APP_ID_DEV }}
+            ANDROID_PACKAGE_NAME=com.scripture.reader.dev
             EOF
             
             # # EMPEROR-CONSUMER envs
