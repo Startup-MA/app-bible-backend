@@ -165,7 +165,27 @@ async function googleAuth(req, res, next) {
 
 async function appleAuth(req, res, next) {
     const { code, id_token, error } = req.body
-    const { device, platform, returnTo } = JSON.parse(req.body.state)
+    let state = req.body.state
+
+    if (typeof state === "string") {
+        try {
+            state = JSON.parse(state)
+        } catch (err) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                status: "error",
+                message: "State is invalid JSON"
+            })
+        }
+    }
+
+    if (!state || typeof state !== "object" || Array.isArray(state)) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            status: "error",
+            message: "State is invalid JSON"
+        })
+    }
+
+    const { device, platform, returnTo } = state
 
     logger.info(`Logging a user using Apple Auth Service from device: ${device} platform: ${platform}`)
 
@@ -200,7 +220,7 @@ async function appleAuth(req, res, next) {
         const pendingId = randomUUID()
 
         const pendingUserData = {
-            code: code,
+            appleCode: code,
             decodedToken: decodedToken,
             device: device,
             platform: platform
@@ -373,7 +393,7 @@ async function hiddenEmailVerify(req, res, next) {
 
     const pendingUserData = JSON.parse(rawData) 
     
-    const { code, decodedToken, device, platform } = pendingUserData
+    const { decodedToken, device, platform } = pendingUserData
     
     logger.info(`Verifying user email hidden in Apple Auth Service from device: ${device} platform: ${platform}`)
 
@@ -481,7 +501,7 @@ async function hiddenEmailVerify(req, res, next) {
 
 async function hiddenEmailCodeVerify(req, res, next) {
     const { uuid } = req.params
-    const { email, verCode } = req.body
+    const { email, code } = req.body
     
     const rawData = await Cache.get(`pending_signup:${uuid}`).catch(err => {
         logger.error("[Redis Cache] Error extracting user pending data from cache by uuid")
@@ -492,11 +512,11 @@ async function hiddenEmailCodeVerify(req, res, next) {
     
     const pendingUserData = JSON.parse(rawData)
 
-    const { code, decodedToken, device, platform } = pendingUserData
+    const { appleCode, decodedToken, device, platform } = pendingUserData
 
     logger.info(`Verifying user code for hidden email in Apple Auth Service from device: ${device} platform: ${platform}`)
 
-    const userData = await authService.verifyUserByEmailAndCode(email, verCode, decodedToken, code, platform)
+    const userData = await authService.verifyUserByEmailAndCode(email, code, decodedToken, appleCode, platform)
     
     await Cache.del(`pending_signup:${uuid}`).catch(err => {
         logger.error(`[Redis Cache] Error deleting pending user signup data`)

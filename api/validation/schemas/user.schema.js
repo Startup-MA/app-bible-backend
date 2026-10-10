@@ -96,5 +96,5 @@ export const userHiddenEmailVerifySchema = Joi.object({
 
 export const userHiddenEmailVerifyCodeSchema = Joi.object({
     email: emailSchema,
-    verCode: code
+    code: code
 })
