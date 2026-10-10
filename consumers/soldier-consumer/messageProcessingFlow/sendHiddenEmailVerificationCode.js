@@ -3,7 +3,7 @@ import taskQueue from "../utils/redisQueryEngine.js"
 import redisClient from "../connections/redis.js"
 import userDAO from "../dao/user.js"
 import { logger } from "../utils/logger.js"
-import { getHiddenEmailVerificationCodeEmail } from "../emailForms/getHiddenEmailVerificationCodeEmail.js"
+import { getVerificationCodeEmail } from  "../emailForms/getVerificationCodeEmail.js"
 
 const { Mailer } = redisClient
 
@@ -30,7 +30,7 @@ async function sendHiddenEmailVerificationCode(message) {
                 message["message"]["email"].split(/\+test\d+/).join("") : 
                 message["message"]["email"],
             subject: "The Bible Authenticatione",
-            html: getHiddenEmailVerificationCodeEmail(newCode[0].code, 30, process.env.FRONT_URL)
+            html: getVerificationCodeEmail(newCode[0].code, 30, process.env.FRONT_URL)
         }
     ).catch(err => {
         logger.error("[Redis Mailer] Error sending hidden email verification code")
