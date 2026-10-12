@@ -1,5 +1,5 @@
 paths:
-  /api/sys/getUserTopics:
+  /api/user/getUserTopics:
     get:
       tags:
         - User (Requires "Mobile" authentication)
