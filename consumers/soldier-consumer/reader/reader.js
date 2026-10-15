@@ -81,7 +81,7 @@ async function reader() {
     logger.error(
         `
             ---------------------------------------------------------------------------------------
-                Error during message processing | id: ${pendOrRegMess[0]["messages"][0].id} | flow type: ${pendOrRegMess[0]["messages"][0].message.processingFlowType}
+                Error during message processing | id: ${pendOrRegMess && pendOrRegMess[0]["messages"][0].id} | flow type: ${pendOrRegMess && pendOrRegMess[0]["messages"][0].message.processingFlowType}
             ---------------------------------------------------------------------------------------
                 Error stack: ${err.stack} 
             ---------------------------------------------------------------------------------------

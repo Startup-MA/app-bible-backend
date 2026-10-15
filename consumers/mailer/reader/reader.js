@@ -81,7 +81,7 @@ export async function readPendings() {
     logger.error(
         `
             ---------------------------------------------------------------------------------------
-                Error during message processing | id: ${pendOrRegMess[0]["messages"][0].id} | reason: ${pendOrRegMess[0]["messages"][0].message.reason}
+                Error during message processing | id: ${pendOrRegMess && pendOrRegMess[0]["messages"][0].id} | reason: ${pendOrRegMess && pendOrRegMess[0]["messages"][0].message.reason}
             ---------------------------------------------------------------------------------------
                 Error stack: ${err.stack} 
             ---------------------------------------------------------------------------------------
