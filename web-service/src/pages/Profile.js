@@ -382,11 +382,11 @@ function Profile() {
 
     return (
         <>
-            <PersonalInfo isOpen={isPersonalInfo} onClose={() => setIsPersonalInfo(false)} />
+            <PersonalInfo isOpen={isPersonalInfo} setIsLogin={setIsLogin} setIsUserLoggedIn={setIsUserLoggedIn} onClose={() => setIsPersonalInfo(false)} />
             <Reset isOpen={isReset} onClose={() => setIsReset(false)}/>
             <SignUp isOpen={isSignUp} setIsSignUp={setIsSignUp} setIsLogin={setIsLogin} onClose={() => setIsSignUp(false)}/>
             <Login isOpen={isLogin} setIsLogin={setIsLogin} setIsSignUp={setIsSignUp} setIsReset={setIsReset} onClose={() => setIsLogin(false)}/>
-            <PopUp isOpen={isPopUp} onClose={() => setIsPopUp(false)} actionHandler={handlePopUpAction} title={"Delete Account"} content={`Deleting your account will cancel all active subscriptions and permanently erase your data. This action cannot be undone. \n\n Are you sure you want to proceed?`}/>
+            <PopUp isOpen={isPopUp} onClose={() => setIsPopUp(false)} actionHandler={handlePopUpAction} title={"Delete Account"} content={userData && userData.billing_provider === "google" ? `Deleting your account permanently erases your data. Your Google Play subscription will keep renewing until you cancel it in the Play Store. This action cannot be undone. \n\n Are you sure you want to proceed?` : `Deleting your account will cancel all active subscriptions and permanently erase your data. This action cannot be undone. \n\n Are you sure you want to proceed?`}/>
             <Header isAdmin={isAdmin} isUserLoggedIn={isUserLoggedIn} hideElement={"signin"} setIsSignUp={setIsSignUp} setIsLogin={setIsLogin}/>
             {isError ? (
                 <Error message={error} cancelMessage={setIsError}/>

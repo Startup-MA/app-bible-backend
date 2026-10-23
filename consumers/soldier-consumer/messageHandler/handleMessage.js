@@ -10,6 +10,7 @@ import sendResetPasswordLink from "../messageProcessingFlow/sendResetPasswordLin
 import createNewPassword from "../messageProcessingFlow/createNewPassword.js"
 import addNewCustomer from "../messageProcessingFlow/addNewCustomer.js"
 import updateCustomer from "../messageProcessingFlow/updateCustomer.js"
+import upsertGoogleSubscription from "../messageProcessingFlow/upsertGoogleSubscription.js"
 import registerNewUser from "../messageProcessingFlow/registerNewUser.js"
 import sendNewVerificationCode from "../messageProcessingFlow/sendNewVerificationCode.js"
 import deleteUserVerificationCode from "../messageProcessingFlow/deleteUserVerificationCode.js"
@@ -85,6 +86,9 @@ async function messageHandler(message) {
             break
         case "updateCustomer":
             await updateCustomer(message)
+            break
+        case "upsertGoogleSubscription":
+            await upsertGoogleSubscription(message)
             break
         case "createTicket":
             await createTicket(message)

@@ -13,6 +13,7 @@ import AppError from "../errors/AppError.js"
 import ApiGateway from "../outboundAPI/ApiGateway.js"
 import { logger } from "../utils/logger.js"
 import { clearUserSession } from "../utils/clearUserSession.js"
+import { hasPremiumAccess } from "../utils/hasPremiumAccess.js"
 
 const { TasksQueue } = redisClient
 
@@ -29,29 +30,31 @@ async function deleteAccount(id_user) {
     const customerInfo = await customerDAO.getAllCustomerInfoById(id_user)
     let paddleUserInfo = null
 
-    if (!customerInfo[0].customer_id) {
-        paddleUserInfo = await ApiGateway.paddle.getCustomerByEmail(customerInfo[0].email)
-    }
+    if (customerInfo[0].billing_provider !== "google") {
+        if (!customerInfo[0].customer_id) {
+            paddleUserInfo = await ApiGateway.paddle.getCustomerByEmail(customerInfo[0].email)
+        }
 
-    if (customerInfo[0].customer_id || paddleUserInfo.data.length) {
-        await ApiGateway.paddle.cancelCustomerActiveSubscriptions(
-            customerInfo[0].customer_id ? 
-            customerInfo[0].customer_id :
-            paddleUserInfo.data[0].id
-        )
+        if (customerInfo[0].customer_id || paddleUserInfo.data.length) {
+            await ApiGateway.paddle.cancelCustomerActiveSubscriptions(
+                customerInfo[0].customer_id ? 
+                customerInfo[0].customer_id :
+                paddleUserInfo.data[0].id
+            )
 
-        await ApiGateway.paddle.archiveCustomerAddresses(
-            customerInfo[0].customer_id ?
-            customerInfo[0].customer_id :
-            paddleUserInfo.data[0].id
-        )
+            await ApiGateway.paddle.archiveCustomerAddresses(
+                customerInfo[0].customer_id ?
+                customerInfo[0].customer_id :
+                paddleUserInfo.data[0].id
+            )
 
-        await ApiGateway.paddle.archiveCustomer(
-            customerInfo[0].customer_id ?
-            customerInfo[0].customer_id :
-            paddleUserInfo.data[0].id,
-            customerInfo[0].entity_uuid
-        )
+            await ApiGateway.paddle.archiveCustomer(
+                customerInfo[0].customer_id ?
+                customerInfo[0].customer_id :
+                paddleUserInfo.data[0].id,
+                customerInfo[0].entity_uuid
+            )
+        }
     }
 
     await clearUserSession(id_user)
@@ -103,13 +106,7 @@ async function updateProfile(id_user, updatedProfileData) {
 async function createOrUpdateUserTopics(id_user, userTopics) {
     const customerInfo = await customerDAO.getAllCustomerInfoById(id_user)
 
-    if (!((customerInfo[0].subscription_tier === "Advanced" &&
-        customerInfo[0].subscription_status === "active") || 
-        (customerInfo[0].subscription_tier === "Premium" &&
-        customerInfo[0].subscription_status === "active") || 
-        (customerInfo[0].subscription_tier === "Premium" &&
-        customerInfo[0].subscription_status === "trialing"))) {
-
+    if (!hasPremiumAccess(customerInfo)) {
         throw AppError.conflict("Not allowed to access. User doesn't have enough rights or an active subscription.")
     }
 
@@ -130,13 +127,7 @@ async function createOrUpdateUserTopics(id_user, userTopics) {
 async function getUserTopics(id_user) {
     const customerInfo = await customerDAO.getAllCustomerInfoById(id_user)
 
-    if (!((customerInfo[0].subscription_tier === "Advanced" &&
-        customerInfo[0].subscription_status === "active") || 
-        (customerInfo[0].subscription_tier === "Premium" &&
-        customerInfo[0].subscription_status === "active") || 
-        (customerInfo[0].subscription_tier === "Premium" &&
-        customerInfo[0].subscription_status === "trialing"))) {
-
+    if (!hasPremiumAccess(customerInfo)) {
         throw AppError.conflict("Not allowed to access. User doesn't have enough rights or an active subscription.")
     }
 
@@ -150,13 +141,7 @@ async function getUserTopics(id_user) {
 async function generateDailyVersePrayer(id_user, userLanguage) {
     const customerInfo = await customerDAO.getAllCustomerInfoById(id_user)
 
-    if (!((customerInfo[0].subscription_tier === "Advanced" &&
-        customerInfo[0].subscription_status === "active") || 
-        (customerInfo[0].subscription_tier === "Premium" &&
-        customerInfo[0].subscription_status === "active") || 
-        (customerInfo[0].subscription_tier === "Premium" &&
-        customerInfo[0].subscription_status === "trialing"))) {
-
+    if (!hasPremiumAccess(customerInfo)) {
         throw AppError.conflict("Not allowed to access. User doesn't have enough rights or an active subscription.")
     }
 
@@ -210,13 +195,7 @@ async function generateDailyVersePrayer(id_user, userLanguage) {
 async function getUserDailyVersePrayer(id_user) {
     const customerInfo = await customerDAO.getAllCustomerInfoById(id_user)
 
-    if (!((customerInfo[0].subscription_tier === "Advanced" &&
-        customerInfo[0].subscription_status === "active") || 
-        (customerInfo[0].subscription_tier === "Premium" &&
-        customerInfo[0].subscription_status === "active") || 
-        (customerInfo[0].subscription_tier === "Premium" &&
-        customerInfo[0].subscription_status === "trialing"))) {
-
+    if (!hasPremiumAccess(customerInfo)) {
         throw AppError.conflict("Not allowed to access. User doesn't have enough rights or an active subscription.")
     }
 
@@ -242,13 +221,7 @@ async function getUserDailyVersePrayer(id_user) {
 async function getUserDailyPrayerTranslation(id_user, language) {
     const customerInfo = await customerDAO.getAllCustomerInfoById(id_user)
 
-    if (!((customerInfo[0].subscription_tier === "Advanced" &&
-        customerInfo[0].subscription_status === "active") || 
-        (customerInfo[0].subscription_tier === "Premium" &&
-        customerInfo[0].subscription_status === "active") || 
-        (customerInfo[0].subscription_tier === "Premium" &&
-        customerInfo[0].subscription_status === "trialing"))) {
-
+    if (!hasPremiumAccess(customerInfo)) {
         throw AppError.conflict("Not allowed to access. User doesn't have enough rights or an active subscription.")
     }
 

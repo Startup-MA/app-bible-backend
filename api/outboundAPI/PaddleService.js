@@ -234,6 +234,16 @@ class PaddleService extends BaseApiClient {
         })
     }
 
+    cancelSubscriptionImmediately(subscription_id) {
+        return this.request({
+            method: "POST",
+            url: `/subscriptions/${subscription_id}/cancel`,
+            data: {
+                effective_from: "immediately"
+            }
+        })
+    }
+
     cancelScheduledCancel(subscription_id) {
         return this.request({
             method: "PATCH",

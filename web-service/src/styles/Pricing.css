@@ -111,6 +111,20 @@
 }
 
 .premium .features div {
+    margin-bottom: 1.5em;
+}
+
+.premium .features p {
+    font-size: 1.4em;
+    font-weight: 400;
+    margin: 0;
+}
+
+.premium .features img {
+    width: 150px;
+}
+
+.premium .features {
     display: flex;
     flex-direction: column;
     align-items: center;

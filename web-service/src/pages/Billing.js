@@ -370,7 +370,7 @@ function Billing() {
 
     return (
         <>    
-            <PersonalInfo isOpen={isPersonalInfo} onClose={() => setIsPersonalInfo(false)} />
+            <PersonalInfo isOpen={isPersonalInfo} setIsLogin={setIsLogin} setIsUserLoggedIn={setIsUserLoggedIn} onClose={() => setIsPersonalInfo(false)} />
             <Reset isOpen={isReset} onClose={() => setIsReset(false)}/>
             <SignUp isOpen={isSignUp} setIsSignUp={setIsSignUp} setIsLogin={setIsLogin} onClose={() => setIsSignUp(false)}/>
             <Login isOpen={isLogin} setIsLogin={setIsLogin} setIsSignUp={setIsSignUp} setIsReset={setIsReset} onClose={() => setIsLogin(false)}/>
@@ -401,6 +401,32 @@ function Billing() {
                             </div>
                             {isNoSubscription ? (
                                 <NoProducts />
+                            ) : subscriptionData.billing_provider === "google" ? (
+                                <div className="billing-section billing-plan">
+                                    <div className="plan-info">
+                                        <div>
+                                            <h1>{subscriptionData.items[0].product.name}</h1>
+                                            <div>
+                                                <p>{subscriptionData.billing_cycle.interval === "year" ? "Yearly" : "Monthly"}</p>
+                                                <p>Google Play</p>
+                                            </div>
+                                        </div>
+                                        <div className="billing-warning">
+                                            <p>This subscription is managed in Google Play. Change or cancel it in the Play Store.</p>
+                                            <p><a href={subscriptionData.manage_url} target="_blank" rel="noopener noreferrer">Open Google Play subscriptions</a></p>
+                                            {subscriptionData.next_billed_at ? (
+                                                <p>Renews on <u>{datePrettify(subscriptionData.next_billed_at)}</u></p>
+                                            ) : (
+                                                <></>
+                                            )}
+                                            {subscriptionData.scheduled_change ? (
+                                                <p>It is set to end on <u>{datePrettify(subscriptionData.scheduled_change.effective_at)}</u></p>
+                                            ) : (
+                                                <></>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
                             ) : (
                                 <>
                                     {isScheduledChange ? (

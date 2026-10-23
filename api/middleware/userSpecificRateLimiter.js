@@ -661,6 +661,22 @@ export const userGetUpdatePaymentMethodTransactionRateLimiter = rateLimit({
     keyGenerator: (req, res) => req.session.user.id
 })
 
+export const userGooglePurchaseRateLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    limit: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        status: "error",
+        message: "The maximum number of attempts was reached"
+    },
+    store: new RedisStore({
+        sendCommand: (...args) => Cache.sendCommand(args),
+        prefix: "rl:googlePurchase:"
+    }),
+    keyGenerator: (req, res) => req.session.user.id
+})
+
 export const userUpgradePlanRateLimiter = rateLimit({
     windowMs: 24 * 60 * 60 * 1000,
     limit: 20,

@@ -158,7 +158,7 @@ export const publicLogoutRateLimiter = rateLimit({
 
 // Webhook
 
-export const publicWebhooksRateLimiter = rateLimit({
+export const publicPaddleWebhooksRateLimiter = rateLimit({
     windowMs: 1000,
     limit: 1000,
     standardHeaders: true,
@@ -169,7 +169,7 @@ export const publicWebhooksRateLimiter = rateLimit({
     },
     store: new RedisStore({
         sendCommand: (...args) => Cache.sendCommand(args),
-        prefix: "rl:webhook:"
+        prefix: "rl:paddleWebhook:"
     })
 })
 
@@ -786,6 +786,36 @@ export const publicGetUpdatePaymentMethodTransactionRateLimiter = rateLimit({
     store: new RedisStore({
         sendCommand: (...args) => Cache.sendCommand(args),
         prefix: "rl:getUpdatePaymentMethodTransaction:"
+    })
+})
+
+export const publicGoogleWebhooksRateLimiter = rateLimit({
+    windowMs: 1000,
+    limit: 1000,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        status: "error",
+        message: "Too many requests"
+    },
+    store: new RedisStore({
+        sendCommand: (...args) => Cache.sendCommand(args),
+        prefix: "rl:googleWebhook:"
+    })
+})
+
+export const publicGooglePurchaseRateLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    limit: 30,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        status: "error",
+        message: "Too many requests"
+    },
+    store: new RedisStore({
+        sendCommand: (...args) => Cache.sendCommand(args),
+        prefix: "rl:googlePurchase:"
     })
 })
 

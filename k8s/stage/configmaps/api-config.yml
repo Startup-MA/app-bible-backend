@@ -32,3 +32,9 @@ data:
 
   BACKEND_URL: https://stage-api.app-bible.com
   ANDROID_PACKAGE_NAME: com.scripture.reader.stage
+
+  # Google Play Billing
+  GOOGLE_PLAY_SANDBOX: "true"
+  GOOGLE_PLAY_PACKAGE_NAME: com.scripture.reader.stage
+  GOOGLE_PLAY_PLANS: premium:monthly:Premium:month,premium:yearly:Premium:year
+  GOOGLE_PUBSUB_PUSH_AUDIENCE: https://stage-api.app-bible.com/api/webhooks/google

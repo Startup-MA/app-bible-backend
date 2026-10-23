@@ -62,17 +62,26 @@ export const up = (pgm) => {
 
         CREATE TABLE customers (
             id_customer INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            subscription_id VARCHAR(30) UNIQUE NOT NULL,
-            customer_id VARCHAR(30) UNIQUE NOT NULL,
+            subscription_id TEXT UNIQUE NOT NULL,
+            customer_id TEXT UNIQUE NOT NULL,
             subscription_tier VARCHAR(100),
             subscription_status VARCHAR(100),
             interval VARCHAR(20),
+            billing_provider VARCHAR(10) NOT NULL DEFAULT 'paddle',
+            purchase_token TEXT,
+            product_id VARCHAR(120),
+            expires_at TIMESTAMPTZ,
+            store_status VARCHAR(64),
             is_free_trial_used BOOLEAN NOT NULL DEFAULT FALSE,
             created_at TIMESTAMPTZ DEFAULT NOW(),
             updated_at TIMESTAMPTZ DEFAULT NOW(),
             occurred_at TIMESTAMPTZ,
             id_user INT UNIQUE REFERENCES users(id_user) ON DELETE CASCADE
         );
+
+        CREATE UNIQUE INDEX customers_purchase_token_uidx
+            ON customers (purchase_token)
+            WHERE purchase_token IS NOT NULL;
 
         CREATE TABLE verification_codes (
             id_verification_code INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

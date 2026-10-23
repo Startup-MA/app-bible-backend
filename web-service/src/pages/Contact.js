@@ -203,7 +203,7 @@ function Contact() {
 
     return (
         <>
-            <PersonalInfo isOpen={isPersonalInfo} onClose={() => setIsPersonalInfo(false)} />
+            <PersonalInfo isOpen={isPersonalInfo} setIsLogin={setIsLogin} setIsUserLoggedIn={setIsUserLoggedIn} onClose={() => setIsPersonalInfo(false)} />
             <Reset isOpen={isReset} onClose={() => setIsReset(false)}/>
             <SignUp isOpen={isSignUp} setIsSignUp={setIsSignUp} setIsLogin={setIsLogin} onClose={() => setIsSignUp(false)}/>
             <Login isOpen={isLogin} setIsLogin={setIsLogin} setIsSignUp={setIsSignUp} setIsReset={setIsReset} onClose={() => setIsLogin(false)}/>

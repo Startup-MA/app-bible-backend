@@ -2,6 +2,7 @@ import { StatusCodes } from "http-status-codes"
 import customerService from "../service/customer.js"
 import { logger } from "../utils/logger.js"
 import { clearCacheFields } from "../utils/clearCacheFields.js"
+import { assertPaddleSubscription, toPaddleShapedView } from "../utils/googleSubscription.js"
 
 async function getSubscription(req, res, next) {
     const { id, device } = req.session.user
@@ -14,6 +15,16 @@ async function getSubscription(req, res, next) {
         return res.status(StatusCodes.OK).json({
             message: "Subscription not found",
             data: 0
+        })
+    }
+
+    if (customerInfo.data[0].billing_provider === "google") {
+        return res.status(StatusCodes.OK).json({
+            status: "success",
+            message: "Subscription data",
+            data: {
+                data: toPaddleShapedView(customerInfo.data[0])
+            }
         })
     }
   
@@ -34,6 +45,13 @@ async function getCurrentPaymentMethod(req, res, next) {
     const customerInfo = await customerService.getAllCustomerInfo(id)
 
     if (!customerInfo.data[0].subscription_id) {
+        return res.status(StatusCodes.OK).json({
+            message: "Subscription not found",
+            data: 0
+        })
+    }
+
+    if (customerInfo.data[0].billing_provider === "google") {
         return res.status(StatusCodes.OK).json({
             message: "Subscription not found",
             data: 0
@@ -63,6 +81,13 @@ async function getLastYearTransactions(req, res, next) {
         })
     }
 
+    if (customerInfo.data[0].billing_provider === "google") {
+        return res.status(StatusCodes.OK).json({
+            message: "Subscription not found",
+            data: 0
+        })
+    }
+
     const lastYearTransactions = await customerService.getLastYearTransactions(customerInfo.data[0].subscription_id, customerInfo.data[0].customer_id)
 
     return res.status(StatusCodes.OK).json({
@@ -85,6 +110,8 @@ async function cancelSubscription(req, res, next) {
             data: 0
         })
     }
+
+    assertPaddleSubscription(customerInfo.data[0])
 
     const cancellationResult = await customerService.cancelSubscription(customerInfo.data[0].subscription_id)
 
@@ -113,6 +140,8 @@ async function cancelScheduledCancel(req, res, next) {
         })
     }
 
+    assertPaddleSubscription(customerInfo.data[0])
+
     const cancellationResult = await customerService.cancelScheduledCancel(customerInfo.data[0].subscription_id)
 
     clearCacheFields([
@@ -139,6 +168,8 @@ async function getUpdatePaymentMethodTransaction(req, res, next) {
             data: 0
         })
     }
+
+    assertPaddleSubscription(customerInfo.data[0])
 
     const updatePaymentMethodTransaction = await customerService.getUpdatePaymentMethodTransaction(customerInfo.data[0].subscription_id)
 
@@ -170,6 +201,8 @@ async function upgradePlan(req, res, next) {
         })
     }
 
+    assertPaddleSubscription(customerInfo.data[0])
+
     const upgradePlanResult = await customerService.upgradePlan(customerInfo.data[0].subscription_id, body)
 
     clearCacheFields([
@@ -185,6 +218,27 @@ async function upgradePlan(req, res, next) {
     })
 }
 
+async function registerGooglePurchase(req, res, next) {
+    const { id, device } = req.session.user
+
+    logger.info(`Recording Google Play subscription for user: ${id} device: ${device}`)
+
+    const result = await customerService.registerGooglePurchase(id, req.body.purchaseToken)
+
+    clearCacheFields([
+        `paddle:${id}:/api/customer/getLastYearTransactions`,
+        `paddle:${id}:/api/customer/getCurrentPaymentMethod`,
+        `paddle:${id}:/api/customer/getSubscription`,
+        `dashboard:${id}:/api/authMe`
+    ])
+
+    return res.status(StatusCodes.OK).json({
+        status: "success",
+        message: result.message,
+        data: result.data
+    })
+}
+
 export default { 
     getSubscription: getSubscription,
     getCurrentPaymentMethod: getCurrentPaymentMethod,
@@ -192,5 +246,6 @@ export default {
     cancelSubscription: cancelSubscription,
     cancelScheduledCancel: cancelScheduledCancel,
     getUpdatePaymentMethodTransaction: getUpdatePaymentMethodTransaction,
-    upgradePlan: upgradePlan
+    upgradePlan: upgradePlan,
+    registerGooglePurchase: registerGooglePurchase
 }

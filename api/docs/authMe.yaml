@@ -28,8 +28,6 @@ paths:
                         type: string
                         enum:
                         - null
-                        - Thematical
-                        - Advanced
                         - Premium
                         example: Premium
                       subscription_status:

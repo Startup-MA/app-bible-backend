@@ -12,7 +12,7 @@ import axios from "axios"
 import { handleInputChange } from "../utils/handleInputChange"
 import { countries } from "../utils/countries.js"
 
-function PersonalInfo({isOpen, setIsSignUp, setIsLogin, onClose}) {
+function PersonalInfo({isOpen, setIsSignUp, setIsLogin, setIsUserLoggedIn, onClose}) {
     const [isLoaded, setIsLoaded] = useState(true)
     const [error, setError] = useState({})
     const [isError, setIsError] = useState(false)
@@ -34,6 +34,24 @@ function PersonalInfo({isOpen, setIsSignUp, setIsLogin, onClose}) {
 
     const handleClose = () => {
         onClose()
+        setName("")
+        setSurname("")
+        setAge("")
+        setSex("")
+        setCountry("")
+        setValidationError("")
+        setNameInvalid(false)
+        setSurnameInvalid(false)
+        setAgeInvalid(false)
+        setSexInvalid(false)
+        setCountryInvalid(false)
+        setIsLoaded(true)
+    }
+
+    const openLogin = () => {
+        onClose()
+        setIsUserLoggedIn(false)
+        setIsLogin(true)
         setName("")
         setSurname("")
         setAge("")
@@ -110,6 +128,11 @@ function PersonalInfo({isOpen, setIsSignUp, setIsLogin, onClose}) {
 
             if (axios.isCancel?.(error) || error.name === "CanceledError") return
 
+            if (error.response?.status === 401) {
+                openLogin()
+                return
+            }
+
             if (error.response) {
                 if (process.env.REACT_APP_NODE_ENV === "development" || error.response.status === 429) {
                     setError(`Error response: ${error.response.status} ${error.response.statusText}`)
@@ -160,6 +183,11 @@ function PersonalInfo({isOpen, setIsSignUp, setIsLogin, onClose}) {
                 setIsLoaded(true)
 
                 if (axios.isCancel?.(error) || error.name === "CanceledError") return
+
+                if (error.response?.status === 401) {
+                    openLogin()
+                    return
+                }
 
                 if (error.response) {
                     if (process.env.REACT_APP_NODE_ENV === "development" || error.response.status === 429) {

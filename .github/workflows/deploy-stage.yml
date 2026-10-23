@@ -54,6 +54,7 @@ jobs:
   deploy-frontend:
     name: Sync Frontend to Backblaze B2
     runs-on: ubuntu-latest
+    environment: stage
     needs: terraform # Waits for Phase 1 to finish
     if: ${{ github.event_name == 'push' || inputs.deploy_frontend == true }}
     steps:
@@ -76,7 +77,11 @@ jobs:
           REACT_APP_GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET_STAGE }}
           REACT_APP_APPLE_SERVICE_ID: ${{ secrets.APPLE_SERVICE_ID_STAGE }}
           REACT_APP_SUPPORT_EMAIL: ${{ secrets.SUPPORT_EMAIL }}
-        
+          REACT_APP_PREMIUM_PRODUCT_ID: ${{ vars.PREMIUM_PRODUCT_ID }}
+          REACT_APP_FREE_TRIAL_MONTHLY_PRICE_ID: ${{ vars.FREE_TRIAL_MONTHLY_PRICE_ID }}
+          REACT_APP_MONTHLY_PRICE_ID: ${{ vars.MONTHLY_PRICE_ID }}
+          REACT_APP_YEARLY_PRICE_ID: ${{ vars.YEARLY_PRICE_ID }}
+
         run: |
           npm ci
           npm run build
@@ -197,6 +202,8 @@ jobs:
             --from-literal=APPLE_SERVICE_ID="${{ secrets.APPLE_SERVICE_ID_STAGE }}" \
             --from-literal=APPLE_PRIVATE_KEY="${{ secrets.APPLE_PRIVATE_KEY_STAGE }}" \
             --from-literal=APPLE_APP_ID="${{ secrets.APPLE_APP_ID_STAGE }}" \
+            --from-literal=GOOGLE_PLAY_SERVICE_ACCOUNT_FILE="${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_FILE_STAGE }}" \
+            --from-literal=GOOGLE_PUBSUB_SERVICE_ACCOUNT_EMAIL="${{ secrets.GOOGLE_PUBSUB_SERVICE_ACCOUNT_EMAIL_STAGE }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
           kubectl create secret generic mailers-secrets \

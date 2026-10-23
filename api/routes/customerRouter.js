@@ -10,7 +10,8 @@ import {
     publicCancelSubscriptionRateLimiter,
     publicCancelScheduledCancelRateLimiter,
     publicGetUpdatePaymentMethodTransactionRateLimiter,
-    publicUpgradePlanRateLimiter
+    publicUpgradePlanRateLimiter,
+    publicGooglePurchaseRateLimiter
 } from "../middleware/publicIPRateLimiter.js"
 import {
     userGetSubscriptionRateLimiter, 
@@ -19,9 +20,11 @@ import {
     userCancelSubscriptionRateLimiter,
     userCancelScheduledCancelRateLimiter,
     userGetUpdatePaymentMethodTransactionRateLimiter,
-    userUpgradePlanRateLimiter
+    userUpgradePlanRateLimiter,
+    userGooglePurchaseRateLimiter
 } from "../middleware/userSpecificRateLimiter.js"
 import { upgradePlanSchema } from "../validation/schemas/upgradePlan.schema.js"
+import { googlePurchaseSchema } from "../validation/schemas/googlePurchase.schema.js"
 
 const customerRouter = express.Router()
 
@@ -76,6 +79,15 @@ customerRouter.patch("/upgradePlan",
     validate(upgradePlanSchema, "body"),
     userUpgradePlanRateLimiter,
     customerController.upgradePlan
+)
+
+customerRouter.post("/google/purchase",
+    publicGooglePurchaseRateLimiter,
+    authenticate.session,
+    authenticate.userMobile,
+    validate(googlePurchaseSchema, "body"),
+    userGooglePurchaseRateLimiter,
+    customerController.registerGooglePurchase
 )
 
 export default customerRouter

@@ -9,6 +9,9 @@ jobs:
   # PHASE 1: Build and Push Images to Docker Hub
   build-and-push:
     runs-on: ubuntu-latest
+
+    environment: dev
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -32,15 +35,6 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/api:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/api:${{ steps.vars.outputs.sha_short }}
 
-      # - name: Build and push Emperor-Consumer
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: ./consumers/emperor-consumer
-      #     push: true
-      #     tags: |
-      #       ${{ secrets.DOCKERHUB_USERNAME }}/emperor-consumer:latest
-      #       ${{ secrets.DOCKERHUB_USERNAME }}/emperor-consumer:${{ steps.vars.outputs.sha_short }}
-      
       - name: Build and push Soldier-Consumer
         uses: docker/build-push-action@v5
         with:
@@ -76,6 +70,10 @@ jobs:
             REACT_APP_GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET_DEV }}
             REACT_APP_APPLE_SERVICE_ID=${{ secrets.APPLE_SERVICE_ID_DEV}}
             REACT_APP_SUPPORT_EMAIL=${{ secrets.SUPPORT_EMAIL }}
+            REACT_APP_PREMIUM_PRODUCT_ID=${{ vars.PREMIUM_PRODUCT_ID }}
+            REACT_APP_FREE_TRIAL_MONTHLY_PRICE_ID=${{ vars.FREE_TRIAL_MONTHLY_PRICE_ID }}
+            REACT_APP_MONTHLY_PRICE_ID=${{ vars.MONTHLY_PRICE_ID }}
+            REACT_APP_YEARLY_PRICE_ID=${{ vars.YEARLY_PRICE_ID }}
 
   # PHASE 2: Deploy to Droplet (Runs only after Phase 1 succeeds)
   deploy-to-droplet:
@@ -167,7 +165,13 @@ jobs:
             APPLE_SERVICE_ID=${{ secrets.APPLE_SERVICE_ID_DEV }}
             APPLE_PRIVATE_KEY="${{ secrets.APPLE_PRIVATE_KEY_DEV }}"
             APPLE_APP_ID=${{ secrets.APPLE_APP_ID_DEV }}
-            ANDROID_PACKAGE_NAME=com.scripture.reader.dev
+            ANDROID_PACKAGE_NAME=${{ secrets.ANDROID_PACKAGE_NAME_DEV }}
+            GOOGLE_PLAY_SANDBOX=${{ secrets.GOOGLE_PLAY_SANDBOX_DEV }}
+            GOOGLE_PLAY_PACKAGE_NAME=${{ secrets.ANDROID_PACKAGE_NAME_DEV }}
+            GOOGLE_PLAY_SERVICE_ACCOUNT_FILE=${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_FILE_DEV }}
+            GOOGLE_PLAY_PLANS=premium:monthly:Premium:month,premium:yearly:Premium:year
+            GOOGLE_PUBSUB_PUSH_AUDIENCE=${{ secrets.BACKEND_URL_DEV }}/api/webhooks/google
+            GOOGLE_PUBSUB_SERVICE_ACCOUNT_EMAIL=${{ secrets.GOOGLE_PUBSUB_SERVICE_ACCOUNT_EMAIL_DEV }}
             EOF
             
             # # EMPEROR-CONSUMER envs

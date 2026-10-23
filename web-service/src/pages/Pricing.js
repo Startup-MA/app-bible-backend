@@ -1,4 +1,3 @@
-import { initializePaddle } from "@paddle/paddle-js"
 import { useState, useEffect } from "react"
 import { Link  } from "react-router"
 import { useNavigate, useLocation } from "react-router-dom"
@@ -43,8 +42,8 @@ function Pricing() {
     const [isError, setIsError] = useState(false)
     const [monthlyChecked, setMonthlyChecked] = useState(true)
     const [billingCycle, setBillingCycle] = useState("month")
-    const [thematicalPriceLabel, setThematicalPriceLabel] = useState("")
-    const [advancedPriceLabel, setAdvancedPriceLabel] = useState("")
+    // const [thematicalPriceLabel, setThematicalPriceLabel] = useState("")
+    // const [advancedPriceLabel, setAdvancedPriceLabel] = useState("")
     const [premiumPriceLabel, setPremiumPriceLabel] = useState("")
     const [isPopUp, setIsPopUp] = useState(false)
     const [selectedPlanForUpgrade, setSelectedPlanForUpgrade] = useState("")
@@ -67,40 +66,22 @@ function Pricing() {
         uuid: userData.uuid
     }
 
-    let thematical = "pro_01kkyrw1pbs6hqkasknt9p91tf"
-    let advanced = "pro_01kkyrwmqtykq8anvwvjj5czmk"
-    let premium = "pro_01kkyrx63shwv0wc514bm8g5w2"
+    let premium = process.env.REACT_APP_PREMIUM_PRODUCT_ID
 
     let monthItems = [
-        {
-            quantity: 1,
-            priceId: "pri_01kkyrzk5rddjgp6hzzq644cbe"
-        },
-        {
-            quantity: 1,
-            priceId: "pri_01kkys314de4bmqgkry01740nq"
-        },
         userData.is_free_trial_used ? {
             quantity: 1,
-            priceId: "pri_01kr3vqqdn977tt215q90nebjg"
+            priceId: process.env.REACT_APP_MONTHLY_PRICE_ID
         } : {
             quantity: 1,
-            priceId: "pri_01kkys5430kkr8cxv02pmrak44",
+            priceId: process.env.REACT_APP_FREE_TRIAL_MONTHLY_PRICE_ID
         }
     ]
 
     let yearItems = [
         {
             quantity: 1,
-            priceId: "pri_01kkys1sdd64pt19r083a4y796"
-        },
-        {
-            quantity: 1,
-            priceId: "pri_01kkys462vap4x56ne0q8hg4mv"
-        },
-        {
-            quantity: 1,
-            priceId: "pri_01kkys6e2jw7j7brjka23jg9ms"
+            priceId: process.env.REACT_APP_YEARLY_PRICE_ID
         }
     ]
 
@@ -196,7 +177,7 @@ function Pricing() {
                 setSubscriptionStatus(data.data.data.data.status)
                 setIsNoSubscription(false)
                 
-                if (data.data.data.data.scheduled_change) {
+                if (data.data.data.data.scheduled_change || (data.data.data.data.billing_provider === "google" && data.data.data.data.status !== "canceled")) {
                     setIsScheduledChange(true)
                 } else {
                     setIsScheduledChange(false)
@@ -306,11 +287,12 @@ function Pricing() {
     }
 
     const setPrices = (items) => items.forEach(item => {
-        if (item.product.id === thematical) {
-            setThematicalPriceLabel(item.formattedTotals.subtotal)
-        } else if (item.product.id === advanced) {
-            setAdvancedPriceLabel(item.formattedTotals.subtotal)
-        } else if (item.product.id === premium) {
+        // if (item.product.id === thematical) {
+        //     setThematicalPriceLabel(item.formattedTotals.subtotal)
+        // } else if (item.product.id === advanced) {
+        //     setAdvancedPriceLabel(item.formattedTotals.subtotal)
+        // } else 
+        if (item.product.id === premium) {
             setPremiumPriceLabel(item.formattedTotals.subtotal)
         }
     })
@@ -344,6 +326,10 @@ function Pricing() {
     }
 
     const openCheckout = (event) => {
+        if (subscriptionData.billing_provider === "google" && subscriptionStatus !== "canceled") {
+            return
+        }
+
         const index = +event.target.value
         
         if (monthlyChecked) {
@@ -372,7 +358,7 @@ function Pricing() {
 
     return (
         <>
-            <PersonalInfo isOpen={isPersonalInfo} onClose={() => setIsPersonalInfo(false)} />
+            <PersonalInfo isOpen={isPersonalInfo} setIsLogin={setIsLogin} setIsUserLoggedIn={setIsUserLoggedIn} onClose={() => setIsPersonalInfo(false)} />
             <Reset isOpen={isReset} onClose={() => setIsReset(false)}/>
             <SignUp isOpen={isSignUp} setIsSignUp={setIsSignUp} setIsLogin={setIsLogin} onClose={() => setIsSignUp(false)}/>
             <Login isOpen={isLogin} setIsLogin={setIsLogin} setIsSignUp={setIsSignUp} setIsReset={setIsReset} onClose={() => setIsLogin(false)}/>
@@ -433,7 +419,7 @@ function Pricing() {
                                 </div>
                             </div>
                         </div>
-                        <div className="plan thematical">
+                        {/* <div className="plan thematical">
                             <div className="plan-name">
                                 <h3>Thematical</h3>
                             </div>
@@ -580,7 +566,7 @@ function Pricing() {
                                     <img src={CustomContent} alt="Custom"/>
                                 </div>   
                             </div>
-                        </div>
+                        </div> */}
                         <div className="plan premium" id="FreeTrial">
                             <div className="plan-name">
                                 <h3>Premium</h3>
@@ -594,7 +580,7 @@ function Pricing() {
                             </div>
                             {isUserLoggedIn ? (
                                 isNoSubscription || subscriptionStatus === "canceled"  ? (
-                                    <button  className="plan-buy" style={isSubscriptionLoadingError ? {visibility: "hidden"} : {}}  onClick={openCheckout} value="2">
+                                    <button  className="plan-buy" style={isSubscriptionLoadingError ? {visibility: "hidden"} : {}}  onClick={openCheckout} value="0">
                                         {!userData.is_free_trial_used && monthlyChecked ? "Free trial" : "Buy now"}
                                     </button>
                                 ) : (
@@ -605,13 +591,13 @@ function Pricing() {
                                                     Current
                                                 </button>
                                             ) : (
-                                                <button  className="plan-buy" onClick={askPopUp} value="2" style={isScheduledChange || subscriptionStatus === "paused" || subscriptionStatus === "past_due" || subscriptionStatus === "trialing" ? {visibility: "hidden"} : {}}>
+                                                <button  className="plan-buy" onClick={askPopUp} value="0" style={isScheduledChange || subscriptionStatus === "paused" || subscriptionStatus === "past_due" || subscriptionStatus === "trialing" ? {visibility: "hidden"} : {}}>
                                                     Upgrade
                                                 </button>
                                             )
                                         ) : (
                                             monthlyChecked ? (
-                                                <button  className="plan-buy" onClick={askPopUp} value="2" style={isScheduledChange || subscriptionStatus === "paused" || subscriptionStatus === "past_due" || subscriptionStatus === "trialing" ? {visibility: "hidden"} : {}}>
+                                                <button  className="plan-buy" onClick={askPopUp} value="0" style={isScheduledChange || subscriptionStatus === "paused" || subscriptionStatus === "past_due" || subscriptionStatus === "trialing" ? {visibility: "hidden"} : {}}>
                                                     Downgrade
                                                 </button>
                                             ) : (
@@ -623,16 +609,16 @@ function Pricing() {
                                         )
                                     ) : (
                                         subscriptionData.billing_cycle.interval === "month" ? (
-                                            <button  className="plan-buy" onClick={askPopUp} value="2" style={subscriptionStatus === "paused" || subscriptionStatus === "past_due" || subscriptionStatus === "trialing" || isScheduledChange ? {visibility: "hidden"} : {}}>
+                                            <button  className="plan-buy" onClick={askPopUp} value="0" style={subscriptionStatus === "paused" || subscriptionStatus === "past_due" || subscriptionStatus === "trialing" || isScheduledChange ? {visibility: "hidden"} : {}}>
                                                 Upgrade
                                             </button>
                                         ) : (
                                             monthlyChecked ? (
-                                                <button  className="plan-buy" onClick={askPopUp} value="2" style={subscriptionStatus === "paused" || subscriptionStatus === "past_due" || subscriptionStatus === "trialing" || isScheduledChange ? {visibility: "hidden"} : {}}>
+                                                <button  className="plan-buy" onClick={askPopUp} value="0" style={subscriptionStatus === "paused" || subscriptionStatus === "past_due" || subscriptionStatus === "trialing" || isScheduledChange ? {visibility: "hidden"} : {}}>
                                                     Downgrade
                                                 </button>
                                             ) : (
-                                                <button  className="plan-buy" onClick={askPopUp} value="2" style={subscriptionStatus === "paused" || subscriptionStatus === "past_due" || subscriptionStatus === "trialing" || isScheduledChange ? {visibility: "hidden"} : {}}>
+                                                <button  className="plan-buy" onClick={askPopUp} value="0" style={subscriptionStatus === "paused" || subscriptionStatus === "past_due" || subscriptionStatus === "trialing" || isScheduledChange ? {visibility: "hidden"} : {}}>
                                                     Upgrade
                                                 </button>
                                             )
@@ -646,10 +632,10 @@ function Pricing() {
                             )}
                             <div className="features">
                                 <div>
-                                    <h3>Advanced</h3>
+                                    <p>+ 7 Themes</p>
                                 </div>
                                 <div>
-                                    <h1>+</h1>
+                                    <img src={CustomContent} alt="Custom content"/>
                                 </div>
                                 <div>
                                     <h1>Frescoes</h1>

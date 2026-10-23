@@ -8,7 +8,8 @@ import dashboardRouter from "./routes/dashboardRouter.js"
 import passRouter from "./routes/passRouter.js"
 import userRouter from "./routes/userRouter.js"
 import sysRouter from "./routes/sysRouter.js"
-import webhooksRouter from "./routes/webhooksRouter.js"
+import paddleWebhooksRouter from "./routes/paddleWebhooksRouter.js"
+import googleWebhooksRouter from "./routes/googleWebhooksRouter.js"
 import customerRouter from "./routes/customerRouter.js"
 import livenessRouter from "./routes/livenessRouter.js"
 
@@ -34,10 +35,12 @@ app.use(cors({
 }))
 
 app.use(morganMiddleware)
-app.use("/api/webhooks", webhooksRouter)
+app.use("/api/webhooks/paddle", paddleWebhooksRouter)
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+app.use("/api/webhooks/google", googleWebhooksRouter)
 
 app.use(session)
 
